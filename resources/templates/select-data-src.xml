@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<choiceListData
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.idega.is/select-data-src/ select-data-src.xsd">
+
+	<localizedEntries lang="en"> 
+	  <item>
+        <itemLabel>Country</itemLabel>
+        <itemValue></itemValue>
+      </item>
+	  <item>
+        <itemLabel>Lithuania</itemLabel>
+        <itemValue>lt</itemValue>
+      </item>
+	  <item>
+        <itemLabel>Iceland</itemLabel>
+        <itemValue>is</itemValue>
+      </item>
+      <item>
+        <itemLabel>Legoland</itemLabel>
+        <itemValue>ll</itemValue>
+      </item>
+	</localizedEntries>
+	<localizedEntries lang="is">
+	  <item>
+        <itemLabel>eg tala islensku</itemLabel>
+        <itemValue>lt</itemValue>
+      </item>
+	  <item>
+        <itemLabel>eg tala ekki islensku</itemLabel>
+        <itemValue>ekki</itemValue>
+      </item>
+	</localizedEntries>
+</choiceListData>
