@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
 import com.idega.chiba.web.xml.xforms.util.XFormsUtil;
 import com.idega.util.CoreConstants;
 import com.idega.util.LocaleUtil;
+import com.idega.util.StringUtil;
 import com.idega.util.xml.Prefix;
 import com.idega.util.xml.XPathUtil;
 import com.idega.util.xml.XmlUtil;
@@ -36,9 +37,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:44 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -220,7 +221,7 @@ public class FormManagerUtil {
 	
 		String ref = element.getAttribute(ref_s_att);
 		
-		if(FormManagerUtil.isEmpty(ref) && FormManagerUtil.isEmpty(key))
+		if(StringUtil.isEmpty(ref) && StringUtil.isEmpty(key))
 			throw new NullPointerException("Localization to element not initialized and key for new localization string not presented.");
 		
 		if(key != null) {
@@ -489,7 +490,7 @@ public class FormManagerUtil {
 	}
 	
 	public static boolean isLocalizationKeyCorrect(String loc_key) {
-		return !isEmpty(loc_key) && !loc_key.contains(CoreConstants.SPACE);
+		return !StringUtil.isEmpty(loc_key) && !loc_key.contains(CoreConstants.SPACE);
 	}
 	
 	public static String getElementsTextNodeValue(Node element) {
@@ -773,9 +774,9 @@ public class FormManagerUtil {
 		
 	}
 	
-	public static boolean isEmpty(String str) {
-		return str == null || CoreConstants.EMPTY.equals(str);
-	}
+//	public static boolean isEmpty(String str) {
+//		return str == null || CoreConstants.EMPTY.equals(str);
+//	}
 	
 	public static void modifyFormForLocalisationInFormbuilder(Document xforms_doc) {
 		Element setvalue_element = getDataModelSetValueElement(xforms_doc);
@@ -957,10 +958,10 @@ public class FormManagerUtil {
 	
 	public static NodeList getElementsContainingAttribute(Node context, String elementName, String attributeName) {
 		
-		if(isEmpty(elementName))
+		if(StringUtil.isEmpty(elementName))
 			elementName = CoreConstants.STAR;
 		
-		if(isEmpty(attributeName))
+		if(StringUtil.isEmpty(attributeName))
 			attributeName = CoreConstants.STAR;
 		
 		synchronized (elementsContainingAttributeXPath) {

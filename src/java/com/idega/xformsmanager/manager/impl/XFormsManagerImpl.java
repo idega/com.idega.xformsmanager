@@ -1,6 +1,5 @@
 package com.idega.xformsmanager.manager.impl;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 import com.idega.block.process.variables.Variable;
 import com.idega.util.CoreConstants;
+import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
@@ -28,13 +28,13 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class XFormsManagerImpl implements XFormsManager {
 	
-	private static Logger logger = Logger.getLogger(XFormsManagerImpl.class.getName());
+//	private static Logger logger = Logger.getLogger(XFormsManagerImpl.class.getName());
 	
 	private static final String simple_type = "xs:simpleType";
 	private static final String complex_type = "xs:complexType";
@@ -42,28 +42,76 @@ public class XFormsManagerImpl implements XFormsManager {
 	private XPathUtil bindsByNodesetXPath;
 	private static final String nodesetVariable = "nodeset";
 	private static final String autofill_attr = "autofillkey";
-	
-	public void loadXFormsComponentByTypeFromComponentsXForm(FormComponent component, String componentType) throws NullPointerException {
+
+	public void loadComponentFromTemplate(FormComponent component, String componentType) {
 		
 		CacheManager cacheManager = component.getFormDocument().getContext().getCacheManager();
-		cacheManager.checkForComponentType(componentType);
+//		cacheManager.checkForComponentType(componentType);
 		
-		ComponentDataBean xformsComponentDataBean = cacheManager.getCachedXformsComponent(componentType);
+		ComponentDataBean xformsComponentDataBean = cacheManager.getXformsComponentTemplate(componentType);
 		
-		if(xformsComponentDataBean != null) {
-			xformsComponentDataBean = (ComponentDataBean)xformsComponentDataBean.clone();	
-			component.setXformsComponentDataBean(xformsComponentDataBean);
+		if(xformsComponentDataBean == null) {
+			
+			synchronized (this) {
+				
+				xformsComponentDataBean = cacheManager.getXformsComponentTemplate(componentType);
+				
+				if(xformsComponentDataBean == null) {
+			
+					Document componentsTemplate = cacheManager.getComponentsTemplate();
+					Element componentTemplateElement = FormManagerUtil.getElementById(componentsTemplate, componentType);
 					
-			return;
+					if(componentTemplateElement != null) {
+						
+//						loadXFormsComponentDataBean(component, componentsTemplate, componentTemplateElement);
+						
+//						this is template component data bean
+						xformsComponentDataBean = newXFormsComponentDataBeanInstance();
+						xformsComponentDataBean.setElement(componentTemplateElement);
+						component.setXformsComponentDataBean(xformsComponentDataBean);
+						
+//						the component now serves as the templated component
+						
+						loadBindsAndNodesets(component, componentsTemplate);
+						loadExtKeyElements(component, componentsTemplate);
+						
+						cacheManager.cacheXformsComponent(componentType, (ComponentDataBean)component.getXformsComponentDataBean().clone());
+						
+					} else {
+					
+						Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Component not found in components template document by provided type: "+componentType);
+					}
+				}
+			}
+			
+//			if(componentXFormsElement == null) {
+//				String msg = "Component cannot be found in components xforms document by provided type: "+componentType;
+//				Logger.getLogger(getClass().getName()).log(Level.SEVERE, msg+
+//					" Should not happen. Take a look, why component is registered in components_types, but is not present in components xforms document.");
+//				throw new NullPointerException(msg);
+//			}
+		
+			if(xformsComponentDataBean == null) {
+				throw new RuntimeException("Component not found in components template document by provided type: "+componentType+", check the componentst template document.");
+			}
 		}
 		
-		loadAndCacheXFormsComponentByTypeFromComponentsXForm(component, componentType);
+		if(xformsComponentDataBean != null) {
+			xformsComponentDataBean = (ComponentDataBean)xformsComponentDataBean.clone();
+			component.setXformsComponentDataBean(xformsComponentDataBean);
+		}
+		
+//		xformsComponentDataBean = (ComponentDataBean)xformsComponentDataBean.clone();
+//		component.setXformsComponentDataBean(xformsComponentDataBean);
+//		
+//		loadAndCacheXFormsComponentByTypeFromComponentsXForm(component, componentType);
 	}
 		
+	/*
 	protected synchronized void loadAndCacheXFormsComponentByTypeFromComponentsXForm(FormComponent component, String componentType) {
 		
 		CacheManager cacheManager = component.getFormDocument().getContext().getCacheManager();
-		ComponentDataBean xformsComponentDataBean = cacheManager.getCachedXformsComponent(componentType); 
+		ComponentDataBean xformsComponentDataBean = cacheManager.getXformsComponentTemplate(componentType); 
 
 		if(xformsComponentDataBean != null) {
 			xformsComponentDataBean = (ComponentDataBean)xformsComponentDataBean.clone();
@@ -71,12 +119,12 @@ public class XFormsManagerImpl implements XFormsManager {
 			return;
 		}
 		
-		Document componentsXFormsXml = cacheManager.getComponentsXforms();
+		Document componentsXFormsXml = cacheManager.getComponentsTemplate();
 		Element componentXFormsElement = FormManagerUtil.getElementByIdFromDocument(componentsXFormsXml, FormManagerUtil.body_tag, componentType);
 		
 		if(componentXFormsElement == null) {
 			String msg = "Component cannot be found in components xforms document by provided type: "+componentType;
-			logger.log(Level.SEVERE, msg+
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE, msg+
 				" Should not happen. Take a look, why component is registered in components_types, but is not present in components xforms document.");
 			throw new NullPointerException(msg);
 		}
@@ -84,6 +132,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		loadXFormsComponentDataBean(component, componentsXFormsXml, componentXFormsElement);
 		cacheManager.cacheXformsComponent(componentType, (ComponentDataBean)component.getXformsComponentDataBean().clone());
 	}
+	*/
 	
 	public void loadXFormsComponentFromDocument(FormComponent component) {
 		
@@ -99,9 +148,10 @@ public class XFormsManagerImpl implements XFormsManager {
 	
 	/**
 	 * this is called when loading component from xforms document and from component xforms document
+	 * loads up the ComponentDataBean
 	 * 
 	 * @param component
-	 * @param xform	- needed, as it can be component xforms document
+	 * @param xform	- needed, as it can be components template document
 	 * @param componentElement
 	 */
 	protected void loadXFormsComponentDataBean(FormComponent component, Document xform, Element componentElement) {
@@ -110,11 +160,11 @@ public class XFormsManagerImpl implements XFormsManager {
 		xformsComponentDataBean.setElement(componentElement);
 		component.setXformsComponentDataBean(xformsComponentDataBean);
 		
-		getBindingsAndNodesets(component, xform);
-		getExtKeyElements(component, xform);
+		loadBindsAndNodesets(component, xform);
+		loadExtKeyElements(component, xform);
 	}
 	
-	protected void getExtKeyElements(FormComponent component, Document components_xforms) {
+	protected void loadExtKeyElements(FormComponent component, Document components_xforms) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
@@ -149,19 +199,19 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
-	protected void getBindingsAndNodesets(FormComponent component, Document componentsXForm) {
+	protected void loadBindsAndNodesets(FormComponent component, Document xform) {
 
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
 		String bindId = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.bind_att);
 		String modelId = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.model_att);
 		
-		if(!FormManagerUtil.isEmpty(bindId)) {
+		if(!StringUtil.isEmpty(bindId)) {
 			
-			Bind bind = Bind.locate(componentsXForm, bindId, modelId);
+			Bind bind = Bind.locate(xform, bindId, modelId);
 			
 			if(bind == null)
-				throw new NullPointerException("Binding not found by bind id: "+bindId+(FormManagerUtil.isEmpty(modelId) ? CoreConstants.EMPTY : " and modelId: "+modelId));
+				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? CoreConstants.EMPTY : " and modelId: "+modelId));
 			
 			xformsComponentDataBean.setBind(bind);
 		}
@@ -181,7 +231,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		String componentId = component.getId();
 		componentElement.setAttribute(FormManagerUtil.id_att, componentId);
 		
-		localizeComponent(componentId, componentElement, xform, component.getFormDocument().getContext().getCacheManager().getComponentsXforms());
+		localizeComponent(componentId, componentElement, xform, component.getFormDocument().getContext().getCacheManager().getComponentsTemplate());
 		
 		if(removeTextNodes())
 			FormManagerUtil.removeTextNodes(componentElement);
@@ -199,6 +249,10 @@ public class XFormsManagerImpl implements XFormsManager {
 		    
 		    updateAutofillKey(component);
 		}
+	}
+	
+	protected void importBindFromTemplate(FormComponent component) {
+		
 	}
 	
 	protected boolean removeTextNodes() {
@@ -305,7 +359,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		Bind bind = xformsComponentDataBean.getBind();
 		
 		if(bind == null) {
-			logger.log(Level.SEVERE, "Bind element not set in xforms_component data bean. See where component is rendered for cause.");
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Bind element not set in xforms_component data bean. See where component is rendered for cause.");
 			throw new NullPointerException("Bind element is not set");
 		}
 		
@@ -445,7 +499,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		if(helps == null || helps.getLength() == 0) {
 			
-			Element help = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsXforms(), "help");
+			Element help = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), "help");
 			
 			Document xform = component.getFormDocument().getXformsDocument();
 			
@@ -478,7 +532,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		Element element = xformsComponentDataBean.getElement();
 		NodeList helps = element.getElementsByTagName(FormManagerUtil.help_tag);
 		
-		Element helpFormDoc = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsXforms(), "help");
+		Element helpFormDoc = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), "help");
 		
 		XPathUtil outputXPUT= new XPathUtil(".//xf:output[@helptype='validationtext']");
 		
@@ -941,7 +995,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		String mapping = nodeset.getMapping();
 		
-		return FormManagerUtil.isEmpty(mapping) ? null : Variable.parseDefaultStringRepresentation(mapping);
+		return StringUtil.isEmpty(mapping) ? null : Variable.parseDefaultStringRepresentation(mapping);
 	}
 	
 	public void loadConfirmationElement(FormComponent component, FormComponentPage confirmation_page) {

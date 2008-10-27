@@ -14,9 +14,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements XFormsManagerPage {
 
@@ -26,7 +26,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		super.loadXFormsComponentFromDocument(component);
 		checkForSpecialTypes(component);
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+//		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
 //		Element case_element = xformsComponentDataBean.getElement();
 //		xformsComponentDataBean.setElement((Element)case_element.getElementsByTagName(FormManagerUtil.group_tag).item(0));
@@ -37,22 +37,24 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		
 		super.addComponentToDocument(component);
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+//		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
-		Element group_element = xformsComponentDataBean.getElement();
+//		Element componentElement = xformsComponentDataBean.getElement();
+//		
+//		String componentId = componentElement.getAttribute(FormManagerUtil.id_att);
+//		Element case_element = componentElement.getOwnerDocument().createElementNS(FormManagerUtil.idega_namespace, FormManagerUtil.idegans_case_tag);
 		
-		String component_id = group_element.getAttribute(FormManagerUtil.id_att);
-		Element case_element = group_element.getOwnerDocument().createElementNS(FormManagerUtil.idega_namespace, FormManagerUtil.idegans_case_tag);
-		String name = group_element.getAttribute(FormManagerUtil.name_att);
-		if(name != null && name.length() != 0) {
-			
-			group_element.removeAttribute(FormManagerUtil.name_att);
-			case_element.setAttribute(FormManagerUtil.name_att, name);
-		}
-		group_element.getParentNode().replaceChild(case_element, group_element);
-		group_element.removeAttribute(FormManagerUtil.id_att);
-		case_element.setAttribute(FormManagerUtil.id_att, component_id);
-		case_element.appendChild(group_element);
+		
+//		String name = componentElement.getAttribute(FormManagerUtil.name_att);
+//		if(name != null && name.length() != 0) {
+//			
+//			componentElement.removeAttribute(FormManagerUtil.name_att);
+//			case_element.setAttribute(FormManagerUtil.name_att, name);
+//		}
+//		componentElement.getParentNode().replaceChild(case_element, componentElement);
+//		componentElement.removeAttribute(FormManagerUtil.id_att);
+//		case_element.setAttribute(FormManagerUtil.id_att, componentId);
+//		case_element.appendChild(componentElement);
 		
 		checkForSpecialTypes(component);
 		pageContextChanged(component);
@@ -62,13 +64,14 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
-		String component_name = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.name_att);
-		if(component_name != null && 
-				component_name.equals(FormComponentFactory.confirmation_page_type) ||
-				component_name.equals(FormComponentFactory.page_type_thx))
-			component.setType(component_name);
+		String pageType = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.type_att);
+		if(pageType != null && 
+				pageType.equals(FormComponentFactory.confirmation_page_type) ||
+				pageType.equals(FormComponentFactory.page_type_thx))
+			component.setType(pageType);
 	}
 	
+	/*
 	@Override
 	public void removeComponentFromXFormsDocument(FormComponent component) {
 		
@@ -81,6 +84,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		Element element_to_remove = xformsComponentDataBean.getElement();
 		element_to_remove.getParentNode().getParentNode().removeChild(element_to_remove.getParentNode());
 	}
+	*/
 	
 	private void removeSectionVisualization(FormComponent component) {
 		
@@ -125,7 +129,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 //	}
 	
 	public void pageContextChanged(FormComponent component) {
-		
+//		TODO: untested and unchanged after document manager update
 		FormDocument formDocument = component.getFormDocument();
 		
 		if(!formDocument.getProperties().isStepsVisualizationUsed() || FormComponentFactory.page_type_thx.equals(component.getType()))
@@ -136,7 +140,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		
 		if(section == null) {
 			
-			section = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsXforms(), FormManagerUtil.section_item);
+			section = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), FormManagerUtil.section_item);
 			section = (Element)component.getFormDocument().getXformsDocument().importNode(section, true);
 			section.setAttribute(FormManagerUtil.id_att, component.getId()+"_section");
 			Element id_el = (Element)section.getElementsByTagName(FormManagerUtil.id_att).item(0);

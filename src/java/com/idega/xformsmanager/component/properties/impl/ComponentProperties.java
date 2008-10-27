@@ -2,17 +2,17 @@ package com.idega.xformsmanager.component.properties.impl;
 
 import com.idega.block.process.variables.Variable;
 import com.idega.chiba.web.xml.xforms.validation.ErrorType;
+import com.idega.util.StringUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
-import com.idega.xformsmanager.util.FormManagerUtil;
 import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:41 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -130,7 +130,7 @@ public class ComponentProperties implements PropertiesComponent {
 	}
 	
 	public void setVariable(String variableStringRepresentation) {
-		setVariable(FormManagerUtil.isEmpty(variableStringRepresentation) ? null : Variable.parseDefaultStringRepresentation(variableStringRepresentation));
+		setVariable(StringUtil.isEmpty(variableStringRepresentation) ? null : Variable.parseDefaultStringRepresentation(variableStringRepresentation));
 	}
 	
 	public void setPlainVariable(Variable variable) {

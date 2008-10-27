@@ -7,14 +7,15 @@ import org.w3c.dom.NodeList;
 
 import com.idega.block.process.variables.Variable;
 import com.idega.util.CoreConstants;
+import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:47 $ by $Author: civilis $
  */
 public class FormVariablesHandler {
 
@@ -51,7 +52,7 @@ public class FormVariablesHandler {
 	 */
 	public Variable getVariable(String variableName) {
 		
-		if(FormManagerUtil.isEmpty(variableName))
+		if(StringUtil.isEmpty(variableName))
 			throw new NullPointerException("Variable name not provided");
 		
 		Node instance = xform != null ? FormManagerUtil.getFormSubmissionInstanceDataElement(xform) : variablesContainer;
@@ -134,7 +135,7 @@ public class FormVariablesHandler {
 		
 		Node instance = xform != null ? FormManagerUtil.getFormSubmissionInstanceDataElement(xform) : variablesContainer;
 		
-		elementName = FormManagerUtil.isEmpty(elementName) ? variable.getName() : elementName;
+		elementName = StringUtil.isEmpty(elementName) ? variable.getName() : elementName;
 		
 		Element variableElement = instance.getOwnerDocument().createElement(elementName);
 		instance.appendChild(variableElement);

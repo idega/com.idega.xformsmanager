@@ -16,9 +16,9 @@ import com.idega.xformsmanager.component.impl.FormComponentFactory;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class CacheManager implements Singleton {
 	
@@ -96,7 +96,7 @@ public class CacheManager implements Singleton {
 		FormComponentFactory.getInstance().filterNonDisplayComponents(components_types_to_list);
 	}
 
-	public Document getComponentsXforms() {
+	public Document getComponentsTemplate() {
 		return componentsXform;
 	}
 
@@ -153,7 +153,7 @@ public class CacheManager implements Singleton {
 		cachedXformsComponents.put(key, xbean);			
 	}
 	
-	public ComponentDataBean getCachedXformsComponent(String key) {
+	public ComponentDataBean getXformsComponentTemplate(String key) {
 		
 		return cachedXformsComponents == null ? null : cachedXformsComponents.get(key);
 	}

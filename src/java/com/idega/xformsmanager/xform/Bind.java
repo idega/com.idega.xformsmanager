@@ -6,14 +6,15 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:42 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -55,7 +56,7 @@ public class Bind implements Cloneable {
 			
 			String nodesetPath = getBindElement().getAttribute(FormManagerUtil.nodeset_att);
 			
-			if(FormManagerUtil.isEmpty(nodesetPath)) {
+			if(StringUtil.isEmpty(nodesetPath)) {
 				
 				logger.log(Level.WARNING, "No nodeset attribute for bind element");
 				return null;
@@ -149,7 +150,7 @@ public class Bind implements Cloneable {
 		
 		Element model;
 		
-		if(FormManagerUtil.isEmpty(modelId))
+		if(StringUtil.isEmpty(modelId))
 			model = FormManagerUtil.getDefaultFormModelElement(xform);
 			
 		else {

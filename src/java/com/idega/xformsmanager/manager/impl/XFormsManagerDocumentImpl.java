@@ -21,9 +21,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implements XFormsManagerDocument {
 	
@@ -151,7 +151,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 			if(instance == null) {
 				
-				instance = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsXforms(), FormManagerUtil.sections_visualization_instance_item);
+				instance = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), FormManagerUtil.sections_visualization_instance_item);
 				instance = (Element)xforms_doc.importNode(instance, true);
 				Element data_model = FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.data_mod);
 				instance = (Element)data_model.appendChild(instance);
@@ -205,7 +205,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 			if(add == null) {
 
-				add = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsXforms(), FormManagerUtil.sections_visualization_item);
+				add = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), FormManagerUtil.sections_visualization_item);
 				add = (Element)xforms_doc.importNode(add, true);
 				Element switch_el = FormManagerUtil.getComponentsContainerElement(xforms_doc);
 				switch_el.getParentNode().insertBefore(add, switch_el);

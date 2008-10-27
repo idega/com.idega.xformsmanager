@@ -6,15 +6,16 @@ import java.util.Map.Entry;
 import org.w3c.dom.Element;
 
 import com.idega.util.CoreConstants;
+import com.idega.util.StringUtil;
 import com.idega.util.URIUtil;
 import com.idega.xformsmanager.component.FormDocument;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:36 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class ParametersManager {
 	
@@ -44,7 +45,7 @@ public class ParametersManager {
 		
 		for (Entry<String, String> param : parameters.entrySet()) {
 		
-			if(!FormManagerUtil.isEmpty(param.getKey())) {
+			if(!StringUtil.isEmpty(param.getKey())) {
 			
 				uriUtil.setParameter(param.getKey(), param.getValue() == null ? CoreConstants.EMPTY : param.getValue());
 			}

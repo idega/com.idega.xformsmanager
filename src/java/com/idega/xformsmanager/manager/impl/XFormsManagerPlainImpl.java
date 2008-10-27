@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.business.component.properties.PropertiesPlain;
@@ -17,9 +18,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsManagerPlain {
 
@@ -96,7 +97,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 	}
 	
 	@Override
-	protected void getBindingsAndNodesets(FormComponent component, Document componentsXForm) {
+	protected void loadBindsAndNodesets(FormComponent component, Document componentsXForm) {
 
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
@@ -110,12 +111,12 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		String bindId = outputWithBind.getAttribute(FormManagerUtil.bind_att);
 		String modelId = outputWithBind.getAttribute(FormManagerUtil.model_att);
 		
-		if(!FormManagerUtil.isEmpty(bindId)) {
+		if(!StringUtil.isEmpty(bindId)) {
 			
 			Bind bind = Bind.locate(componentsXForm, bindId, modelId);
 			
 			if(bind == null)
-				throw new NullPointerException("Binding not found by bind id: "+bindId+(FormManagerUtil.isEmpty(modelId) ? "" : " and modelId: "+modelId));
+				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? "" : " and modelId: "+modelId));
 			
 			xformsComponentDataBean.setBind(bind);
 		}
@@ -162,7 +163,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		
 		String ref = label.getAttribute(FormManagerUtil.ref_s_att);
 		
-		FormManagerUtil.putLocalizedText(!FormManagerUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(".label").toString(), null, 
+		FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(".label").toString(), null, 
 				label,
 				component.getFormDocument().getXformsDocument(),
 				locStr

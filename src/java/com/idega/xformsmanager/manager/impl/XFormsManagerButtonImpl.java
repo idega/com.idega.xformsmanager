@@ -24,9 +24,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XFormsManagerButton {
 	
@@ -212,7 +212,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
-		Element toggle_element = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsXforms(), "toggle-element");
+		Element toggle_element = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), "toggle-element");
 		Element button_element = xformsComponentDataBean.getElement();
 		NodeList refreshs = button_element.getElementsByTagName(FormManagerUtil.refresh_tag);
 		toggle_element = (Element)button_element.getOwnerDocument().importNode(toggle_element, true);

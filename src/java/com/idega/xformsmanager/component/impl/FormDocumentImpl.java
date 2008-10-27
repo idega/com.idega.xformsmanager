@@ -33,9 +33,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:38 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements com.idega.xformsmanager.business.Document, com.idega.xformsmanager.component.FormDocument {
 	
@@ -552,6 +552,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	}
 	
 	public Document getComponentsXforms() {
-		return getContext().getCacheManager().getComponentsXforms();
+		return getContext().getCacheManager().getComponentsTemplate();
 	}
 }

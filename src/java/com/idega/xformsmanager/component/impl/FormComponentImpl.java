@@ -19,9 +19,9 @@ import com.idega.xformsmanager.manager.XFormsManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:38 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -95,7 +95,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		XFormsManager xformsManager = getXFormsManager();
 		
-		xformsManager.loadXFormsComponentByTypeFromComponentsXForm(this, getType());
+		xformsManager.loadComponentFromTemplate(this, getType());
 		xformsManager.addComponentToDocument(this);
 		
 		setProperties();

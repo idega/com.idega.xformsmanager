@@ -4,14 +4,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.idega.util.CoreConstants;
+import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:42 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
  */
 public class Nodeset implements Cloneable {
 
@@ -132,7 +133,7 @@ public class Nodeset implements Cloneable {
 		
 		Element instance;
 		
-		if(FormManagerUtil.isEmpty(instanceId)) {
+		if(StringUtil.isEmpty(instanceId)) {
 			instance = FormManagerUtil.getInstanceElement(model);
 			
 		} else {

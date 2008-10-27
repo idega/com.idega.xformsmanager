@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesMultiUploadDescription;
 import com.idega.xformsmanager.component.FormComponent;
@@ -17,9 +18,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
  */
 public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl implements
 	XFormsManagerMultiUploadDescription {
@@ -205,7 +206,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	
 	String ref = addButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!FormManagerUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_LABEL).toString(), null, 
+	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_LABEL).toString(), null, 
 		addButtonlabel,
 			component.getFormDocument().getXformsDocument(),
 			localizedText
@@ -225,7 +226,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element removeButtonlabel = (Element)labels.item(REMOVE_BUTTON_LABEL);
 	String ref = removeButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!FormManagerUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_REMOVE).toString(), null, 
+	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_REMOVE).toString(), null, 
 		removeButtonlabel,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -243,7 +244,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element label = (Element)labels.item(UPLOADING_FILE_DESC);
 	String ref = label.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!FormManagerUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_NAME).toString(), null, 
+	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_NAME).toString(), null, 
 		label,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -262,7 +263,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element descriptionButtonlabel = (Element)labels.item(DESCRIPTION_BUTTON_LABEL);
 	String ref = descriptionButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!FormManagerUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_DESCRIPTION).toString(), null, 
+	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_DESCRIPTION).toString(), null, 
 		descriptionButtonlabel,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -281,7 +282,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element title = (Element)labels.item(TITLE_LABEL);
 	String ref = title.getAttribute(FormManagerUtil.ref_s_att);
 
-	FormManagerUtil.putLocalizedText(!FormManagerUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_TITLE).toString(), null, 
+	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_TITLE).toString(), null, 
 		title,
 		component.getFormDocument().getXformsDocument(),
 		localizedText

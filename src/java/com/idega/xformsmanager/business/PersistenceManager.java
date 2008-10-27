@@ -8,9 +8,9 @@ import com.idega.xformsmanager.component.FormDocument;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- * Last modified: $Date: 2008/10/27 10:27:34 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/27 20:23:47 $ by $Author: civilis $
  */
 public interface PersistenceManager {
 
@@ -22,7 +22,7 @@ public interface PersistenceManager {
 	
 	public abstract PersistedFormDocument takeForm(Long formId);
 	
-	public abstract List<PersistedForm> getStandaloneForms();
+	public abstract List<_PersistedForm> getStandaloneForms();
 	
 	/**
 	 * @param formId - not null
