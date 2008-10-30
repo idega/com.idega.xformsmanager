@@ -28,9 +28,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class XFormsManagerImpl implements XFormsManager {
 	
@@ -72,10 +72,11 @@ public class XFormsManagerImpl implements XFormsManager {
 						
 //						the component now serves as the templated component
 						
+//						TODO: load other stuff from the template, like instances, or references or or or 
 						loadBindsAndNodesets(component, componentsTemplate);
 						loadExtKeyElements(component, componentsTemplate);
 						
-						cacheManager.cacheXformsComponent(componentType, (ComponentDataBean)component.getXformsComponentDataBean().clone());
+						cacheManager.cacheXformsComponent(componentType, (ComponentDataBean)component.getXformsComponentDataBean()/*.clone()*/);
 						
 					} else {
 					
@@ -172,7 +173,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		xformsComponentDataBean.setKeySetvalue(FormManagerUtil.getElementByIdFromDocument(components_xforms, FormManagerUtil.head_tag, component.getId()+FormManagerUtil.autofill_setvalue_ending));
 	}
 	
-	protected void insertBindingsAndNodesets(FormComponent component) {
+	protected void addBindingsAndNodesets(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
@@ -199,7 +200,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
-	protected void loadBindsAndNodesets(FormComponent component, Document xform) {
+	protected void loadBindsAndNodesets(FormComponent component) {
 
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
@@ -208,7 +209,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		if(!StringUtil.isEmpty(bindId)) {
 			
-			Bind bind = Bind.locate(xform, bindId, modelId);
+			Bind bind = Bind.locate(component, bindId);
 			
 			if(bind == null)
 				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? CoreConstants.EMPTY : " and modelId: "+modelId));
@@ -217,10 +218,12 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
+	/**
+	 * import component from template component
+	 */
 	public void addComponentToDocument(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
-		
 		Document xform = component.getFormDocument().getXformsDocument();
 		
 //		resolving template element and importing to xform document
@@ -233,10 +236,11 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		localizeComponent(componentId, componentElement, xform, component.getFormDocument().getContext().getCacheManager().getComponentsTemplate());
 		
+//		TODO: is this something we need?
 		if(removeTextNodes())
 			FormManagerUtil.removeTextNodes(componentElement);
 		
-		insertBindingsAndNodesets(component);
+		addBindingsAndNodesets(component);
 		
 		FormComponentContainer parent = component.getParent();
 		parent.getXFormsManager().addChild(parent, component);

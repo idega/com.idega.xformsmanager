@@ -37,9 +37,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -412,6 +412,18 @@ public class FormManagerUtil {
 		Element loc_model = getElementByIdFromDocument(form_xforms, head_tag, data_mod);
 		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
 		NodeList current_language_node_list = loc_strings.getElementsByTagName(current_language_tag);
+		
+		if(current_language_node_list != null && current_language_node_list.getLength() != 0) {
+			//String localeStr = locale.toString().toLowerCase();
+			String localeStr = locale.toString();
+			setElementsTextNodeValue(current_language_node_list.item(0), localeStr);
+		}		
+	}
+	
+	public static void setDefaultFormLocale(Document form_xforms, Locale locale) {
+		Element loc_model = getElementByIdFromDocument(form_xforms, head_tag, data_mod);
+		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
+		NodeList current_language_node_list = loc_strings.getElementsByTagName(default_language_tag);
 		
 		if(current_language_node_list != null && current_language_node_list.getLength() != 0) {
 			//String localeStr = locale.toString().toLowerCase();

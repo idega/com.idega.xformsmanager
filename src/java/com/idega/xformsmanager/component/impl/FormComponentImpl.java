@@ -19,9 +19,9 @@ import com.idega.xformsmanager.manager.XFormsManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -91,11 +91,16 @@ public class FormComponentImpl implements FormComponent, Component {
 	}
 	*/
 	
+	public void loadFromTemplate() {
+	
+		XFormsManager xformsManager = getXFormsManager();
+		xformsManager.loadComponentFromTemplate(this, getType());
+	}
+	
 	public void create() {
 		
 		XFormsManager xformsManager = getXFormsManager();
 		
-		xformsManager.loadComponentFromTemplate(this, getType());
 		xformsManager.addComponentToDocument(this);
 		
 		setProperties();
@@ -105,7 +110,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		formDocument.setFormDocumentModified(true);
 //		tellAboutMe();
 		
-		if(FormComponentFactory.getInstance().isNormalFormElement(this)) {
+		if(getFormDocument().getContext().getFormComponentFactory().isNormalFormElement(this)) {
 
 			FormComponentPage confirmationPage = formDocument.getFormConfirmationPage();
 			
@@ -127,7 +132,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		getFormDocument().setFormDocumentModified(true);
 //		tellAboutMe();
 		
-		if(FormComponentFactory.getInstance().isNormalFormElement(this)) {
+		if(getFormDocument().getContext().getFormComponentFactory().isNormalFormElement(this)) {
 
 //			perhaps just lazyload
 			getXFormsManager().loadConfirmationElement(this, null);
@@ -138,7 +143,7 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	public void addToConfirmationPage() {
 		
-		if(FormComponentFactory.getInstance().isNormalFormElement(this)) {
+		if(getFormDocument().getContext().getFormComponentFactory().isNormalFormElement(this)) {
 			
 			FormComponentPage confirmationPage = getFormDocument().getFormConfirmationPage();
 			
@@ -299,6 +304,10 @@ public class FormComponentImpl implements FormComponent, Component {
 	}
 	
 	public FormDocument getFormDocument() {
+		
+		if(formDocument == null)
+			formDocument = getParent().getFormDocument();
+		
 		return formDocument;
 	}
 	

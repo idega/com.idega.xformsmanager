@@ -8,19 +8,22 @@ import org.w3c.dom.Element;
 
 import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
+import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
 	private static final Logger logger = Logger.getLogger(Bind.class.getName());
 	
 	protected Bind() { }
+	
+	private FormComponent formComponent;
 	
 	private String id;
 	private Element bindElement;
@@ -117,11 +120,10 @@ public class Bind implements Cloneable {
 	 * locates bind element in the xforms document using xpath //xf:bind[@id=$bindId]
 	 * creates new Bind object, which contains bind relevant data
 	 * 
-	 * @param modelId - model to locate in
 	 * @param bindId - bind id
 	 * @return - Bind object, which contains bind relevant data
 	 */
-	public static Bind locate(Document xform, String bindId, String modelId) {
+	public static Bind locate(FormComponent formComponent, String bindId) {
 //		TODO: remove modelId param
 		
 		XPathUtil bindElementXPath = getBindElementXPath();
@@ -131,7 +133,7 @@ public class Bind implements Cloneable {
 			
 			bindElementXPath.clearVariables();
 			bindElementXPath.setVariable(bindIdVariable, bindId);
-			bindElement = (Element)bindElementXPath.getNode(xform);
+			bindElement = (Element)bindElementXPath.getNode(formComponent.getFormDocument().getXformsDocument());
 		}
 		
 		if(bindElement == null)
@@ -140,6 +142,7 @@ public class Bind implements Cloneable {
 		Bind bind = new Bind();
 		bind.setId(bindId);
 		bind.setBindElement(bindElement);
+		bind.setFormComponent(formComponent);
 		
 		return bind;
 	}
@@ -181,12 +184,13 @@ public class Bind implements Cloneable {
 	}
 	
 //	TODO: use not bindId, but component id. and create bindId here
-	public static Bind create(Document xform, String bindId, String modelId, Nodeset nodeset) {
+	public static Bind create(FormComponent formComponent, String bindId, String modelId, Nodeset nodeset) {
 		
-		Bind bind = locate(xform, bindId, modelId);
+		Bind bind = locate(formComponent, bindId);
 		
 		if(bind == null) {
 			
+			Document xform = formComponent.getFormDocument().getXformsDocument();
 			Element model = getModel(xform, modelId);
 			
 			//create
@@ -203,6 +207,11 @@ public class Bind implements Cloneable {
 		bind.setNodeset(nodeset);
 			
 		return bind;
+	}
+	
+	public static Bind createFromTemplate(Document xform, Bind templateBind) {
+		
+		return null;
 	}
 	
 	private static XPathUtil bindElementXPath;
@@ -363,5 +372,13 @@ public class Bind implements Cloneable {
 			setRelevant(FormManagerUtil.xpath_false);
 		
 		this.isRelevant = isRelevant;
+	}
+
+	public FormComponent getFormComponent() {
+		return formComponent;
+	}
+
+	public void setFormComponent(FormComponent formComponent) {
+		this.formComponent = formComponent;
 	}
 }

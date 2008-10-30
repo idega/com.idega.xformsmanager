@@ -19,6 +19,7 @@ import com.idega.xformsmanager.business.component.ConstComponentCategory;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.datatypes.ComponentType;
 import com.idega.xformsmanager.component.datatypes.ConstComponentDatatype;
+import com.idega.xformsmanager.component.impl.FormComponentFactory;
 import com.idega.xformsmanager.context.DMContext;
 import com.idega.xformsmanager.form.impl.Form;
 import com.idega.xformsmanager.generator.impl.ComponentsGeneratorImpl;
@@ -29,9 +30,9 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 @Scope("singleton")
 @Service("xformsDocumentManager")
@@ -46,43 +47,42 @@ public class FormManager implements DocumentManager {
 	private CacheManager cacheManager;
 	private XFormsManagerFactory xformsManagerFactory;
 	private HtmlManagerFactory htmlManagerFactory;
+	@Autowired private FormComponentFactory formComponentFactory;
+	@Autowired private Form form;
 	
+	private DMContext DMContext;
 	private Document componentsXforms;
 	private Document componentsXsd;
 	private Document formXformsTemplate;
 	
 	public com.idega.xformsmanager.business.Document createForm(LocalizedStringBean formName, String formType) {
 		
-		Form form = Form.createDocument(formName, getNewDMContext(), formType);
-		return form.getDocument();
+		return getForm().createDocument(formName, getDMContext(), formType);
 	}
 	
-	private DMContext getNewDMContext() {
-		
-		DMContext context = new DMContext();
-		context.setCacheManager(getCacheManager());
-		context.setPersistenceManager(getPersistenceManager());
-		context.setXformsManagerFactory(getXformsManagerFactory());
-		context.setHtmlManagerFactory(getHtmlManagerFactory());
-		return context;
-	}
+//	private DMContext getNewDMContext() {
+//		
+//		DMContext context = new DMContext();
+//		context.setCacheManager(getCacheManager());
+//		context.setPersistenceManager(getPersistenceManager());
+//		context.setXformsManagerFactory(getXformsManagerFactory());
+//		context.setHtmlManagerFactory(getHtmlManagerFactory());
+//		return context;
+//	}
 	
 	public com.idega.xformsmanager.business.Document openForm(Long formId) {
 		
-		Form form = Form.loadDocument(formId, getNewDMContext());
-		return form == null ? null : form.getDocument();
+		return getForm().loadDocument(formId, getDMContext());
 	}
 	
 	public com.idega.xformsmanager.business.Document openForm(Document xformsDoc) {
 		
-		Form form = Form.loadDocument(xformsDoc, getNewDMContext());
-		return form.getDocument();
+		return getForm().loadDocument(xformsDoc, getDMContext());
 	}
 	
 	public com.idega.xformsmanager.business.Document takeForm(Long formIdToTakeFrom) {
 		
-		Form form = Form.takeAndLoadDocument(formIdToTakeFrom, getNewDMContext());
-		return form.getDocument();
+		return getForm().takeAndLoadDocument(formIdToTakeFrom, getDMContext());
 	}
 	
 	public FormManager() { }
@@ -105,6 +105,16 @@ public class FormManager implements DocumentManager {
 
 		long start = System.currentTimeMillis();
 		try {
+
+			getCacheManager().setFormComponentFactory(getFormComponentFactory());
+			getFormComponentFactory().setCacheManager(getCacheManager());
+			DMContext = new DMContext();
+			DMContext.setCacheManager(getCacheManager());
+			DMContext.setPersistenceManager(getPersistenceManager());
+			DMContext.setXformsManagerFactory(getXformsManagerFactory());
+			DMContext.setHtmlManagerFactory(getHtmlManagerFactory());
+			DMContext.setFormComponentFactory(getFormComponentFactory());
+			
 			// setup ComponentsGenerator
 			ComponentsGeneratorImpl.init(iwma);
 			ComponentsGeneratorImpl componentsGenerator = ComponentsGeneratorImpl.getInstance();
@@ -213,5 +223,21 @@ public class FormManager implements DocumentManager {
 	@Autowired
 	public void setHtmlManagerFactory(HtmlManagerFactory htmlManagerFactory) {
 		this.htmlManagerFactory = htmlManagerFactory;
+	}
+
+	FormComponentFactory getFormComponentFactory() {
+		return formComponentFactory;
+	}
+
+	void setFormComponentFactory(FormComponentFactory formComponentFactory) {
+		this.formComponentFactory = formComponentFactory;
+	}
+
+	DMContext getDMContext() {
+		return DMContext;
+	}
+
+	Form getForm() {
+		return form;
 	}
 }

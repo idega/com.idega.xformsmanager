@@ -1,16 +1,22 @@
 package com.idega.xformsmanager.component.impl;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
+import com.idega.util.xml.XmlUtil;
 import com.idega.xformsmanager.business.PersistedFormDocument;
 import com.idega.xformsmanager.business.PersistenceManager;
 import com.idega.xformsmanager.business.component.Component;
@@ -21,11 +27,11 @@ import com.idega.xformsmanager.business.component.properties.PropertiesDocument;
 import com.idega.xformsmanager.business.ext.FormVariablesHandler;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.component.FormDocument;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ComponentPropertiesDocument;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.context.DMContext;
-import com.idega.xformsmanager.form.impl.Form;
 import com.idega.xformsmanager.generator.ComponentsGenerator;
 import com.idega.xformsmanager.generator.impl.ComponentsGeneratorImpl;
 import com.idega.xformsmanager.manager.XFormsManagerDocument;
@@ -33,9 +39,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements com.idega.xformsmanager.business.Document, com.idega.xformsmanager.component.FormDocument {
 	
@@ -50,17 +56,23 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	private ParametersManager parametersManager;
 	private String formType;
 	private Map<Locale, Document> localizedComponentsDocuments;
+	private Locale defaultLocale;
+	private boolean formDocumentModified = true;
+	private DocumentBuilder builder;
 	
-	private Form form;
+//	private Form form;
 	private DMContext context;
+	private Document xformsDocument;
 	
-	public Form getForm() {
-		return form;
-	}
-
-	public void setForm(Form form) {
-		this.form = form;
-	}
+	private int lastComponentId = 0;
+	
+//	public Form getForm() {
+//		return form;
+//	}
+//
+//	public void setForm(Form form) {
+//		this.form = form;
+//	}
 
 	public void setContainerElement(Element container_element) {
 		getXFormsManager().setComponentsContainer(this, container_element);
@@ -73,7 +85,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	}
 	
 	public Document getXformsDocument() {
-		return getContext().getXformsXmlDoc();
+		return xformsDocument;
 	}
 	
 	public void populateSubmissionDataWithXML(Document submission, boolean clean) {
@@ -81,15 +93,15 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 		getXFormsManager().populateSubmissionDataWithXML(this, submission, clean);
 	}
 	
-	public void setFormDocumentModified(boolean changed) {
-		getForm().setFormDocumentModified(changed);
+	public void setFormDocumentModified(boolean formDocumentModified) {
+		this.formDocumentModified = formDocumentModified;
 		
-		if (changed)
+		if (formDocumentModified)
 			getLocalizedComponentsDocuments().clear();
 	}
 	
 	public boolean isFormDocumentModified() {
-		return getForm().isFormDocumentModified();
+		return formDocumentModified;
 	}
 	
 	public Document getComponentsXml(Locale locale) {
@@ -104,7 +116,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 
 //				TODO: change this to spring bean etc (now relies on impl)
 				ComponentsGenerator componentsGenerator = ComponentsGeneratorImpl.getInstance();
-				Document xformClone = (Document)getContext().getXformsXmlDoc().cloneNode(true);
+				Document xformClone = (Document)getXformsDocument().cloneNode(true);
 
 				FormManagerUtil.modifyXFormsDocumentForViewing(xformClone);
 				FormManagerUtil.setCurrentFormLocale(xformClone, locale);
@@ -115,7 +127,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 				doc = componentsGenerator.generateHtmlComponentsDocument();
 				
 				localizedComponentsDocuments.put(locale, doc);
-				getForm().setFormDocumentModified(false);
+				setFormDocumentModified(false);
 				
 			} catch (Exception e) {
 				
@@ -135,7 +147,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 		if(formId == null) {
 			
 			try {
-				formId = new Long(FormManagerUtil.getFormId(getContext().getXformsXmlDoc()));
+				formId = new Long(FormManagerUtil.getFormId(getXformsDocument()));
 				
 			} catch (Exception e) { }
 		}
@@ -145,7 +157,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	
 	public void setFormId(Long formId) {
 		
-		FormManagerUtil.setFormId(getContext().getXformsXmlDoc(), String.valueOf(formId));
+		FormManagerUtil.setFormId(getXformsDocument(), String.valueOf(formId));
 		this.formId = formId;
 	}
 	
@@ -155,7 +167,18 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	}
 	
 	public Locale getDefaultLocale() {
-		return getForm().getDefaultLocale();
+		
+		if(defaultLocale == null) {
+//			TODO: resolve
+		}
+		
+		return defaultLocale;
+	}
+	
+	public void setDefaultLocale(Locale defaultLocale) {
+		
+		FormManagerUtil.setDefaultFormLocale(getXformsDocument(), defaultLocale);
+		this.defaultLocale = defaultLocale;
 	}
 
 	public Page addPage(String nextSiblingPageId) {
@@ -179,21 +202,78 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	}
 	
 	public String generateNewComponentId() {
-		return getForm().generateNewComponentId();
+		
+		if(lastComponentId == 0) {
+			
+			Set<String> allIds = FormManagerUtil.getAllComponentsIds(getXformsDocument());
+			
+			for (String id : allIds) {
+				int idNr = FormManagerUtil.parseIdNumber(id);
+				
+				if(idNr > lastComponentId)
+					lastComponentId = idNr;
+			}
+		}
+		
+		return FormManagerUtil.CTID+(++lastComponentId);
 	}
 	
 	public String getFormSourceCode() throws Exception {
-		return getForm().getXFormsDocumentSourceCode();
+		return FormManagerUtil.serializeDocument(getXformsDocument());
 	}
 	
 	public void setFormSourceCode(String newSourceCode) throws Exception {
-		getForm().setXFormsDocumentSourceCode(newSourceCode);
+		
+		if(builder == null)
+			builder = XmlUtil.getDocumentBuilder();
+		
+		clear();
+//		formDocument.setLoad(true);
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(newSourceCode.getBytes("UTF-8"));
+		Document newXForm = builder.parse(new InputSource(bais));
+		setXformsDocument(newXForm);
+		loadDocument();
+//		Form.loadDocumentInternal(this, null);
+	}
+	
+	public void loadDocument() {
+	
+		loadDocumentInternal(null);
+	}
+	
+	public void loadDocument(PersistedFormDocument persistedForm) {
+	
+		loadDocumentInternal(persistedForm);
+	}
+	
+	private void loadDocumentInternal(PersistedFormDocument persistedForm) {
+		
+//		Document xformsXmlDoc = getContext().getXformsXmlDoc();
+		Document xformsXmlDoc = getXformsDocument();
+		
+		if(persistedForm != null) {
+			setFormId(persistedForm.getFormId());
+			setFormType(persistedForm.getFormType());
+			
+		} else {
+			
+			try {
+				setFormId(new Long(FormManagerUtil.getFormId(xformsXmlDoc)));
+			} catch (Exception e) {
+				setFormId(null);
+			}
+		}
+		
+		setContainerElement(FormManagerUtil.getComponentsContainerElement(xformsXmlDoc));
+		loadContainerComponents();
+		setProperties();
 	}
 	
 	public LocalizedStringBean getFormTitle() {
 		
 		if(formTitle == null)
-			formTitle = FormManagerUtil.getFormTitle(getContext().getXformsXmlDoc());
+			formTitle = FormManagerUtil.getFormTitle(getXformsDocument());
 		
 		return formTitle;
 	}
@@ -201,7 +281,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	public LocalizedStringBean getFormErrorMsg() {
 	    
 	    if (formErrorMsg == null) 
-			formErrorMsg = FormManagerUtil.getFormErrorMsg(getContext().getXformsXmlDoc());
+			formErrorMsg = FormManagerUtil.getFormErrorMsg(getXformsDocument());
 	    
 	    return formErrorMsg;
 	}
@@ -216,21 +296,24 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	
 	public void setFormTitle(LocalizedStringBean formTitle) {
 		
-		if(formTitle == null)
-			throw new NullPointerException("Form title is not provided.");
+		if(formTitle != null) {
 		
-		FormManagerUtil.setFormTitle(getContext().getXformsXmlDoc(), formTitle);
-		this.formTitle = formTitle;
+			FormManagerUtil.setFormTitle(getXformsDocument(), formTitle);
+			this.formTitle = formTitle;
+		} else {
+			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Tried to set form title, but no formTitle provided");
+		}
 	}
 	
 	public void setFormErrorMsg(LocalizedStringBean formError) {
-	    
-	    	if(formError == null)
-	    	    throw new NullPointerException("Form error message is not provided.");
-	
-	    	FormManagerUtil.setFormErrorMsg(getContext().getXformsXmlDoc(), formError);
-	    	this.formErrorMsg = formError;
-    
+		
+		if(formError != null) {
+			
+			FormManagerUtil.setFormErrorMsg(getXformsDocument(), formError);
+			this.formErrorMsg = formError;
+		} else {
+			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Tried to set form error message, but no formError provided");
+		}
 	}
 	
 	public void rearrangeDocument() {
@@ -401,6 +484,12 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	}
 	
 	public void clear() {
+
+		setXformsDocument(null);
+		setDefaultLocale(null);
+//		formComponents = null;
+		lastComponentId = 0;
+		setFormDocumentModified(true);
 		
 		getLocalizedComponentsDocuments().clear();
 		setConfirmationPageId(null);
@@ -553,5 +642,19 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	
 	public Document getComponentsXforms() {
 		return getContext().getCacheManager().getComponentsTemplate();
+	}
+	
+	@Override
+	public FormDocument getFormDocument() {
+		return this;
+	}
+	
+	@Override
+	public void setFormDocument(FormDocument formDocument) {
+		throw new UnsupportedOperationException("setting form document for formdocument not supported");
+	}
+
+	public void setXformsDocument(Document xformsDocument) {
+		this.xformsDocument = xformsDocument;
 	}
 }

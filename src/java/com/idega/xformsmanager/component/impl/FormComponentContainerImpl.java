@@ -21,9 +21,9 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:38 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements FormComponentContainer, Container {
 	
@@ -35,7 +35,7 @@ public class FormComponentContainerImpl extends FormComponentImpl implements For
 		final List<String[]> componentsTagNamesAndIds = getXFormsManager().getContainedComponentsTagNamesAndIds(this);
 		final List<String> componentsIds = getContainedComponentsIds();
 		
-		final FormComponentFactory componentsFactory = FormComponentFactory.getInstance();
+		final FormComponentFactory componentsFactory = getFormDocument().getContext().getFormComponentFactory();
 		
 		for (String[] ctnaid : componentsTagNamesAndIds) {
 			
@@ -97,10 +97,17 @@ public class FormComponentContainerImpl extends FormComponentImpl implements For
 	
 	public FormComponent addFormComponent(String componentType, String nextSiblingId) {
 		
-		FormComponent component = FormComponentFactory.getInstance().getFormComponentByType(componentType);
+		FormComponent component = getFormDocument().getContext().getFormComponentFactory().getFormComponentByType(componentType);
 //		component.setContext(getContext());
+//		component.setFormDocument(getFormDocument());
+		
+		String generatedComponentId = getFormDocument().generateNewComponentId();
+		component.setId(generatedComponentId);
+		component.setParent(this);
+//		component.setLoad(false);
+//		component.render();
 		component.setFormDocument(getFormDocument());
-
+		
 		if(nextSiblingId != null) {
 			
 			FormComponent nextSibling = getContainedComponent(nextSiblingId);
@@ -111,14 +118,7 @@ public class FormComponentContainerImpl extends FormComponentImpl implements For
 			component.setNextSibling(nextSibling);
 		}
 		
-		String generatedComponentId = getFormDocument().generateNewComponentId();
-		component.setId(generatedComponentId);
-		component.setParent(this);
-//		component.setLoad(false);
-//		component.render();
 		component.create();
-		
-		
 		
 		return component;
 	}

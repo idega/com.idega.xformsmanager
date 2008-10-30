@@ -11,16 +11,22 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
  * manager
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- *          Last modified: $Date: 2008/10/27 10:27:42 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public interface FormComponent {
 
 	/**
-	 * creates xforms component and adds to the xform document. The sufficient
-	 * information should be already added to this component (like parent
-	 * container)
+	 * loads xforms component from components template. This should be called
+	 * BEFORE create().
+	 */
+	public abstract void loadFromTemplate();
+
+	/**
+	 * adds templated component to the xform document. This method should be
+	 * called AFTER loadFromTemplate(). The sufficient information should be
+	 * already added to this component (like parent container)
 	 * 
 	 * @see FormComponentContainerImpl addComponent method for example
 	 */
@@ -36,7 +42,7 @@ public interface FormComponent {
 	 */
 	public abstract void load();
 
-//	public abstract void render();
+	// public abstract void render();
 
 	/**
 	 * specifies the component, before which this component should go in the
@@ -51,6 +57,7 @@ public interface FormComponent {
 
 	/**
 	 * moves this component to new location before next sibling specified
+	 * 
 	 * @param nextSibling
 	 */
 	public abstract void setNextSiblingRerender(FormComponent nextSibling);
@@ -89,15 +96,15 @@ public interface FormComponent {
 
 	public abstract FormDocument getFormDocument();
 
-//	public abstract DMContext getContext();
-//
-//	public abstract void setContext(DMContext context);
+	// public abstract DMContext getContext();
+	//
+	// public abstract void setContext(DMContext context);
 
 	// public abstract void setReadonly(boolean readonly);
 	//	
 	// public abstract boolean isReadonly();
 
-//	public abstract void setPdfForm(boolean generatePdf);
-//
-//	public abstract boolean isPdfForm();
+	// public abstract void setPdfForm(boolean generatePdf);
+	//
+	// public abstract boolean isPdfForm();
 }

@@ -6,20 +6,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.idega.repository.data.Singleton;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 import com.idega.xformsmanager.business.component.ConstButtonType;
 import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.manager.impl.CacheManager;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas ƒåivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:38 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
-public class FormComponentFactory implements Singleton {
-	
-	private static FormComponentFactory me;
+@Service
+@Scope("singleton")
+public class FormComponentFactory {
 	
 	private Map<String, List<String>> components_tags_classified;
 	private static final String type_simple = "type_simple";
@@ -34,6 +37,8 @@ public class FormComponentFactory implements Singleton {
 	public static final String button_type = FormManagerUtil.trigger_tag;
 	public static final String fbc_button_area = "fbc_button_area";
 	public static final String page_type_thx = "thx_page";
+	
+	private CacheManager cacheManager;
 	
 	private FormComponentFactory() { 
 		
@@ -97,31 +102,41 @@ public class FormComponentFactory implements Singleton {
 		types = new ArrayList<String>();
 		types.add("fbc_multi_upload_description_file");
 		components_tags_classified.put(type_upload_description, types);
-		
-				
 	}
 	
-	public static FormComponentFactory getInstance() {
-		
-		me = null;
-		if (me == null) {
-			
-			synchronized (FormComponentFactory.class) {
-				if (me == null) {
-					me = new FormComponentFactory();
-				}
-			}
-		}
-
-		return me;
-	}
+//	public static FormComponentFactory getInstance() {
+//		
+//		me = null;
+//		if (me == null) {
+//			
+//			synchronized (FormComponentFactory.class) {
+//				if (me == null) {
+//					me = new FormComponentFactory();
+//				}
+//			}
+//		}
+//
+//		return me;
+//	}
 	
 	public FormComponent getFormComponentByType(String componentType) {
 		
+//		Document componentsTemplate = cacheManager.getComponentsTemplate();
+		
 		FormComponent component = recognizeFormComponent(componentType);
 		component.setType(componentType);
+		component.setFormDocument(getFormDocumentTemplate());
+		component.loadFromTemplate();
 		
 		return component;
+	}
+	
+	private FormDocumentTemplateImpl getFormDocumentTemplate() {
+
+//		TODO: use as singleton
+		FormDocumentTemplateImpl template = new FormDocumentTemplateImpl();
+		template.setXformsDocument(getCacheManager().getComponentsTemplate());
+		return template;
 	}
 	
 	public FormComponent recognizeFormComponent(String component_type) {
@@ -163,5 +178,13 @@ public class FormComponentFactory implements Singleton {
 			if(non_disp_types.contains(iter.next()))
 				iter.remove();
 		}
+	}
+
+	public CacheManager getCacheManager() {
+		return cacheManager;
+	}
+
+	public void setCacheManager(CacheManager cacheManager) {
+		this.cacheManager = cacheManager;
 	}
 }

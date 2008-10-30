@@ -24,9 +24,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XFormsManagerButton {
 	
@@ -237,16 +237,15 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	 */
 	public void setReferAction(FormComponent component, String referAction) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
-		Element buttonElement = xformsComponentDataBean.getElement();
-		
 		if(referAction == null)
-			removeReferAction(buttonElement);
+			removeReferAction(component);
 		else
-			setOrcreateReferAction(buttonElement, referAction);
+			setOrcreateReferAction(component, referAction);
 	}
 	
-	private void removeReferAction(Element buttonElement) {
+	private void removeReferAction(FormComponent component) {
+		
+		Element buttonElement = component.getXformsComponentDataBean().getElement();
 		
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 		
@@ -254,7 +253,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 			return;
 		
 		String bindId = setValueEl.getAttribute(FormManagerUtil.bind_att);
-		String modelId = setValueEl.getAttribute(FormManagerUtil.model_att);
+//		String modelId = setValueEl.getAttribute(FormManagerUtil.model_att);
 		setValueEl.getParentNode().removeChild(setValueEl);
 		
 		if(bindId == null)
@@ -273,7 +272,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 		
 		if(bindedTo == null || bindedTo.getLength() == 0) {
 			
-			Bind bind = Bind.locate(xform, bindId, modelId);
+			Bind bind = Bind.locate(component, bindId);
 			if(bind != null) {
 				
 				Nodeset nodeset = bind.getNodeset();
@@ -286,8 +285,9 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 		}
 	}
 	
-	private void setOrcreateReferAction(Element buttonElement, String referAction) {
+	private void setOrcreateReferAction(FormComponent formComponent, String referAction) {
 		
+		Element buttonElement = formComponent.getXformsComponentDataBean().getElement();
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 		
 		if(setValueEl == null) {
@@ -314,7 +314,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 					buttonElement.appendChild(setValueEl);
 			}
 			
-			Bind bind = Bind.locate(xform, actionTaken, null);
+			Bind bind = Bind.locate(formComponent, actionTaken);
 			
 			if(bind == null) {
 				
@@ -328,7 +328,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 				nodeset.setMapping("string_"+actionTaken);
 					
 //				create
-				bind = Bind.create(xform, actionTaken, null, nodeset);
+				bind = Bind.create(formComponent, actionTaken, null, nodeset);
 				bind.setType("string");
 			}
 			

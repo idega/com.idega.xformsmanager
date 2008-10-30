@@ -18,9 +18,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
  */
 public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsManagerPlain {
 
@@ -113,7 +113,8 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		
 		if(!StringUtil.isEmpty(bindId)) {
 			
-			Bind bind = Bind.locate(componentsXForm, bindId, modelId);
+//			Bind bind = Bind.locate(componentsXForm, bindId, modelId);
+			Bind bind = Bind.locate(component, bindId);
 			
 			if(bind == null)
 				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? "" : " and modelId: "+modelId));
@@ -138,7 +139,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 			Element label = xformsComponentDataBean.getElement().getOwnerDocument().createElementNS(component.getFormDocument().getFormDataModelElement().getNamespaceURI(), FormManagerUtil.label_tag);
 			output.appendChild(label);
 			
-			bind = Bind.create(component.getFormDocument().getXformsDocument(), "bind."+component.getId(), null, null);
+			bind = Bind.create(component, "bind."+component.getId(), null, null);
 			output.setAttribute(FormManagerUtil.bind_att, bind.getId());
 			xformsComponentDataBean.setBind(bind);
 		}
