@@ -8,22 +8,27 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.chiba.xml.xslt.TransformerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
 import com.idega.idegaweb.DefaultIWBundle;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
+import com.idega.util.CoreConstants;
 import com.idega.util.xml.XmlUtil;
-import com.idega.xformsmanager.IWBundleStarter;
 import com.idega.xformsmanager.manager.impl.CacheManager;
+import com.idega.xformsmanager.manager.impl.FormManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:34 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:42 $ by $Author: civilis $
  */
+@Service
+@Scope("singleton")
 public class DocumentManagerFactory {
 	
 	private static final long serialVersionUID = 2503096487027486624L;
@@ -34,7 +39,7 @@ public class DocumentManagerFactory {
 	public static final String COMPONENTS_XSD_CONTEXT_PATH = "resources/templates/default-components.xsd";
 	public static final String FORM_XFORMS_TEMPLATE_RESOURCES_PATH = "resources/templates/form-template.xhtml";
 	
-	private CacheManager cacheManager;
+	@Autowired private CacheManager cacheManager;
 
 	public CacheManager getCacheManager() {
 		return cacheManager;
@@ -65,7 +70,7 @@ public class DocumentManagerFactory {
 			CacheManager cacheManager = getCacheManager();
 			cacheManager.initAppContext(iwma);
 			
-			IWBundle bundle = iwma.getBundle(IWBundleStarter.IW_BUNDLE_IDENTIFIER);
+			IWBundle bundle = iwma.getBundle(FormManager.IW_BUNDLE_IDENTIFIER);
 			
 			try {
 				Document componentsXforms = getDocumentFromBundle(iwma, bundle, COMPONENTS_XFORMS_CONTEXT_PATH);
@@ -113,7 +118,7 @@ public class DocumentManagerFactory {
 		
 		if(workspaceDir != null) {
 			
-			String bundleInWorkspace = new StringBuilder(workspaceDir).append("/").append(IWBundleStarter.IW_BUNDLE_IDENTIFIER).append("/").toString();
+			String bundleInWorkspace = new StringBuilder(workspaceDir).append(CoreConstants.SLASH).append(FormManager.IW_BUNDLE_IDENTIFIER).append(CoreConstants.SLASH).toString();
 			return new FileInputStream(bundleInWorkspace + pathWithinBundle);
 		}
 						

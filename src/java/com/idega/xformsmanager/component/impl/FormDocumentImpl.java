@@ -39,9 +39,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements com.idega.xformsmanager.business.Document, com.idega.xformsmanager.component.FormDocument {
 	
@@ -498,7 +498,8 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 		clearFormTitle();
 		clearFormId();
 		parametersManager = null;
-		super.clear();
+		getContainedComponentsIds().clear();
+		getContainedComponents().clear();
 	}
 	
 	@Override

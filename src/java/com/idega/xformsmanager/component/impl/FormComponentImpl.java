@@ -19,9 +19,9 @@ import com.idega.xformsmanager.manager.XFormsManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -102,15 +102,14 @@ public class FormComponentImpl implements FormComponent, Component {
 		XFormsManager xformsManager = getXFormsManager();
 		
 		xformsManager.addComponentToDocument(this);
-		
-		setProperties();
 		changeBindNames();
+		setProperties();
 		
 		FormDocument formDocument = getFormDocument();
 		formDocument.setFormDocumentModified(true);
 //		tellAboutMe();
 		
-		if(getFormDocument().getContext().getFormComponentFactory().isNormalFormElement(this)) {
+		if(formDocument.getContext().getFormComponentFactory().isNormalFormElement(this)) {
 
 			FormComponentPage confirmationPage = formDocument.getFormConfirmationPage();
 			
@@ -134,7 +133,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		if(getFormDocument().getContext().getFormComponentFactory().isNormalFormElement(this)) {
 
-//			perhaps just lazyload
+//			TODO: perhaps just lazyload
 			getXFormsManager().loadConfirmationElement(this, null);
 		}
 //		created = true;
@@ -170,18 +169,18 @@ public class FormComponentImpl implements FormComponent, Component {
 		properties.setPlainValidationText(getXFormsManager().getValidationText(this));
 	}
 	
-//	TODO: move this to the Bind, do the same with bind id, nodeset, and localization
 	protected void changeBindNames() {
 		
+//		TODO: do the same with nodeset
 		LocalizedStringBean localizedLabel = getProperties().getLabel();
 		String defaultLocaleLabel = localizedLabel.getString(formDocument.getDefaultLocale());
 		
-		getXFormsManager().changeBindName(this,
-				new StringBuffer(defaultLocaleLabel)
-				.append('_')
-				.append(getId())
-				.toString()
-		);
+		String newBindName = new StringBuffer(defaultLocaleLabel)
+							.append('_')
+							.append(getId())
+							.toString();
+		
+		getXformsComponentDataBean().getBind().rename(newBindName);
 	}
 	
 	/*
@@ -234,8 +233,7 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	public void setId(String id) {
 		
-		if(id != null)
-			componentId = id;
+		componentId = id;
 	}
 	
 	public void setType(String type) {
@@ -352,17 +350,6 @@ public class FormComponentImpl implements FormComponent, Component {
 		default:
 			break;
 		}
-	}
-	
-	public void clear() {
-		nextSibling = null;
-		setId(null);
-		type = null;
-		parent = null;
-		properties = null;
-//		created = false;
-//		load = false;
-		formDocument = null;
 	}
 	
 	public ComponentDataBean getXformsComponentDataBean() {

@@ -1,10 +1,13 @@
 package com.idega.xformsmanager.manager.impl;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.idega.xformsmanager.business.component.properties.PropertiesThankYouPage;
 import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
@@ -13,10 +16,13 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.thankYouPage)
+@Service
+@Scope("singleton")
 public class XFormsManagerThankYouPageImpl extends XFormsManagerPageImpl implements XFormsManagerThankYouPage {
 
 	@Override

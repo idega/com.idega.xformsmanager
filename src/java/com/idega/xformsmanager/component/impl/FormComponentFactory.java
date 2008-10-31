@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas ƒåivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -119,14 +119,18 @@ public class FormComponentFactory {
 //		return me;
 //	}
 	
-	public FormComponent getFormComponentByType(String componentType) {
+	public FormComponent getFormComponentByType(String componentType, boolean loadFromTemplate) {
 		
 //		Document componentsTemplate = cacheManager.getComponentsTemplate();
 		
 		FormComponent component = recognizeFormComponent(componentType);
 		component.setType(componentType);
-		component.setFormDocument(getFormDocumentTemplate());
-		component.loadFromTemplate();
+		
+		if(loadFromTemplate) {
+		
+			component.setFormDocument(getFormDocumentTemplate());
+			component.loadFromTemplate();
+		}
 		
 		return component;
 	}
@@ -139,22 +143,22 @@ public class FormComponentFactory {
 		return template;
 	}
 	
-	public FormComponent recognizeFormComponent(String component_type) {
-		if(components_tags_classified.get(type_upload).contains(component_type))
+	public FormComponent recognizeFormComponent(String componentType) {
+		if(components_tags_classified.get(type_upload).contains(componentType))
 			return new FormComponentMultiUploadImpl();
-		if(components_tags_classified.get(type_upload_description).contains(component_type))
+		if(components_tags_classified.get(type_upload_description).contains(componentType))
 			return new FormComponentMultiUploadDescriptionImpl();
-		if(components_tags_classified.get(type_select).contains(component_type))
+		if(components_tags_classified.get(type_select).contains(componentType))
 			return new FormComponentSelectImpl();
-		if(component_type.equals(page_type_thx))
+		if(componentType.equals(page_type_thx))
 			return new FormComponentThankYouPageImpl();
-		if(component_type.equals(page_type_tag) || component_type.equals("xf:case")  || component_type.equals(page_type) || component_type.equals(confirmation_page_type))
+		if(componentType.equals(page_type_tag) || componentType.equals(page_type) || componentType.equals(confirmation_page_type))
 			return new FormComponentPageImpl();
-		if(component_type.equals(fbc_button_area))
+		if(componentType.equals(fbc_button_area))
 			return new FormComponentButtonAreaImpl();
-		if(component_type.equals(button_type) || ConstButtonType.getAllTypesInStrings().contains(component_type))
+		if(componentType.equals(button_type) || ConstButtonType.getAllTypesInStrings().contains(componentType))
 			return new FormComponentButtonImpl();
-		if(components_tags_classified.get(type_plain).contains(component_type))
+		if(components_tags_classified.get(type_plain).contains(componentType))
 			return new FormComponentPlainImpl();
 		
 		

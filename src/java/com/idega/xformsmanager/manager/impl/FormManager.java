@@ -30,13 +30,16 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
 @Scope("singleton")
-@Service("xformsDocumentManager")
+//@Service("xformsDocumentManager")
+@Service
 public class FormManager implements DocumentManager {
+	
+	public static final String IW_BUNDLE_IDENTIFIER = "com.idega.xformsmanager";
 	
 	private static Logger logger = Logger.getLogger(FormManager.class.getName());
 	
@@ -44,9 +47,9 @@ public class FormManager implements DocumentManager {
 	
 	private PersistenceManager persistenceManager;
 	private TransformerService transformerService;
-	private CacheManager cacheManager;
-	private XFormsManagerFactory xformsManagerFactory;
-	private HtmlManagerFactory htmlManagerFactory;
+	@Autowired private CacheManager cacheManager;
+	@Autowired private XFormsManagerFactory xformsManagerFactory;
+	@Autowired private HtmlManagerFactory htmlManagerFactory;
 	@Autowired private FormComponentFactory formComponentFactory;
 	@Autowired private Form form;
 	
@@ -211,7 +214,6 @@ public class FormManager implements DocumentManager {
 		return xformsManagerFactory;
 	}
 
-	@Autowired
 	public void setXformsManagerFactory(XFormsManagerFactory xformsManagerFactory) {
 		this.xformsManagerFactory = xformsManagerFactory;
 	}
@@ -220,7 +222,6 @@ public class FormManager implements DocumentManager {
 		return htmlManagerFactory;
 	}
 
-	@Autowired
 	public void setHtmlManagerFactory(HtmlManagerFactory htmlManagerFactory) {
 		this.htmlManagerFactory = htmlManagerFactory;
 	}

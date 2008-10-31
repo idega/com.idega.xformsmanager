@@ -1,5 +1,7 @@
 package com.idega.xformsmanager.manager.impl;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -9,6 +11,7 @@ import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.business.component.properties.PropertiesPlain;
 import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
@@ -18,10 +21,13 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.plain)
+@Service
+@Scope("singleton")
 public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsManagerPlain {
 
 	@Override
@@ -96,6 +102,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		return true;
 	}
 	
+	/*
 	@Override
 	protected void loadBindsAndNodesets(FormComponent component, Document componentsXForm) {
 
@@ -122,6 +129,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 			xformsComponentDataBean.setBind(bind);
 		}
 	}
+	*/
 	
 	@Override
 	protected void updateVariableName(FormComponent component) {

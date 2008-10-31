@@ -1,6 +1,8 @@
 package com.idega.xformsmanager.manager.impl;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,6 +14,7 @@ import com.idega.xformsmanager.business.component.properties.PropertiesButton;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentButtonArea;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.FormDocument;
 import com.idega.xformsmanager.component.beans.ComponentButtonDataBean;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
@@ -24,10 +27,13 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.button)
+@Service
+@Scope("singleton")
 public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XFormsManagerButton {
 	
 	private static final String actionTaken = "actionTaken";
@@ -212,7 +218,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
-		Element toggle_element = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), "toggle-element");
+		Element toggle_element = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), "toggle-element");
 		Element button_element = xformsComponentDataBean.getElement();
 		NodeList refreshs = button_element.getElementsByTagName(FormManagerUtil.refresh_tag);
 		toggle_element = (Element)button_element.getOwnerDocument().importNode(toggle_element, true);

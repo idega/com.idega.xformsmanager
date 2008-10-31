@@ -21,9 +21,9 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements FormComponentContainer, Container {
 	
@@ -32,17 +32,18 @@ public class FormComponentContainerImpl extends FormComponentImpl implements For
 
 	public void loadContainerComponents() {
 		
-		final List<String[]> componentsTagNamesAndIds = getXFormsManager().getContainedComponentsTagNamesAndIds(this);
+		final List<String[]> componentsTypesAndIds = getXFormsManager().getContainedComponentsTypesAndIds(this);
 		final List<String> componentsIds = getContainedComponentsIds();
 		
 		final FormComponentFactory componentsFactory = getFormDocument().getContext().getFormComponentFactory();
 		
-		for (String[] ctnaid : componentsTagNamesAndIds) {
+		for (String[] componentTypeAndId : componentsTypesAndIds) {
 			
-			FormComponent component = componentsFactory.getFormComponentByType(ctnaid[0]);
+			String componentType = componentTypeAndId[0];
+			String componentId = componentTypeAndId[1];
+			FormComponent component = componentsFactory.getFormComponentByType(componentType, false);
 			component.setFormDocument(getFormDocument());
 //			component.setContext(getContext());
-			String componentId = ctnaid[1];
 			
 			component.setId(componentId);
 			component.setParent(this);
@@ -97,7 +98,7 @@ public class FormComponentContainerImpl extends FormComponentImpl implements For
 	
 	public FormComponent addFormComponent(String componentType, String nextSiblingId) {
 		
-		FormComponent component = getFormDocument().getContext().getFormComponentFactory().getFormComponentByType(componentType);
+		FormComponent component = getFormDocument().getContext().getFormComponentFactory().getFormComponentByType(componentType, true);
 //		component.setContext(getContext());
 //		component.setFormDocument(getFormDocument());
 		
@@ -236,12 +237,6 @@ public class FormComponentContainerImpl extends FormComponentImpl implements For
 		
 		for (int i = ids.size()-1; i >= 0; i--)
 			getContainedComponents().get(ids.get(i)).addToConfirmationPage();
-	}
-	
-	public void clear() {
-		getContainedComponentsIds().clear();
-		getContainedComponents().clear();
-		super.clear();
 	}
 	
 	/**

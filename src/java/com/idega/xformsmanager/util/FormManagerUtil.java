@@ -37,9 +37,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -136,6 +136,8 @@ public class FormManagerUtil {
 	public static final String submission_model = "submission_model";
 	public static final String nodeTypeAtt = "nodeType";
 	public static final String controlInstanceID = "control-instance";
+	private static final String simple_type = "xs:simpleType";
+	private static final String complex_type = "xs:complexType";
 	
 	private static final String line_sep = "line.separator";
 	private static final String xml_mediatype = "text/html";
@@ -1023,5 +1025,71 @@ public class FormManagerUtil {
 		}
 		
 		return types;
+	}
+	
+	/**
+	 * <p>
+	 * Copies schema type from one schema document to another by provided type name.
+	 * </p>
+	 * <p>
+	 * <b><i>WARNING: </i></b>currently doesn't support cascading types copying,
+	 * i.e., when one type depends on another
+	 * </p>
+	 * 
+	 * @param src - schema document to copy from
+	 * @param dest - schema document to copy to
+	 * @param src_type_name - name of type to copy
+	 * @throws NullPointerException - some params were null or such type was not found in src document
+	 */
+	public static void copySchemaType(Document src, Document dest, String src_type_name, String dest_type_name) throws NullPointerException {
+		
+		if(src == null || dest == null || src_type_name == null) {
+			
+			String err_msg = 
+			new StringBuilder("\nEither parameter is not provided:")
+			.append("\nsrc: ")
+			.append(String.valueOf(src))
+			.append("\ndest: ")
+			.append(String.valueOf(dest))
+			.append("\ntype_name: ")
+			.append(src_type_name)
+			.toString();
+			
+			throw new NullPointerException(err_msg);
+		}
+		
+		Element root = src.getDocumentElement();
+		
+//		check among simple types
+		
+		Element type_to_copy = getSchemaTypeToCopy(root.getElementsByTagName(simple_type), src_type_name);
+		
+		if(type_to_copy == null) {
+//			check among complex types
+			
+			type_to_copy = getSchemaTypeToCopy(root.getElementsByTagName(complex_type), src_type_name);
+		}
+		
+		if(type_to_copy == null)
+			throw new NullPointerException("Schema type was not found by provided name: "+src_type_name);
+		
+		type_to_copy = (Element)dest.importNode(type_to_copy, true);
+		type_to_copy.setAttribute(FormManagerUtil.name_att, dest_type_name);
+		
+		((Element)dest.getElementsByTagName(FormManagerUtil.schema_tag).item(0)).appendChild(type_to_copy);
+	}
+	
+	private static Element getSchemaTypeToCopy(NodeList types, String type_name_required) {
+		
+		for (int i = 0; i < types.getLength(); i++) {
+			
+			Element simple_type = (Element)types.item(i); 
+			String name_att = simple_type.getAttribute(FormManagerUtil.name_att);
+			
+			if(name_att != null && name_att.equals(type_name_required))
+				return simple_type;
+		}
+		
+		return null;
 	}
 }

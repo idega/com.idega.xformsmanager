@@ -1,11 +1,14 @@
 package com.idega.xformsmanager.manager.impl;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.idega.xformsmanager.business.component.properties.PropertiesSelect;
 import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.ComponentSelectDataBean;
 import com.idega.xformsmanager.component.beans.LocalizedItemsetBean;
@@ -15,10 +18,13 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.select)
+@Service
+@Scope("singleton")
 public class XFormsManagerSelectImpl extends XFormsManagerImpl implements XFormsManagerSelect {
 
 	@Override
@@ -29,6 +35,7 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements XForms
 	private static final String local_data_source = "_lds";
 	private static final String external_data_source = "_eds";
 	
+	/*
 	@Override
 	protected void loadXFormsComponentDataBean(FormComponent component, Document xform, Element componentElement) {
 		
@@ -45,6 +52,7 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements XForms
 		xformsComponentDataBean.setLocalItemsetInstance(localDataSourceInstance);
 		xformsComponentDataBean.setExternalItemsetInstance(externalDataSourceInstance);
 	}
+	*/
 	private String getLocalDataSourceInstanceIdentifier(String element_id) {
 	
 		return element_id+local_data_source;

@@ -1,56 +1,75 @@
 package com.idega.xformsmanager.manager.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentContainer;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.container)
+@Service
+@Scope("singleton")
 public class XFormsManagerContainerImpl extends XFormsManagerImpl implements XFormsManagerContainer {
 	
-	public List<String[]> getContainedComponentsTagNamesAndIds(FormComponent component) {
+	public List<String[]> getContainedComponentsTypesAndIds(FormComponent component) {
 
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
 		if(xformsComponentDataBean.getElement() == null)
 			throw new NullPointerException("Document container element not set");
 		
-		@SuppressWarnings("unchecked")
-		List<Element> components_elements = DOMUtil.getChildElements(xformsComponentDataBean.getElement());
-		List<String[]> components_tag_names_and_ids = new ArrayList<String[]>();
+		return getContainedComponentsTypesAndIds(xformsComponentDataBean.getElement());
+	}
+	
+	private List<String[]> getContainedComponentsTypesAndIds(Element fromElement) {
 		
-		for (Iterator<Element> iter = components_elements.iterator(); iter.hasNext();) {
+		@SuppressWarnings("unchecked")
+		List<Element> componentElements = DOMUtil.getChildElements(fromElement);
+		List<String[]> componentsTagNamesNIds = new ArrayList<String[]>();
+		
+		for (Element componentElement : componentElements) {
 			
-			Element component_element = iter.next();
-			String[] tag_name_and_id = new String[2];
-			tag_name_and_id[1] = component_element.getAttribute(FormManagerUtil.id_att);
+			String componentId = componentElement.getAttribute(FormManagerUtil.id_att);
 			
-			if(tag_name_and_id[1] == null || !tag_name_and_id[1].startsWith(FormManagerUtil.CTID))
+			if(componentId == null || !componentId.startsWith(FormManagerUtil.CTID))
 				continue;
 			
-			tag_name_and_id[0] = component_element.getTagName();
+			String componentType;
+			String typeAtt = componentElement.getAttribute(FormManagerUtil.type_att);
 			
-			String name_val = component_element.getAttribute(FormManagerUtil.name_att);
+			if(typeAtt != null && typeAtt.length() != 0)
+				componentType = typeAtt;
+			else
+				componentType = componentElement.getTagName();
 			
-			if(name_val != null && !name_val.equals(""))
-				tag_name_and_id[0] = name_val;
-			
-			components_tag_names_and_ids.add(tag_name_and_id);
+			componentsTagNamesNIds.add(new String[] {componentType, componentId});
 		}
-		return components_tag_names_and_ids;
+		
+		if(componentsTagNamesNIds.isEmpty()) {
+			
+//			no components found in container element, try to look deeper (recursively)
+			
+			for (Element componentElement : componentElements) {
+				componentsTagNamesNIds.addAll(getContainedComponentsTypesAndIds(componentElement));
+			}
+		}
+		
+		return componentsTagNamesNIds;
 	}
 	
 	public void addChild(FormComponentContainer parent, FormComponent child) {

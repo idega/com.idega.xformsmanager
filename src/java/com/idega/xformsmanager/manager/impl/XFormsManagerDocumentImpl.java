@@ -5,6 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,6 +15,7 @@ import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.UnsupportedXFormException;
 import com.idega.xformsmanager.business.component.properties.PropertiesDocument;
 import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.ComponentDocumentDataBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
@@ -21,10 +24,13 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.document)
+@Service
+@Scope("singleton")
 public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implements XFormsManagerDocument {
 	
 	private XPathUtil readonlyXPath = new XPathUtil(".//readonly");
@@ -51,7 +57,8 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			Element autofillModel = FormManagerUtil.getElementById(xform, FormManagerUtil.autofill_model_id);
 			
 			if(autofillModel == null) {
-				autofillModel = FormManagerUtil.getItemElementById(component.getFormDocument().getComponentsXforms(), "autofill-model");
+//				TODO: temporary commented out
+//				autofillModel = FormManagerUtil.getItemElementById(component.getFormDocument().getComponentsXforms(), "autofill-model");
 				autofillModel = (Element)xform.importNode(autofillModel, true);
 				Element headElement = (Element)xform.getElementsByTagName(FormManagerUtil.head_tag).item(0);
 				autofillModel = (Element)headElement.appendChild(autofillModel);
@@ -151,7 +158,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 			if(instance == null) {
 				
-				instance = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), FormManagerUtil.sections_visualization_instance_item);
+				instance = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), FormManagerUtil.sections_visualization_instance_item);
 				instance = (Element)xforms_doc.importNode(instance, true);
 				Element data_model = FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.data_mod);
 				instance = (Element)data_model.appendChild(instance);
@@ -205,7 +212,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 			if(add == null) {
 
-				add = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), FormManagerUtil.sections_visualization_item);
+				add = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), FormManagerUtil.sections_visualization_item);
 				add = (Element)xforms_doc.importNode(add, true);
 				Element switch_el = FormManagerUtil.getComponentsContainerElement(xforms_doc);
 				switch_el.getParentNode().insertBefore(add, switch_el);

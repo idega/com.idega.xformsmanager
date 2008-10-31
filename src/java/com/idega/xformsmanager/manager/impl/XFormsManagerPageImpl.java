@@ -1,11 +1,14 @@
 package com.idega.xformsmanager.manager.impl;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.FormDocument;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.impl.FormComponentFactory;
@@ -14,10 +17,13 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.page)
+@Service
+@Scope("singleton")
 public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements XFormsManagerPage {
 
 	@Override
@@ -140,7 +146,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		
 		if(section == null) {
 			
-			section = FormManagerUtil.getItemElementById(CacheManager.getInstance().getComponentsTemplate(), FormManagerUtil.section_item);
+			section = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), FormManagerUtil.section_item);
 			section = (Element)component.getFormDocument().getXformsDocument().importNode(section, true);
 			section.setAttribute(FormManagerUtil.id_att, component.getId()+"_section");
 			Element id_el = (Element)section.getElementsByTagName(FormManagerUtil.id_att).item(0);

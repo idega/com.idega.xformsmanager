@@ -1,5 +1,7 @@
 package com.idega.xformsmanager.manager.impl;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -8,6 +10,7 @@ import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesMultiUploadDescription;
 import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.ComponentMultiUploadBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
@@ -18,10 +21,13 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- * Last modified: $Date: 2008/10/27 20:23:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.multiupload)
+@Service
+@Scope("singleton")
 public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl implements
 	XFormsManagerMultiUploadDescription {
 
@@ -57,6 +63,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	return new ComponentMultiUploadBean();
     }
 
+    /*
     @Override
     protected void loadXFormsComponentDataBean(FormComponent component,
 	    Document xform, Element componentElement) {
@@ -71,6 +78,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 		    xforms_component.setBind(bind);
 		}
     }
+    */
 
     @Override
     public void removeComponentFromXFormsDocument(FormComponent component) {

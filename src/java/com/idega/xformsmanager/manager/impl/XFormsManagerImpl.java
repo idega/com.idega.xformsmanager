@@ -4,6 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,6 +20,7 @@ import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentButtonArea;
 import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
@@ -28,16 +31,16 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
  */
+@FormComponentType(FormComponentType.base)
+@Service
+@Scope("singleton")
 public class XFormsManagerImpl implements XFormsManager {
 	
 //	private static Logger logger = Logger.getLogger(XFormsManagerImpl.class.getName());
-	
-	private static final String simple_type = "xs:simpleType";
-	private static final String complex_type = "xs:complexType";
 	
 	private XPathUtil bindsByNodesetXPath;
 	private static final String nodesetVariable = "nodeset";
@@ -58,8 +61,8 @@ public class XFormsManagerImpl implements XFormsManager {
 				
 				if(xformsComponentDataBean == null) {
 			
-					Document componentsTemplate = cacheManager.getComponentsTemplate();
-					Element componentTemplateElement = FormManagerUtil.getElementById(componentsTemplate, componentType);
+//					Document componentsTemplate = cacheManager.getComponentsTemplate();
+					Element componentTemplateElement = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), componentType);
 					
 					if(componentTemplateElement != null) {
 						
@@ -73,8 +76,8 @@ public class XFormsManagerImpl implements XFormsManager {
 //						the component now serves as the templated component
 						
 //						TODO: load other stuff from the template, like instances, or references or or or 
-						loadBindsAndNodesets(component, componentsTemplate);
-						loadExtKeyElements(component, componentsTemplate);
+						loadBindsAndNodesets(component);
+						loadExtKeyElements(component);
 						
 						cacheManager.cacheXformsComponent(componentType, (ComponentDataBean)component.getXformsComponentDataBean()/*.clone()*/);
 						
@@ -135,12 +138,17 @@ public class XFormsManagerImpl implements XFormsManager {
 	}
 	*/
 	
+//	TODO: rename to loadComponentFromDocument
 	public void loadXFormsComponentFromDocument(FormComponent component) {
 		
 		Document xform = component.getFormDocument().getXformsDocument();
-		Element componentElement = FormManagerUtil.getElementByIdFromDocument(xform, FormManagerUtil.body_tag, component.getId());
+		Element componentElement = FormManagerUtil.getElementById(xform, component.getId());
+		ComponentDataBean xformsComponentDataBean = newXFormsComponentDataBeanInstance();
+		component.setXformsComponentDataBean(xformsComponentDataBean);
+		xformsComponentDataBean.setElement(componentElement);
 		
-		loadXFormsComponentDataBean(component, xform, componentElement);
+		loadBindsAndNodesets(component);
+		loadExtKeyElements(component);
 	}
 	
 	protected ComponentDataBean newXFormsComponentDataBeanInstance() {
@@ -155,24 +163,22 @@ public class XFormsManagerImpl implements XFormsManager {
 	 * @param xform	- needed, as it can be components template document
 	 * @param componentElement
 	 */
-	protected void loadXFormsComponentDataBean(FormComponent component, Document xform, Element componentElement) {
-		
-		ComponentDataBean xformsComponentDataBean = newXFormsComponentDataBeanInstance();
-		xformsComponentDataBean.setElement(componentElement);
-		component.setXformsComponentDataBean(xformsComponentDataBean);
-		
-		loadBindsAndNodesets(component, xform);
-		loadExtKeyElements(component, xform);
-	}
+//	protected void loadXFormsComponentDataBean(FormComponent component, Document xform, Element componentElement) {
+//		
+//		loadBindsAndNodesets(component, xform);
+//		loadExtKeyElements(component, xform);
+//	}
 	
-	protected void loadExtKeyElements(FormComponent component, Document components_xforms) {
+	protected void loadExtKeyElements(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		Document xform = component.getFormDocument().getXformsDocument();
 		
-		xformsComponentDataBean.setKeyExtInstance(FormManagerUtil.getElementByIdFromDocument(components_xforms, FormManagerUtil.head_tag, component.getId()+FormManagerUtil.autofill_instance_ending));
-		xformsComponentDataBean.setKeySetvalue(FormManagerUtil.getElementByIdFromDocument(components_xforms, FormManagerUtil.head_tag, component.getId()+FormManagerUtil.autofill_setvalue_ending));
+		xformsComponentDataBean.setKeyExtInstance(FormManagerUtil.getElementByIdFromDocument(xform, FormManagerUtil.head_tag, component.getId()+FormManagerUtil.autofill_instance_ending));
+		xformsComponentDataBean.setKeySetvalue(FormManagerUtil.getElementByIdFromDocument(xform, FormManagerUtil.head_tag, component.getId()+FormManagerUtil.autofill_setvalue_ending));
 	}
 	
+	/*
 	protected void addBindingsAndNodesets(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
@@ -199,6 +205,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			xformsComponentDataBean.setBind(bind);
 		}
 	}
+	*/
 	
 	protected void loadBindsAndNodesets(FormComponent component) {
 
@@ -239,8 +246,10 @@ public class XFormsManagerImpl implements XFormsManager {
 //		TODO: is this something we need?
 		if(removeTextNodes())
 			FormManagerUtil.removeTextNodes(componentElement);
-		
-		addBindingsAndNodesets(component);
+
+		Bind bind = Bind.createFromTemplate(xformsComponentDataBean.getBind());
+		xformsComponentDataBean.setBind(bind);
+//		addBindingsAndNodesets(component);
 		
 		FormComponentContainer parent = component.getParent();
 		parent.getXFormsManager().addChild(parent, component);
@@ -255,10 +264,6 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
-	protected void importBindFromTemplate(FormComponent component) {
-		
-	}
-	
 	protected boolean removeTextNodes() {
 		return true;
 	}
@@ -270,6 +275,7 @@ public class XFormsManagerImpl implements XFormsManager {
 	
 	protected void localizeComponent(String comp_id, Element component_container, Document xforms_doc_to, Document xforms_doc_from) {
 		
+//		TODO: remake this, localizations could be alrady there in the xform document, just keys would be changed
 		NodeList children = component_container.getElementsByTagName("*");
 		
 		for (int i = 0; i < children.getLength(); i++) {
@@ -303,6 +309,7 @@ public class XFormsManagerImpl implements XFormsManager {
 	 * @param src_type_name - name of type to copy
 	 * @throws NullPointerException - some params were null or such type was not found in src document
 	 */
+	/*
 	protected void copySchemaType(Document src, Document dest, String src_type_name, String dest_type_name) throws NullPointerException {
 		
 		if(src == null || dest == null || src_type_name == null) {
@@ -354,6 +361,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		return null;
 	}
+	*/
 	
 	protected void updateConstraintRequired(FormComponent component) {
 		
@@ -583,7 +591,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
-	public void moveComponent(FormComponent component, String before_component_id) {
+	public void moveComponent(FormComponent component, String nextSiblingId) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
@@ -592,9 +600,9 @@ public class XFormsManagerImpl implements XFormsManager {
 		Element element_to_move = xformsComponentDataBean.getElement();
 		Element element_to_insert_before = null;
 
-		if(before_component_id != null) {
+		if(nextSiblingId != null) {
 			
-			element_to_insert_before = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, before_component_id);
+			element_to_insert_before = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, nextSiblingId);
 		} else {
 
 			Element components_container = (Element)element_to_move.getParentNode();
@@ -727,6 +735,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 
+	/*
 	public String insertBindElement(FormComponent component, Element new_bind_element, String bind_id) {
 		
 		new_bind_element.setAttribute(FormManagerUtil.id_att, bind_id);
@@ -744,6 +753,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		return null;
 	}
 	
+	
 	protected Nodeset insertNodesetElement(FormComponent component, String bindId) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
@@ -759,7 +769,9 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		return nodeset;
 	}
+	*/
 	
+	/*
 	public void changeBindName(FormComponent component, String newBindName) {
 
 		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
@@ -777,6 +789,7 @@ public class XFormsManagerImpl implements XFormsManager {
 					FormManagerUtil.ref_s_att, bind.getBindElement().getAttribute(FormManagerUtil.nodeset_att)
 			);
 	}
+	*/
 	
 	protected void updateP3pType(FormComponent component) {
 		
