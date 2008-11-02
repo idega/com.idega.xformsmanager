@@ -4,6 +4,8 @@ import java.util.Locale;
 
 import org.w3c.dom.Element;
 
+import sun.net.www.content.text.plain;
+
 import com.idega.xformsmanager.business.component.Component;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
@@ -16,12 +18,13 @@ import com.idega.xformsmanager.component.properties.impl.ComponentProperties;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.manager.HtmlManager;
 import com.idega.xformsmanager.manager.XFormsManager;
+import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -94,7 +97,7 @@ public class FormComponentImpl implements FormComponent, Component {
 	public void loadFromTemplate() {
 	
 		XFormsManager xformsManager = getXFormsManager();
-		xformsManager.loadComponentFromTemplate(this, getType());
+		xformsManager.loadComponentFromTemplate(this);
 	}
 	
 	public void create() {
@@ -102,8 +105,8 @@ public class FormComponentImpl implements FormComponent, Component {
 		XFormsManager xformsManager = getXFormsManager();
 		
 		xformsManager.addComponentToDocument(this);
-		changeBindNames();
 		setProperties();
+		changeBindNames();
 		
 		FormDocument formDocument = getFormDocument();
 		formDocument.setFormDocumentModified(true);
@@ -123,7 +126,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		XFormsManager xformsManager = getXFormsManager();
 		
-		xformsManager.loadXFormsComponentFromDocument(this);
+		xformsManager.loadComponentFromDocument(this);
 		
 		setProperties();
 		
@@ -171,16 +174,23 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	protected void changeBindNames() {
 		
-//		TODO: do the same with nodeset
-		LocalizedStringBean localizedLabel = getProperties().getLabel();
-		String defaultLocaleLabel = localizedLabel.getString(formDocument.getDefaultLocale());
+		Bind bind = getXformsComponentDataBean().getBind();
 		
-		String newBindName = new StringBuffer(defaultLocaleLabel)
-							.append('_')
-							.append(getId())
-							.toString();
-		
-		getXformsComponentDataBean().getBind().rename(newBindName);
+		if(!bind.getIsShared()) {
+
+//			TODO: do the same with nodeset
+			LocalizedStringBean localizedLabel = getProperties().getLabel();
+			System.out.println("label="+localizedLabel);
+			System.out.println("formdocument="+getFormDocument());
+			String defaultLocaleLabel = localizedLabel.getString(getFormDocument().getDefaultLocale());
+			
+			String newBindName = new StringBuffer(defaultLocaleLabel)
+								.append('_')
+								.append(getId())
+								.toString();
+			
+			bind.rename(newBindName);
+		}
 	}
 	
 	/*
@@ -262,6 +272,8 @@ public class FormComponentImpl implements FormComponent, Component {
 
 	public XFormsManager getXFormsManager() {
 		
+		System.out.println("DMContenxt = "+getFormDocument().getContext());
+		System.out.println("XFORms fact = "+getFormDocument().getContext().getXformsManagerFactory());
 		return getFormDocument().getContext().getXformsManagerFactory().getXformsManager();
 	}
 	

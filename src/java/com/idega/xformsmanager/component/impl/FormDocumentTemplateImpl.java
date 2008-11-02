@@ -20,13 +20,14 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- *          Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 public class FormDocumentTemplateImpl implements FormDocument {
 
 	private Document xformsDocument;
+	private DMContext context;
 
 	public Document getXformsDocument() {
 		return xformsDocument;
@@ -36,10 +37,17 @@ public class FormDocumentTemplateImpl implements FormDocument {
 		this.xformsDocument = xformsDocument;
 	}
 
+	public DMContext getContext() {
+		return context;
+	}
+
+	public void setContext(DMContext context) {
+		this.context = context;
+	}
+
 	public String generateNewComponentId() {
 		throw new UnsupportedOperationException(
 				"Unsupported for template document");
-
 	}
 
 	public Element getAutofillModelElement() {
@@ -49,11 +57,6 @@ public class FormDocumentTemplateImpl implements FormDocument {
 	}
 
 	public Document getComponentsXml(Locale locale) {
-		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-	}
-
-	public DMContext getContext() {
 		throw new UnsupportedOperationException(
 				"Unsupported for template document");
 	}
@@ -298,5 +301,4 @@ public class FormDocumentTemplateImpl implements FormDocument {
 				"Unsupported for template document");
 
 	}
-
 }

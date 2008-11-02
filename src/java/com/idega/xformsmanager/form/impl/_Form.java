@@ -13,14 +13,16 @@ import com.idega.xformsmanager.component.impl.FormDocumentImpl;
 import com.idega.xformsmanager.context.DMContext;
 
 /**
+ * TODO: remove
+ * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
-@Service
-@Scope("singleton")
-public class Form {
+//@Service
+//@Scope("singleton")
+public class _Form {
 	
 //	protected static Logger logger = Logger.getLogger(Form.class.getName());
 	

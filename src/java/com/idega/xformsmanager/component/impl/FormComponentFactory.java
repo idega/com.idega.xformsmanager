@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.idega.xformsmanager.business.component.ConstButtonType;
 import com.idega.xformsmanager.component.FormComponent;
-import com.idega.xformsmanager.manager.impl.CacheManager;
+import com.idega.xformsmanager.manager.impl.FormManager;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
- * @author <a href="mailto:civilis@idega.com">Vytautas ƒåivilis</a>
- * @version $Revision: 1.3 $
+ * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -38,7 +38,7 @@ public class FormComponentFactory {
 	public static final String fbc_button_area = "fbc_button_area";
 	public static final String page_type_thx = "thx_page";
 	
-	private CacheManager cacheManager;
+	private FormManager formManager;
 	
 	private FormComponentFactory() { 
 		
@@ -128,7 +128,7 @@ public class FormComponentFactory {
 		
 		if(loadFromTemplate) {
 		
-			component.setFormDocument(getFormDocumentTemplate());
+			component.setFormDocument(getFormManager().getFormDocumentTemplate());
 			component.loadFromTemplate();
 		}
 		
@@ -139,7 +139,7 @@ public class FormComponentFactory {
 
 //		TODO: use as singleton
 		FormDocumentTemplateImpl template = new FormDocumentTemplateImpl();
-		template.setXformsDocument(getCacheManager().getComponentsTemplate());
+		template.setXformsDocument(getFormManager().getCacheManager().getComponentsTemplate());
 		return template;
 	}
 	
@@ -184,11 +184,11 @@ public class FormComponentFactory {
 		}
 	}
 
-	public CacheManager getCacheManager() {
-		return cacheManager;
+	FormManager getFormManager() {
+		return formManager;
 	}
 
-	public void setCacheManager(CacheManager cacheManager) {
-		this.cacheManager = cacheManager;
+	public void setFormManager(FormManager formManager) {
+		this.formManager = formManager;
 	}
 }

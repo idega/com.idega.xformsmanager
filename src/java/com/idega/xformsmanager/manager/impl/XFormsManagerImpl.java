@@ -31,9 +31,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -46,20 +46,21 @@ public class XFormsManagerImpl implements XFormsManager {
 	private static final String nodesetVariable = "nodeset";
 	private static final String autofill_attr = "autofillkey";
 
-	public void loadComponentFromTemplate(FormComponent component, String componentType) {
+	public void loadComponentFromTemplate(FormComponent component) {
 		
-		CacheManager cacheManager = component.getFormDocument().getContext().getCacheManager();
+		final String componentType = component.getType();
+		final CacheManager cacheManager = component.getFormDocument().getContext().getCacheManager();
 //		cacheManager.checkForComponentType(componentType);
 		
 		ComponentDataBean xformsComponentDataBean = cacheManager.getXformsComponentTemplate(componentType);
 		
-		if(xformsComponentDataBean == null) {
+		if(xformsComponentDataBean == null || true) {
 			
 			synchronized (this) {
 				
 				xformsComponentDataBean = cacheManager.getXformsComponentTemplate(componentType);
 				
-				if(xformsComponentDataBean == null) {
+				if(xformsComponentDataBean == null || true) {
 			
 //					Document componentsTemplate = cacheManager.getComponentsTemplate();
 					Element componentTemplateElement = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), componentType);
@@ -79,7 +80,9 @@ public class XFormsManagerImpl implements XFormsManager {
 						loadBindsAndNodesets(component);
 						loadExtKeyElements(component);
 						
-						cacheManager.cacheXformsComponent(componentType, (ComponentDataBean)component.getXformsComponentDataBean()/*.clone()*/);
+						component.getXformsComponentDataBean().getBind().setFormComponent(null);
+						
+						cacheManager.cacheXformsComponent(componentType, component.getXformsComponentDataBean()/*.clone()*/);
 						
 					} else {
 					
@@ -102,6 +105,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		if(xformsComponentDataBean != null) {
 			xformsComponentDataBean = (ComponentDataBean)xformsComponentDataBean.clone();
+			xformsComponentDataBean.getBind().setFormComponent(component);
 			component.setXformsComponentDataBean(xformsComponentDataBean);
 		}
 		
@@ -138,8 +142,7 @@ public class XFormsManagerImpl implements XFormsManager {
 	}
 	*/
 	
-//	TODO: rename to loadComponentFromDocument
-	public void loadXFormsComponentFromDocument(FormComponent component) {
+	public void loadComponentFromDocument(FormComponent component) {
 		
 		Document xform = component.getFormDocument().getXformsDocument();
 		Element componentElement = FormManagerUtil.getElementById(xform, component.getId());
@@ -221,6 +224,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			if(bind == null)
 				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? CoreConstants.EMPTY : " and modelId: "+modelId));
 			
+//			bind.setFormComponent(component);
 			xformsComponentDataBean.setBind(bind);
 		}
 	}
@@ -593,24 +597,24 @@ public class XFormsManagerImpl implements XFormsManager {
 	
 	public void moveComponent(FormComponent component, String nextSiblingId) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean componentDataBean = component.getXformsComponentDataBean();
 		
-		Document xforms_doc = component.getFormDocument().getXformsDocument();
+		Document xform = component.getFormDocument().getXformsDocument();
 		
-		Element element_to_move = xformsComponentDataBean.getElement();
-		Element element_to_insert_before = null;
+		Element elementToMove = componentDataBean.getElement();
+		Element nextSiblingElement = null;
+		Element componentContainer = (Element)elementToMove.getParentNode();
 
 		if(nextSiblingId != null) {
 			
-			element_to_insert_before = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, nextSiblingId);
+			nextSiblingElement = FormManagerUtil.getElementById(xform, nextSiblingId);
 		} else {
-
-			Element components_container = (Element)element_to_move.getParentNode();
-			element_to_insert_before = DOMUtil.getLastChildElement(components_container);
+			
+			nextSiblingElement = DOMUtil.getLastChildElement(componentContainer);
 		}
 		
-		xformsComponentDataBean.setElement(
-				(Element)((Element)element_to_move.getParentNode()).insertBefore(element_to_move, element_to_insert_before)
+		componentDataBean.setElement(
+				(Element)componentContainer.insertBefore(elementToMove, nextSiblingElement)
 		);
 		
 		changePreviewElementOrder(component);

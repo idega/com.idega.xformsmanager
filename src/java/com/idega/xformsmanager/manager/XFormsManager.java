@@ -8,17 +8,37 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 public interface XFormsManager {
 
-	public abstract void loadComponentFromTemplate(FormComponent component,
-			String componentType);
+	/**
+	 * loads component from template document set to this component. In this
+	 * phase, the references of nodes are to the template document. called in
+	 * the load from template phase
+	 * 
+	 * @param component
+	 */
+	public abstract void loadComponentFromTemplate(FormComponent component);
 
-	public abstract void loadXFormsComponentFromDocument(FormComponent component);
+	/**
+	 * loads the component from it's document. called in load phase of the
+	 * component
+	 * 
+	 * @param component
+	 */
+	public abstract void loadComponentFromDocument(FormComponent component);
 
+	/**
+	 * adds component, which is loaded from template (@see
+	 * loadComponentFromTemplate), to the form document provided. After this,
+	 * references of nodes are nomore to the template document. called in the
+	 * create phase
+	 * 
+	 * @param component
+	 */
 	public abstract void addComponentToDocument(FormComponent component);
 
 	public abstract void update(FormComponent component, ConstUpdateType what);
@@ -29,8 +49,8 @@ public interface XFormsManager {
 	public abstract void removeComponentFromXFormsDocument(
 			FormComponent component);
 
-//	public abstract String insertBindElement(FormComponent component,
-//			Element new_bind_element, String bind_id);
+	// public abstract String insertBindElement(FormComponent component,
+	// Element new_bind_element, String bind_id);
 
 	// public abstract void changeBindName(FormComponent component,
 	// String new_bind_name);

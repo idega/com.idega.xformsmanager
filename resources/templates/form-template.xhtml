@@ -31,10 +31,10 @@
 	            </data>
 	        </xf:instance>
 			
-			<xf:bind id="errorsGroup" nodeset="instance('error-instance')/error" relevant="instance('control-instance')/submission = 'true' and count-non-empty(instance('error-instance')/error)!=0"/>
-	        <xf:bind id="errors" nodeset="instance('error-instance')/error[. != '']"/>
+			<xf:bind id="errorsGroup" idega:shared="true" nodeset="instance('error-instance')/error" relevant="instance('control-instance')/submission = 'true' and count-non-empty(instance('error-instance')/error)!=0"/>
+	        <xf:bind id="errors" idega:shared="true" nodeset="instance('error-instance')/error[. != '']"/>
 	        
-	        <xf:bind id="bind-submissionButton" nodeset="instance('control-instance')/submissionButton" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'" />
+	        <xf:bind id="bind-submissionButton" idega:shared="true" nodeset="instance('control-instance')/submissionButton" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'" />
 		
 	        <xf:submission action="standalone:/nouri" id="submit_data_submission" method="post" ref="instance('data-instance')" replace="none">
 	        	<idega:toggle ev:event="xforms-submit-done" case="fbc_4"/>

@@ -17,9 +17,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.page)
 @Service
@@ -27,9 +27,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements XFormsManagerPage {
 
 	@Override
-	public void loadXFormsComponentFromDocument(FormComponent component) {
+	public void loadComponentFromDocument(FormComponent component) {
 		
-		super.loadXFormsComponentFromDocument(component);
+		super.loadComponentFromDocument(component);
 		checkForSpecialTypes(component);
 		
 //		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();

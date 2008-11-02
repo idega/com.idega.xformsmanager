@@ -37,9 +37,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -106,6 +106,7 @@ public class FormManagerUtil {
 	public static final String autofill_model_id = "x-autofill-model";
 	public static final String xmlns_att = "xmlns";
 	public static final String relevant_att = "relevant";
+	public static final String shared_att = "shared";
 	public static final String autofill_instance_ending = "_autofill-instance";
 	public static final String autofill_setvalue_ending = "-autofill-setvalue";
 	public static final String value_att = "value";
@@ -319,7 +320,7 @@ public class FormManagerUtil {
 			return null;
 		
 		return new StringBuilder(componentId)
-		.append(localizationKey.contains(CoreConstants.DOT) ? localizationKey.substring(localizationKey.lastIndexOf(CoreConstants.DOT)) : CoreConstants.EMPTY)
+		.append(localizationKey.contains(CoreConstants.MINUS) ? localizationKey.substring(localizationKey.lastIndexOf(CoreConstants.MINUS)) : CoreConstants.EMPTY)
 		.toString();
 	}
 	

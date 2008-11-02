@@ -27,9 +27,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -42,17 +42,17 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	private XPathUtil sendSubmissionXPath;
 	
 	@Override
-	public void loadXFormsComponentFromDocument(FormComponent component) {
+	public void loadComponentFromDocument(FormComponent component) {
 		
-		super.loadXFormsComponentFromDocument(component);
+		super.loadComponentFromDocument(component);
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+//		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
 		
-		Element button_element = xformsComponentDataBean.getElement();
-		String button_type = button_element.getAttribute(FormManagerUtil.name_att);
-		
-		if(button_type != null)
-			component.setType(button_type);
+//		Element buttonElement = xformsComponentDataBean.getElement();
+//		String buttonType = buttonElement.getAttribute(FormManagerUtil.type_att);
+//		
+//		if(buttonType != null)
+//			component.setType(buttonType);
 
 		loadToggleElement(component);
 	}
@@ -68,8 +68,8 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 		if(toggles == null)
 			return;
 		
-		Element toggle_element = (Element)toggles.item(0);
-		xFormsComponentButtonDataBean.setToggleElement(toggle_element);
+		Element toggleElement = (Element)toggles.item(0);
+		xFormsComponentButtonDataBean.setToggleElement(toggleElement);
 	}
 	
 	@Override

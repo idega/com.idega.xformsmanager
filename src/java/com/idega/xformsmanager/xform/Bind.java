@@ -13,10 +13,12 @@ import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
- * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * TODO: when bind is shared, all the components should point to the same bind object
  * 
- *          Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
+ * @version $Revision: 1.5 $
+ * 
+ *          Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -37,6 +39,7 @@ public class Bind implements Cloneable {
 	private Boolean readonly;
 	private String relevant;
 	private Boolean isRelevant;
+	private Boolean isShared;
 
 	public Element getBindElement() {
 		return bindElement;
@@ -284,6 +287,7 @@ public class Bind implements Cloneable {
 		// Nodeset nodeset = insertNodesetElement(component, bindId);
 		Bind bind = Bind.load(bindElement);
 		bind.setNodeset(nodeset);
+		bind.setFormComponent(component);
 		// xformsComponentDataBean.setBind(bind);
 
 		return bind;
@@ -404,6 +408,11 @@ public class Bind implements Cloneable {
 	 */
 
 	public void rename(String renameTo) {
+		
+		if(getIsShared()) {
+			
+			logger.log(Level.WARNING, "Renaming bind, though it is shared. Is this expected? Component id="+getFormComponent().getId()+", form id = "+getFormComponent().getFormDocument().getId());
+		}
 
 		renameTo = FormManagerUtil.escapeNonXmlTagSymbols(renameTo.replace(' ',
 				'_'));
@@ -504,5 +513,35 @@ public class Bind implements Cloneable {
 
 	public void setFormComponent(FormComponent formComponent) {
 		this.formComponent = formComponent;
+	}
+
+	public Boolean getIsShared() {
+
+		if (isShared == null) {
+
+			Element bind = getBindElement();
+			String isSharedAtt = bind
+					.hasAttributeNS(FormManagerUtil.idega_namespace,
+							FormManagerUtil.shared_att) ? bind
+					.getAttributeNS(FormManagerUtil.idega_namespace,
+							FormManagerUtil.shared_att) : null;
+
+			isShared = isSharedAtt != null
+					&& FormManagerUtil.true_string.equals(isSharedAtt);
+		}
+
+		return isShared;
+	}
+
+	public void setIsShared(Boolean isShared) {
+
+		this.isShared = isShared;
+
+		if (isShared != null && isShared)
+			getBindElement().setAttributeNS(FormManagerUtil.idega_namespace,
+					FormManagerUtil.shared_att, FormManagerUtil.true_string);
+		else
+			getBindElement().removeAttributeNS(FormManagerUtil.idega_namespace,
+					FormManagerUtil.shared_att);
 	}
 }
