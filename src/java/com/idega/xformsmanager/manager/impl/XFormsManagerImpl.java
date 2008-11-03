@@ -31,9 +31,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 16:56:32 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -223,14 +223,13 @@ public class XFormsManagerImpl implements XFormsManager {
 		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		String bindId = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.bind_att);
-		String modelId = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.model_att);
 		
 		if(!StringUtil.isEmpty(bindId)) {
 			
 			Bind bind = Bind.locate(component, bindId);
 			
 			if(bind == null)
-				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? CoreConstants.EMPTY : " and modelId: "+modelId));
+				throw new NullPointerException("Binding not found by bind id: "+bindId+" in the form "+component.getFormDocument().getId());
 			
 //			bind.setFormComponent(component);
 			xformsComponentDataBean.setBind(bind);

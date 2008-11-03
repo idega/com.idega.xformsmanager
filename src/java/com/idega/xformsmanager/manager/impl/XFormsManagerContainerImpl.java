@@ -18,79 +18,93 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
- *
- * Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
+ * @version $Revision: 1.5 $
+ * 
+ *          Last modified: $Date: 2008/11/03 16:56:32 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.container)
 @Service
 @Scope("singleton")
-public class XFormsManagerContainerImpl extends XFormsManagerImpl implements XFormsManagerContainer {
-	
-	public List<String[]> getContainedComponentsTypesAndIds(FormComponent component) {
+public class XFormsManagerContainerImpl extends XFormsManagerImpl implements
+		XFormsManagerContainer {
 
-		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
-		
-		if(xformsComponentDataBean.getElement() == null)
+	public List<String[]> getContainedComponentsTypesAndIds(
+			FormComponent component) {
+
+		ComponentDataBean xformsComponentDataBean = component
+				.getComponentDataBean();
+
+		if (xformsComponentDataBean.getElement() == null)
 			throw new NullPointerException("Document container element not set");
-		
-		return getContainedComponentsTypesAndIds(xformsComponentDataBean.getElement());
+
+		return getContainedComponentsTypesAndIds(xformsComponentDataBean
+				.getElement());
 	}
-	
+
 	private List<String[]> getContainedComponentsTypesAndIds(Element fromElement) {
-		
+
 		@SuppressWarnings("unchecked")
 		List<Element> componentElements = DOMUtil.getChildElements(fromElement);
 		List<String[]> componentsTagNamesNIds = new ArrayList<String[]>();
-		
+
 		for (Element componentElement : componentElements) {
-			
-			String componentId = componentElement.getAttribute(FormManagerUtil.id_att);
-			
-			if(componentId == null || !componentId.startsWith(FormManagerUtil.CTID))
+
+			String componentId = componentElement
+					.getAttribute(FormManagerUtil.id_att);
+
+			if (componentId == null
+					|| !componentId.startsWith(FormManagerUtil.CTID))
 				continue;
-			
+
 			String componentType;
-			String typeAtt = componentElement.getAttribute(FormManagerUtil.type_att);
-			
-			if(typeAtt != null && typeAtt.length() != 0)
+			String typeAtt = componentElement
+					.getAttribute(FormManagerUtil.type_att);
+
+			if (typeAtt != null && typeAtt.length() != 0)
 				componentType = typeAtt;
 			else
 				componentType = componentElement.getTagName();
-			
-			componentsTagNamesNIds.add(new String[] {componentType, componentId});
+
+			componentsTagNamesNIds.add(new String[] { componentType,
+					componentId });
 		}
-		
-		if(componentsTagNamesNIds.isEmpty()) {
-			
-//			no components found in container element, try to look deeper (recursively)
-			
+
+		if (componentsTagNamesNIds.isEmpty()) {
+
+			// no components found in container element, try to look deeper
+			// (recursively)
+
 			for (Element componentElement : componentElements) {
-				componentsTagNamesNIds.addAll(getContainedComponentsTypesAndIds(componentElement));
+				componentsTagNamesNIds
+						.addAll(getContainedComponentsTypesAndIds(componentElement));
 			}
 		}
-		
+
 		return componentsTagNamesNIds;
 	}
-	
+
 	public void addChild(FormComponentContainer parent, FormComponent child) {
-		
+
 		Element componentElement = child.getComponentDataBean().getElement();
-		
-		if(child.getNextSibling() == null) {
-			
-			Element parentElement = ((ComponentContainerDataBean)parent.getComponentDataBean()).getChildrenContainerElement();
-			componentElement = (Element)parentElement.appendChild(componentElement);
-			
+
+		if (child.getNextSibling() == null) {
+
+			Element parentElement = ((ComponentContainerDataBean) parent
+					.getComponentDataBean()).getChildrenContainerElement();
+			componentElement = (Element) parentElement
+					.appendChild(componentElement);
+
 		} else {
-			
-			Element nextSiblingElement = child.getNextSibling().getComponentDataBean().getElement();
-			componentElement = (Element)nextSiblingElement.getParentNode().insertBefore(componentElement, nextSiblingElement);
+
+			Element nextSiblingElement = child.getNextSibling()
+					.getComponentDataBean().getElement();
+			componentElement = (Element) nextSiblingElement.getParentNode()
+					.insertBefore(componentElement, nextSiblingElement);
 		}
-		
+
 		child.getComponentDataBean().setElement(componentElement);
 	}
-	
+
 	@Override
 	protected ComponentDataBean newXFormsComponentDataBeanInstance() {
 		return new ComponentContainerDataBean();

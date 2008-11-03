@@ -14,12 +14,14 @@ import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
- * TODO: when bind is shared, all the components should point to the same bind object
+ * TODO: when bind is shared, all the components should point to the same bind object (shared bind instance)
+ * also, bind could have more than one form component
+ * 
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- *          Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/03 16:56:32 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -238,16 +240,34 @@ public class Bind implements Cloneable {
 	}
 
 	public static Bind createFromTemplate(Bind templateBind) {
+		
+		FormComponent component = templateBind.getFormComponent();
+		Document xform = component.getFormDocument().getXformsDocument();
+
+		if (templateBind.getIsShared()) {
+
+			// check, if bind already exist in the document and use that instead
+			Element sharedBindElement = FormManagerUtil.getElementById(xform, templateBind.getId());
+			
+			if(sharedBindElement != null) {
+				
+				Bind bind = Bind.load(sharedBindElement);
+				bind.setFormComponent(component);
+				
+				return bind;
+			}
+		}
 
 		// insert bind element
-		FormComponent component = templateBind.getFormComponent();
 		String componentId = component.getId();
-		Document xform = component.getFormDocument().getXformsDocument();
+		
 		ComponentDataBean xformsComponentDataBean = component
 				.getComponentDataBean();
 
 		// TODO: create bind id as nodeset (from label)
-		String bindId = FormManagerUtil.bind_att + CoreConstants.MINUS + componentId;
+//		if bind is shared, using the same id, as is in the template
+		String bindId = templateBind.getIsShared() ? templateBind.getId()
+				: FormManagerUtil.bind_att + CoreConstants.MINUS + componentId;
 		xformsComponentDataBean.getElement().setAttribute(
 				FormManagerUtil.bind_att, bindId);
 
@@ -409,10 +429,13 @@ public class Bind implements Cloneable {
 	 */
 
 	public void rename(String renameTo) {
-		
-		if(getIsShared()) {
-			
-			logger.log(Level.WARNING, "Renaming bind, though it is shared. Is this expected? Component id="+getFormComponent().getId()+", form id = "+getFormComponent().getFormDocument().getId());
+
+		if (getIsShared()) {
+
+			logger.log(Level.WARNING,
+					"Renaming bind, though it is shared. Is this expected? Component id="
+							+ getFormComponent().getId() + ", form id = "
+							+ getFormComponent().getFormDocument().getId());
 		}
 
 		renameTo = FormManagerUtil.escapeNonXmlTagSymbols(renameTo.replace(' ',

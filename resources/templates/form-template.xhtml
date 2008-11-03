@@ -106,7 +106,7 @@
                                 <xf:action if="count-non-empty(instance('error-instance')/error)=0">
                                     <xf:send submission="submit_data_submission"/>
                                 </xf:action>
-                                <xf:message if="count-non-empty(instance('error-instance')/error)!=0" level="modeless" ref="instance('localized_strings')/submission-error_message[@lang=instance('localized_strings')/current_language]"/>
+                                <xf:dispatch if="count-non-empty(instance('error-instance')/error)!=0" name="xforms-submit-error" target="submission-error"/>
                             </xf:action>
                         </xf:trigger>
                     </div>

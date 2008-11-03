@@ -49,7 +49,17 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <autofill_postal_code />       
 			<page /> 
 		</data>
-	</xf:instance>	
+	</xf:instance>
+	
+	<xf:instance id="control-instance">
+        <control xmlns="">
+            <required>true</required>
+            <readonly>false</readonly>
+            <submission>false</submission>
+            <generatePdf>false</generatePdf>
+            <submissionButton/>
+        </control>
+    </xf:instance>
 	
 	<!-- types hexBinary anyURI base64Binary -->
     <xf:bind id="upload" nodeset="upload/entry" type="xs:anyURI" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'"/>
@@ -97,6 +107,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xf:bind id="output_text" nodeset="output_text" />
 	
 	<xf:bind id="bind-controlsButton" nodeset="instance('control-instance')/controlsButton" relevant="instance('control-instance')/generatePdf != 'true'" />
+	
+	<xf:bind id="bind-submissionButton" idega:shared="true" nodeset="instance('control-instance')/submissionButton" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'" />
 
 </xf:model>
 <xf:model id="data_model">
@@ -703,7 +715,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	        <xf:toggle ev:event="DOMActivate" />
 	    </xf:trigger>
 	    
-	    <xf:trigger class="fbc_button_submit" id="fbc_button_submit" type="fbc_button_submit" bind="bind.submissionButton">
+	    <xf:trigger class="fbc_button_submit" id="fbc_button_submit" type="fbc_button_submit" bind="bind-submissionButton">
             <xf:label model="data_model" ref="instance('localized_strings')/submit_button-label[@lang=instance('localized_strings')/current_language]"/>
             <xf:action ev:event="DOMActivate">
                 <xf:setvalue ref="instance('control-instance')/submission" value="'true'"/>
@@ -715,11 +727,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <xf:action if="count-non-empty(instance('error-instance')/error)=0">
                     <xf:send submission="submit_data_submission"/>
                 </xf:action>
-                <xf:message if="count-non-empty(instance('error-instance')/error)!=0" level="modeless" ref="instance('localized_strings')/submission-error_message[@lang=instance('localized_strings')/current_language]"/>
+                <xf:dispatch if="count-non-empty(instance('error-instance')/error)!=0" name="xforms-submit-error" target="submission-error"/>
             </xf:action>
         </xf:trigger>
         
-        <xf:trigger id="fbc_button_save" type="fbc_button_save" bind="bind.submissionButton" class="fbc_button_submit">
+        <xf:trigger id="fbc_button_save" type="fbc_button_save" bind="bind-submissionButton" class="fbc_button_submit">
             <xf:label model="data_model" ref="instance('localized_strings')/save_button-label[@lang=instance('localized_strings')/current_language]"/>
             <xf:action ev:event="DOMActivate">
                 <xf:setvalue model="submission_model" ref="instance('saveForm-instance')/savePhase">true</xf:setvalue>
