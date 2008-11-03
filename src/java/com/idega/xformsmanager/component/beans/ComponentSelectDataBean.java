@@ -4,9 +4,9 @@ import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
  */
 public class ComponentSelectDataBean extends ComponentDataBean {
 	
@@ -18,13 +18,13 @@ public class ComponentSelectDataBean extends ComponentDataBean {
 		
 		ComponentSelectDataBean clone = (ComponentSelectDataBean)super.clone();
 		
-		try {
-			clone = (ComponentSelectDataBean)super.clone();
-			
-		} catch (Exception e) {
-			
-			clone = new ComponentSelectDataBean();
-		}
+//		try {
+//			clone = (ComponentSelectDataBean)super.clone();
+//			
+//		} catch (Exception e) {
+//			
+//			clone = new ComponentSelectDataBean();
+//		}
 		
 		if(local_itemset_instance != null)
 			clone.setLocalItemsetInstance((Element)local_itemset_instance.cloneNode(true));

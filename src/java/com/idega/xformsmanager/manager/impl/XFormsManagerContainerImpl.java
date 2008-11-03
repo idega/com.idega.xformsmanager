@@ -11,15 +11,16 @@ import org.w3c.dom.Element;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentType;
+import com.idega.xformsmanager.component.beans.ComponentContainerDataBean;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.container)
 @Service
@@ -78,7 +79,7 @@ public class XFormsManagerContainerImpl extends XFormsManagerImpl implements XFo
 		
 		if(child.getNextSibling() == null) {
 			
-			Element parentElement = parent.getComponentDataBean().getElement();
+			Element parentElement = ((ComponentContainerDataBean)parent.getComponentDataBean()).getChildrenContainerElement();
 			componentElement = (Element)parentElement.appendChild(componentElement);
 			
 		} else {
@@ -88,5 +89,10 @@ public class XFormsManagerContainerImpl extends XFormsManagerImpl implements XFo
 		}
 		
 		child.getComponentDataBean().setElement(componentElement);
+	}
+	
+	@Override
+	protected ComponentDataBean newXFormsComponentDataBeanInstance() {
+		return new ComponentContainerDataBean();
 	}
 }

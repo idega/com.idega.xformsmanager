@@ -17,13 +17,14 @@ import com.idega.xformsmanager.business.component.properties.PropertiesComponent
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements
 		FormComponentContainer, Container {

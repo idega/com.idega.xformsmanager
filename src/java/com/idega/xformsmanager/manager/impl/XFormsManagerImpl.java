@@ -31,9 +31,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -54,7 +54,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		ComponentDataBean xformsComponentDataBean = cacheManager.getXformsComponentTemplate(componentType);
 		
-		if(xformsComponentDataBean == null || true) {
+		if(xformsComponentDataBean == null) {
 			
 			synchronized (this) {
 				
@@ -65,7 +65,7 @@ public class XFormsManagerImpl implements XFormsManager {
 //					Document componentsTemplate = cacheManager.getComponentsTemplate();
 					Element componentTemplateElement = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), componentType);
 					
-					if(componentTemplateElement != null) {
+					if(componentTemplateElement != null || true) {
 						
 //						loadXFormsComponentDataBean(component, componentsTemplate, componentTemplateElement);
 						
@@ -80,7 +80,10 @@ public class XFormsManagerImpl implements XFormsManager {
 						loadBindsAndNodesets(component);
 						loadExtKeyElements(component);
 						
-						component.getComponentDataBean().getBind().setFormComponent(null);
+						Bind bind = component.getComponentDataBean().getBind();
+						
+						if(bind != null)
+							bind.setFormComponent(null);
 						
 						cacheManager.cacheXformsComponent(componentType, component.getComponentDataBean()/*.clone()*/);
 						
@@ -106,7 +109,11 @@ public class XFormsManagerImpl implements XFormsManager {
 		if(xformsComponentDataBean != null) {
 			xformsComponentDataBean = (ComponentDataBean)xformsComponentDataBean.clone();
 			component.setId(xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.id_att));
-			xformsComponentDataBean.getBind().setFormComponent(component);
+			Bind bind = xformsComponentDataBean.getBind();
+			
+			if(bind != null)
+				bind.setFormComponent(component);
+			
 			component.setComponentDataBean(xformsComponentDataBean);
 		}
 		
@@ -252,8 +259,11 @@ public class XFormsManagerImpl implements XFormsManager {
 		if(removeTextNodes())
 			FormManagerUtil.removeTextNodes(componentElement);
 
-		Bind bind = Bind.createFromTemplate(xformsComponentDataBean.getBind());
-		xformsComponentDataBean.setBind(bind);
+		if(xformsComponentDataBean.getBind() != null) {
+		
+			Bind bind = Bind.createFromTemplate(xformsComponentDataBean.getBind());
+			xformsComponentDataBean.setBind(bind);
+		}
 //		addBindingsAndNodesets(component);
 		
 		FormComponentContainer parent = component.getParent();
@@ -603,6 +613,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		Document xform = component.getFormDocument().getXformsDocument();
 		
 		Element elementToMove = componentDataBean.getElement();
+//		TODO: resolve this from parent
 		Element nextSiblingElement = null;
 		Element componentContainer = (Element)elementToMove.getParentNode();
 

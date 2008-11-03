@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.idega.util.CoreConstants;
 import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.component.FormComponent;
@@ -16,9 +17,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * TODO: when bind is shared, all the components should point to the same bind object
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -246,7 +247,7 @@ public class Bind implements Cloneable {
 				.getComponentDataBean();
 
 		// TODO: create bind id as nodeset (from label)
-		String bindId = FormManagerUtil.bind_att + '.' + componentId;
+		String bindId = FormManagerUtil.bind_att + CoreConstants.MINUS + componentId;
 		xformsComponentDataBean.getElement().setAttribute(
 				FormManagerUtil.bind_att, bindId);
 

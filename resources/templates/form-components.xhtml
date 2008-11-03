@@ -665,6 +665,24 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	    </div>
 		<hr id="fbc_separator" type="fbc_separator" class="fbc_separator" />
 		
+		<!-- pages templates here -->
+		<idega:switch>
+            <idega:case id="fbc_page" show="instance('control-instance')/generatePdf='true'">
+                <xf:group appearance="full">
+	                <xf:label
+	                   ref="instance('localized_strings')/page-label[@lang=instance('localized_strings')/current_language]"
+	                   model="data_model" />
+                </xf:group>
+            </idega:case>
+            <idega:case id="fbc_confirmation_page" type="fbc_confirmation_page">
+                <xf:group appearance="full">
+                    <xf:label 
+                        ref="instance('localized_strings')/confirmation_page-label[@lang=instance('localized_strings')/current_language]"
+                        model="data_model" />
+                </xf:group>
+            </idega:case>
+        </idega:switch>
+        <!--  
 		<xf:group id="fbc_page" appearance="full">
 			<xf:label 
 				ref="instance('localized_strings')/page-label[@lang=instance('localized_strings')/current_language]"
@@ -675,7 +693,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				ref="instance('localized_strings')/confirmation_page-label[@lang=instance('localized_strings')/current_language]"
 				model="data_model" />
 		</xf:group>
-		
+		-->
 		<xf:trigger id="fbc_button_next" type="fbc_button_next" bind="bind-controlsButton">
 		  	<xf:label ref="instance('localized_strings')/next_button-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
 	        <xf:toggle ev:event="DOMActivate" />
