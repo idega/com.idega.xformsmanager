@@ -317,7 +317,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		        </xf:model>
     	    </item>
     	    <item id="toggle-element">
-				<xf:toggle ev:event="DOMActivate" />
+				<idega:toggle ev:event="DOMActivate" />
     	    </item>
     	    <item id="section_item">
 				<section selected="false">
@@ -709,11 +709,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		-->
 		<xf:trigger id="fbc_button_next" type="fbc_button_next" bind="bind-controlsButton">
 		  	<xf:label ref="instance('localized_strings')/next_button-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
-	        <xf:toggle ev:event="DOMActivate" />
+	        <idega:toggle ev:event="DOMActivate" />
 	    </xf:trigger>
 	    <xf:trigger id="fbc_button_previous" type="fbc_button_previous" bind="bind-controlsButton">
 			<xf:label ref="instance('localized_strings')/previous_button-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
-	        <xf:toggle ev:event="DOMActivate" />
+	        <idega:toggle ev:event="DOMActivate" />
 	    </xf:trigger>
 	    
 	    <xf:trigger class="fbc_button_submit" id="fbc_button_submit" type="fbc_button_submit" bind="bind-submissionButton">

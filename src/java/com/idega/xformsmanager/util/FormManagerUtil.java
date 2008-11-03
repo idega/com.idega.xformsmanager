@@ -37,9 +37,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 17:49:51 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -92,7 +92,7 @@ public class FormManagerUtil {
 	public static final String form_id_tag = "form_id";
 	public static final String submission_tag = "xf:submission";
 	public static final String page_tag = "page";
-	public static final String toggle_tag = "xf:toggle";
+	public static final String toggle_tag = "idega:toggle";
 	public static final String number_att = "number";
 	public static final String case_att = "case";
 	public static final String p3ptype_att = "p3ptype";
