@@ -22,9 +22,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -174,7 +174,7 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	protected void changeBindNames() {
 		
-		Bind bind = getXformsComponentDataBean().getBind();
+		Bind bind = getComponentDataBean().getBind();
 		
 		if(!bind.getIsShared()) {
 
@@ -364,11 +364,11 @@ public class FormComponentImpl implements FormComponent, Component {
 		}
 	}
 	
-	public ComponentDataBean getXformsComponentDataBean() {
+	public ComponentDataBean getComponentDataBean() {
 		return xformsComponentDataBean;
 	}
 
-	public void setXformsComponentDataBean(
+	public void setComponentDataBean(
 			ComponentDataBean xformsComponentDataBean) {
 		this.xformsComponentDataBean = xformsComponentDataBean;
 	}
