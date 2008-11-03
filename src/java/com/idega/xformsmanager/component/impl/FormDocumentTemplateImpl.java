@@ -20,9 +20,9 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/03 17:36:07 $ by $Author: civilis $
  */
 public class FormDocumentTemplateImpl implements FormDocument {
 
@@ -43,6 +43,10 @@ public class FormDocumentTemplateImpl implements FormDocument {
 
 	public void setContext(DMContext context) {
 		this.context = context;
+	}
+	
+	public String getId() {
+		return "Form Components Template";
 	}
 
 	public String generateNewComponentId() {
@@ -200,12 +204,6 @@ public class FormDocumentTemplateImpl implements FormDocument {
 	}
 
 	public FormDocument getFormDocument() {
-		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
-	}
-
-	public String getId() {
 		throw new UnsupportedOperationException(
 				"Unsupported for template document");
 

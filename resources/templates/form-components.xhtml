@@ -58,6 +58,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <submission>false</submission>
             <generatePdf>false</generatePdf>
             <submissionButton/>
+            <controlsButton/>
         </control>
     </xf:instance>
 	
@@ -710,7 +711,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		  	<xf:label ref="instance('localized_strings')/next_button-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
 	        <xf:toggle ev:event="DOMActivate" />
 	    </xf:trigger>
-	    <xf:trigger id="fbc_button_previous" type="fbc_button_previous" bind="bind.controlsButton">
+	    <xf:trigger id="fbc_button_previous" type="fbc_button_previous" bind="bind-controlsButton">
 			<xf:label ref="instance('localized_strings')/previous_button-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
 	        <xf:toggle ev:event="DOMActivate" />
 	    </xf:trigger>
