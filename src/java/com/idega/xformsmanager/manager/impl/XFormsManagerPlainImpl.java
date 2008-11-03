@@ -21,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.plain)
 @Service
@@ -53,7 +53,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 	
 	protected void updateText(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		PropertiesPlain properties = (PropertiesPlain)component.getProperties();
 		LocalizedStringBean localizedText = properties.getText();
@@ -83,7 +83,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 	
 	public LocalizedStringBean getText(FormComponent component) {
 				
-		Element output = component.getXformsComponentDataBean().getElement();
+		Element output = component.getComponentDataBean().getElement();
 		
 		if (!output.hasAttribute(FormManagerUtil.ref_s_att)) {
 		    
@@ -134,7 +134,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 	@Override
 	protected void updateVariableName(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		PropertiesComponent properties = component.getProperties();
 		
 		Bind bind = xformsComponentDataBean.getBind();
@@ -158,7 +158,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 	@Override
 	protected void updateLabel(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		PropertiesComponent props = component.getProperties();
 		LocalizedStringBean locStr = props.getLabel();

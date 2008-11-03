@@ -17,9 +17,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.container)
 @Service
@@ -28,7 +28,7 @@ public class XFormsManagerContainerImpl extends XFormsManagerImpl implements XFo
 	
 	public List<String[]> getContainedComponentsTypesAndIds(FormComponent component) {
 
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		if(xformsComponentDataBean.getElement() == null)
 			throw new NullPointerException("Document container element not set");
@@ -74,19 +74,19 @@ public class XFormsManagerContainerImpl extends XFormsManagerImpl implements XFo
 	
 	public void addChild(FormComponentContainer parent, FormComponent child) {
 		
-		Element componentElement = child.getXformsComponentDataBean().getElement();
+		Element componentElement = child.getComponentDataBean().getElement();
 		
 		if(child.getNextSibling() == null) {
 			
-			Element parentElement = parent.getXformsComponentDataBean().getElement();
+			Element parentElement = parent.getComponentDataBean().getElement();
 			componentElement = (Element)parentElement.appendChild(componentElement);
 			
 		} else {
 			
-			Element nextSiblingElement = child.getNextSibling().getXformsComponentDataBean().getElement();
+			Element nextSiblingElement = child.getNextSibling().getComponentDataBean().getElement();
 			componentElement = (Element)nextSiblingElement.getParentNode().insertBefore(componentElement, nextSiblingElement);
 		}
 		
-		child.getXformsComponentDataBean().setElement(componentElement);
+		child.getComponentDataBean().setElement(componentElement);
 	}
 }

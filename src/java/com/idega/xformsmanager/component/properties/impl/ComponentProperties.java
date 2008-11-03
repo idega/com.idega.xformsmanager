@@ -10,9 +10,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:48 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -167,7 +167,7 @@ public class ComponentProperties implements PropertiesComponent {
 		if(isRequired())
 			return true;
 		
-		Bind bind = component.getXformsComponentDataBean().getBind();
+		Bind bind = component.getComponentDataBean().getBind();
 		
 		if(bind != null) {
 			

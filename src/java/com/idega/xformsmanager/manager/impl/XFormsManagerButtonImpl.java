@@ -27,9 +27,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -59,7 +59,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	protected void loadToggleElement(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		ComponentButtonDataBean xFormsComponentButtonDataBean = (ComponentButtonDataBean)xformsComponentDataBean;
 		
@@ -79,7 +79,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	public void renewButtonPageContextPages(FormComponent component, FormComponentPage previous, FormComponentPage next) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		Element toggle_element = ((ComponentButtonDataBean)xformsComponentDataBean).getToggleElement();
 		
@@ -135,7 +135,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	protected void renewNextPrevButtons(FormComponent component, int button_type, FormComponentPage relevant_page, Element toggle_element) {
 
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		if(relevant_page == null) {
 			
@@ -211,12 +211,12 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	}
 	
 	public void setLastPageToSubmitButton(FormComponent component, String last_page_id) {
-		((ComponentButtonDataBean)component.getXformsComponentDataBean()).getToggleElement().setAttribute(FormManagerUtil.case_att, last_page_id);
+		((ComponentButtonDataBean)component.getComponentDataBean()).getToggleElement().setAttribute(FormManagerUtil.case_att, last_page_id);
 	}
 	
 	protected Element createToggleElement(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		Element toggle_element = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), "toggle-element");
 		Element button_element = xformsComponentDataBean.getElement();
@@ -251,7 +251,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	private void removeReferAction(FormComponent component) {
 		
-		Element buttonElement = component.getXformsComponentDataBean().getElement();
+		Element buttonElement = component.getComponentDataBean().getElement();
 		
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 		
@@ -293,7 +293,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	private void setOrcreateReferAction(FormComponent formComponent, String referAction) {
 		
-		Element buttonElement = formComponent.getXformsComponentDataBean().getElement();
+		Element buttonElement = formComponent.getComponentDataBean().getElement();
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 		
 		if(setValueEl == null) {
@@ -346,7 +346,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	public String getReferAction(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		Element buttonElement = xformsComponentDataBean.getElement();
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 		
@@ -431,7 +431,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	@Override
 	public boolean isReadonly(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		Bind bind = xformsComponentDataBean.getBind();
 		
 		return bind != null && bind.getNodeset().getContent().equals(FormManagerUtil.xpath_false);
@@ -447,7 +447,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	public boolean isSubmitButton(FormComponent component) {
 
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		return getSendSubmissionElement(xformsComponentDataBean.getElement()) != null;
 	}
 }

@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.thankYouPage)
 @Service
@@ -42,7 +42,7 @@ public class XFormsManagerThankYouPageImpl extends XFormsManagerPageImpl impleme
 
 	protected void updateThankYouText(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		PropertiesThankYouPage props = (PropertiesThankYouPage)component.getProperties();
 		LocalizedStringBean loc_str = props.getText();
@@ -63,7 +63,7 @@ public class XFormsManagerThankYouPageImpl extends XFormsManagerPageImpl impleme
 	
 	public LocalizedStringBean getThankYouText(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		NodeList outputs = xformsComponentDataBean.getElement().getElementsByTagName(FormManagerUtil.output_tag);
 		

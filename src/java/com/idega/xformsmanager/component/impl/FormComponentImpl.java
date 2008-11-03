@@ -4,8 +4,6 @@ import java.util.Locale;
 
 import org.w3c.dom.Element;
 
-import sun.net.www.content.text.plain;
-
 import com.idega.xformsmanager.business.component.Component;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
@@ -22,9 +20,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:59:00 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -180,8 +178,6 @@ public class FormComponentImpl implements FormComponent, Component {
 
 //			TODO: do the same with nodeset
 			LocalizedStringBean localizedLabel = getProperties().getLabel();
-			System.out.println("label="+localizedLabel);
-			System.out.println("formdocument="+getFormDocument());
 			String defaultLocaleLabel = localizedLabel.getString(getFormDocument().getDefaultLocale());
 			
 			String newBindName = new StringBuffer(defaultLocaleLabel)
@@ -272,8 +268,6 @@ public class FormComponentImpl implements FormComponent, Component {
 
 	public XFormsManager getXFormsManager() {
 		
-		System.out.println("DMContenxt = "+getFormDocument().getContext());
-		System.out.println("XFORms fact = "+getFormDocument().getContext().getXformsManagerFactory());
 		return getFormDocument().getContext().getXformsManagerFactory().getXformsManager();
 	}
 	

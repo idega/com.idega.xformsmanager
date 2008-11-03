@@ -20,9 +20,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 //@Service
 //@Scope("singleton")
@@ -75,7 +75,7 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
     public void removeComponentFromXFormsDocument(FormComponent component) {
 
 	ComponentMultiUploadBean xforms_component = (ComponentMultiUploadBean) component
-		.getXformsComponentDataBean();
+		.getComponentDataBean();
 	Element data_src_element = xforms_component.getMultiUploadInstance();
 
 	if (data_src_element != null)
@@ -91,7 +91,7 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 
 	super.addComponentToDocument(component);
 	
-	ComponentMultiUploadBean xfMultiUploadComponentBean = (ComponentMultiUploadBean) component.getXformsComponentDataBean();
+	ComponentMultiUploadBean xfMultiUploadComponentBean = (ComponentMultiUploadBean) component.getComponentDataBean();
 
 	Element nodeElement = (Element) insertXPUT.getNode(xfMultiUploadComponentBean.getElement());
 	nodeElement.setAttribute(FormManagerUtil.nodeset_att,constructInsertNodeset(component));
@@ -165,7 +165,7 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 // 	getting all labels nodes from component   
     protected NodeList getLabelNodeList (FormComponent component){
 	NodeList labels;
-	ComponentMultiUploadBean xfMultiUploadComponent = (ComponentMultiUploadBean) component.getXformsComponentDataBean();
+	ComponentMultiUploadBean xfMultiUploadComponent = (ComponentMultiUploadBean) component.getComponentDataBean();
 	synchronized (labelsXPathUT) {
 	    labels = labelsXPathUT.getNodeset(xfMultiUploadComponent.getElement());
 	}

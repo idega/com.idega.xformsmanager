@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
  * manager
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 public interface FormComponent {
 
@@ -89,10 +89,10 @@ public interface FormComponent {
 
 	public abstract void update(ConstUpdateType what);
 
-	public abstract ComponentDataBean getXformsComponentDataBean();
+	public abstract ComponentDataBean getComponentDataBean();
 
-	public abstract void setXformsComponentDataBean(
-			ComponentDataBean xformsComponentDataBean);
+	public abstract void setComponentDataBean(
+			ComponentDataBean componentDataBean);
 
 	public abstract FormDocument getFormDocument();
 

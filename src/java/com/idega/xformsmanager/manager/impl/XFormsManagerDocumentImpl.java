@@ -24,9 +24,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.document)
 @Service
@@ -41,14 +41,14 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 	public void setComponentsContainer(FormComponent component, Element element) {
 		
 		ComponentDataBean xformsComponentDataBean = newXFormsComponentDataBeanInstance();
-		component.setXformsComponentDataBean(xformsComponentDataBean);
+		component.setComponentDataBean(xformsComponentDataBean);
 		
 		xformsComponentDataBean.setElement(element);
 	}
 	
 	public Element getAutofillAction(FormComponent component) {
 		
-		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getXformsComponentDataBean();
+		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getComponentDataBean();
 		
 		if(componentDocumentDataBean.getAutofillAction() == null) {
 			
@@ -112,7 +112,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 	
 	public Element getFormMainDataInstanceElement(FormComponent component) {
 		
-		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getXformsComponentDataBean();
+		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getComponentDataBean();
 		
 		Element mainDataInstance = componentDocumentDataBean.getFormMainDataInstanceElement();
 		
@@ -130,7 +130,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 	
 	public Element getFormDataModelElement(FormComponent component) {
 		
-		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getXformsComponentDataBean();
+		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getComponentDataBean();
 		
 		Element dataModel = componentDocumentDataBean.getFormDataModel();
 		
@@ -148,7 +148,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 	
 	public Element getSectionsVisualizationInstanceElement(FormComponent component) {
 
-		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getXformsComponentDataBean();
+		ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getComponentDataBean();
 		
 		if(componentDocumentDataBean.getSectionsVisualizationInstance() == null) {
 			
@@ -222,7 +222,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 		} else {
 			
-			ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getXformsComponentDataBean();
+			ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getComponentDataBean();
 			
 			Element rem = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, FormManagerUtil.sections_visualization_id);
 			

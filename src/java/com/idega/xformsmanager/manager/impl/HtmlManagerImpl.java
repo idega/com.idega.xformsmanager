@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -26,7 +26,7 @@ public class HtmlManagerImpl implements HtmlManager {
 	
 	public Element getHtmlRepresentation(FormComponent component, Locale locale) throws Exception {
 		
-		ComponentDataBean componentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean componentDataBean = component.getComponentDataBean();
 		Map<Locale, Element> localizedHtmlRepresentations = componentDataBean.getLocalizedHtmlComponents();
 		
 		Element localizedRepresentation;
@@ -56,7 +56,7 @@ public class HtmlManagerImpl implements HtmlManager {
 	}
 	
 	public void clearHtmlComponents(FormComponent component) {
-		component.getXformsComponentDataBean().getLocalizedHtmlComponents().clear();
+		component.getComponentDataBean().getLocalizedHtmlComponents().clear();
 	}
 	
 	protected Document getXFormsDocumentHtmlRepresentation(FormComponent component, Locale locale) throws Exception {

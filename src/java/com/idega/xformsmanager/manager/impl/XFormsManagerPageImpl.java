@@ -17,9 +17,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.page)
 @Service
@@ -68,7 +68,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 	
 	protected void checkForSpecialTypes(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		String pageType = xformsComponentDataBean.getElement().getAttribute(FormManagerUtil.type_att);
 		if(pageType != null && 

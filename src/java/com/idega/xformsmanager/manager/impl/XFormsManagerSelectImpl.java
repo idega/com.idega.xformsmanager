@@ -18,256 +18,336 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
- *
- * Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ * @version $Revision: 1.4 $
+ * 
+ *          Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.select)
 @Service
 @Scope("singleton")
-public class XFormsManagerSelectImpl extends XFormsManagerImpl implements XFormsManagerSelect {
+public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
+		XFormsManagerSelect {
+
+	private static final String local_data_source = "_lds";
+	private static final String external_data_source = "_eds";
 
 	@Override
 	protected ComponentDataBean newXFormsComponentDataBeanInstance() {
 		return new ComponentSelectDataBean();
 	}
-	
-	private static final String local_data_source = "_lds";
-	private static final String external_data_source = "_eds";
-	
-	/*
+
 	@Override
-	protected void loadXFormsComponentDataBean(FormComponent component, Document xform, Element componentElement) {
-		
-		super.loadXFormsComponentDataBean(component, xform, componentElement);
-		
-		ComponentSelectDataBean xformsComponentDataBean = (ComponentSelectDataBean)component.getXformsComponentDataBean();
-		
-		componentElement = xformsComponentDataBean.getElement();
-		String componentElementId = componentElement.getAttribute(FormManagerUtil.id_att);
-		
-		Element localDataSourceInstance = FormManagerUtil.getElementByIdFromDocument(xform, FormManagerUtil.head_tag, getLocalDataSourceInstanceIdentifier(componentElementId));
-		Element externalDataSourceInstance = FormManagerUtil.getElementByIdFromDocument(xform, FormManagerUtil.head_tag, getExternalDataSourceInstanceIdentifier(componentElementId));
-		
-		xformsComponentDataBean.setLocalItemsetInstance(localDataSourceInstance);
-		xformsComponentDataBean.setExternalItemsetInstance(externalDataSourceInstance);
+	public void loadComponentFromTemplate(FormComponent component) {
+		super.loadComponentFromTemplate(component);
+		loadItemsets(component);
 	}
-	*/
-	private String getLocalDataSourceInstanceIdentifier(String element_id) {
-	
-		return element_id+local_data_source;
+
+	@Override
+	public void loadComponentFromDocument(FormComponent component) {
+		super.loadComponentFromDocument(component);
+		loadItemsets(component);
 	}
-	private String getExternalDataSourceInstanceIdentifier(String element_id) {
+
+	protected void loadItemsets(FormComponent component) {
+
+		ComponentSelectDataBean componentDataBean = (ComponentSelectDataBean) component
+				.getComponentDataBean();
+
+		String componentId = component.getId();
+		Document xform = component.getFormDocument().getXformsDocument();
+
+		Element localDataSourceInstance = FormManagerUtil.getElementById(xform,
+				getLocalDataSourceInstanceIdentifier(componentId));
+		Element externalDataSourceInstance = FormManagerUtil.getElementById(
+				xform, getExternalDataSourceInstanceIdentifier(componentId));
 		
-		return element_id+external_data_source;
+		componentDataBean.setLocalItemsetInstance(localDataSourceInstance);
+		componentDataBean
+				.setExternalItemsetInstance(externalDataSourceInstance);
 	}
-	
+
+	/*
+	 * @Override protected void loadXFormsComponentDataBean(FormComponent
+	 * component, Document xform, Element componentElement) {
+	 * 
+	 * super.loadXFormsComponentDataBean(component, xform, componentElement);
+	 * 
+	 * ComponentSelectDataBean xformsComponentDataBean =
+	 * (ComponentSelectDataBean)component.getXformsComponentDataBean();
+	 * 
+	 * componentElement = xformsComponentDataBean.getElement(); String
+	 * componentElementId =
+	 * componentElement.getAttribute(FormManagerUtil.id_att);
+	 * 
+	 * Element localDataSourceInstance =
+	 * FormManagerUtil.getElementByIdFromDocument(xform,
+	 * FormManagerUtil.head_tag,
+	 * getLocalDataSourceInstanceIdentifier(componentElementId)); Element
+	 * externalDataSourceInstance =
+	 * FormManagerUtil.getElementByIdFromDocument(xform,
+	 * FormManagerUtil.head_tag,
+	 * getExternalDataSourceInstanceIdentifier(componentElementId));
+	 * 
+	 * xformsComponentDataBean.setLocalItemsetInstance(localDataSourceInstance);
+	 * xformsComponentDataBean
+	 * .setExternalItemsetInstance(externalDataSourceInstance); }
+	 */
+
+	private String getLocalDataSourceInstanceIdentifier(String componentId) {
+
+		return componentId + local_data_source;
+	}
+
+	private String getExternalDataSourceInstanceIdentifier(String componentId) {
+
+		return componentId + external_data_source;
+	}
+
 	@Override
 	public void addComponentToDocument(FormComponent component) {
-		
-		super.addComponentToDocument(component);
-		
-		Document xforms_doc = component.getFormDocument().getXformsDocument();
-		
-		ComponentSelectDataBean xformsComponentDataBean = (ComponentSelectDataBean)component.getXformsComponentDataBean();
-		
-		Element new_xforms_element = xformsComponentDataBean.getLocalItemsetInstance();
-		
-		Element data_model_instance_element = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.head_tag, FormManagerUtil.data_mod);
-		
-		if(new_xforms_element != null) {
 
-			String local_id = new_xforms_element.getAttribute(FormManagerUtil.id_att);
-			
-			new_xforms_element = (Element)xforms_doc.importNode(new_xforms_element, true);
-			new_xforms_element.setAttribute(FormManagerUtil.id_att, getLocalDataSourceInstanceIdentifier(component.getId()));
-			new_xforms_element = (Element)data_model_instance_element.appendChild(new_xforms_element);
-			xformsComponentDataBean.setLocalItemsetInstance(new_xforms_element);
-			
-			Element itemset = DOMUtil.getElementByAttributeValue(xformsComponentDataBean.getElement(), "*", FormManagerUtil.nodeset_att, constructItemsetInstance(local_id, null));
-			
-			if(itemset != null)
-				itemset.setAttribute(FormManagerUtil.nodeset_att, constructItemsetInstance(component, PropertiesSelect.LOCAL_DATA_SRC));
+		super.addComponentToDocument(component);
+
+		Document xform = component.getFormDocument().getXformsDocument();
+
+		ComponentSelectDataBean componentDataBean = (ComponentSelectDataBean) component
+				.getComponentDataBean();
+
+		Element localItemsetInstanceElement = componentDataBean
+				.getLocalItemsetInstance();
+
+		Element dataModelElement = FormManagerUtil.getElementById(xform,
+				FormManagerUtil.data_mod);
+
+		if (localItemsetInstanceElement != null) {
+
+			String localId = localItemsetInstanceElement
+					.getAttribute(FormManagerUtil.id_att);
+
+			localItemsetInstanceElement = (Element) xform.importNode(
+					localItemsetInstanceElement, true);
+			localItemsetInstanceElement.setAttribute(FormManagerUtil.id_att,
+					getLocalDataSourceInstanceIdentifier(component.getId()));
+			localItemsetInstanceElement = (Element) dataModelElement
+					.appendChild(localItemsetInstanceElement);
+			componentDataBean
+					.setLocalItemsetInstance(localItemsetInstanceElement);
+
+			Element itemset = DOMUtil.getElementByAttributeValue(
+					componentDataBean.getElement(), "*",
+					FormManagerUtil.nodeset_att, constructItemsetInstance(
+							localId, null));
+
+			if (itemset != null)
+				itemset.setAttribute(FormManagerUtil.nodeset_att,
+						constructItemsetInstance(component.getId(),
+								PropertiesSelect.LOCAL_DATA_SRC));
 		}
-		
-		new_xforms_element = xformsComponentDataBean.getExternalItemsetInstance();
-		
-		if(new_xforms_element != null) {
-			
-			new_xforms_element = (Element)xforms_doc.importNode(new_xforms_element, true);
-			new_xforms_element.setAttribute(FormManagerUtil.id_att, getExternalDataSourceInstanceIdentifier(component.getId()));
-			new_xforms_element = (Element)data_model_instance_element.appendChild(new_xforms_element);
-			xformsComponentDataBean.setExternalItemsetInstance(new_xforms_element);
+
+		Element externalItemsetInstanceElement = componentDataBean
+				.getExternalItemsetInstance();
+
+		if (externalItemsetInstanceElement != null) {
+
+			externalItemsetInstanceElement = (Element) xform.importNode(
+					externalItemsetInstanceElement, true);
+			externalItemsetInstanceElement.setAttribute(FormManagerUtil.id_att,
+					getExternalDataSourceInstanceIdentifier(component.getId()));
+			externalItemsetInstanceElement = (Element) dataModelElement
+					.appendChild(externalItemsetInstanceElement);
+			componentDataBean
+					.setExternalItemsetInstance(externalItemsetInstanceElement);
 		}
 	}
-	
+
 	public Integer getDataSrcUsed(FormComponent component) {
-		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
-		
-		Element component_element = xformsComponentDataBean.getElement();
-		
-		Element itemset = DOMUtil.getChildElement(component_element, FormManagerUtil.itemset_tag);
-		
-		if(itemset == null)
+
+		ComponentDataBean xformsComponentDataBean = component
+				.getComponentDataBean();
+
+		Element componentElement = xformsComponentDataBean.getElement();
+
+		Element itemset = DOMUtil.getChildElement(componentElement,
+				FormManagerUtil.itemset_tag);
+
+		if (itemset == null)
 			return null;
-		
-		String nodeset_att_value = itemset.getAttribute(FormManagerUtil.nodeset_att);
-		
-		if(nodeset_att_value == null)
+
+		String nodesetAttValue = itemset
+				.getAttribute(FormManagerUtil.nodeset_att);
+
+		if (nodesetAttValue == null)
 			return null;
-		
-		String data_src_instance_id = nodeset_att_value.substring("instance('".length(), nodeset_att_value.indexOf("')"));
-		
-		if(data_src_instance_id.endsWith("_eds"))
+
+		String dataSrcInstanceId = nodesetAttValue.substring("instance('"
+				.length(), nodesetAttValue.indexOf("')"));
+
+		if (dataSrcInstanceId.endsWith("_eds"))
 			return PropertiesSelect.EXTERNAL_DATA_SRC;
-		else if(data_src_instance_id.endsWith("_lds"))
+		else if (dataSrcInstanceId.endsWith("_lds"))
 			return PropertiesSelect.LOCAL_DATA_SRC;
-		
+
 		return null;
 	}
-	
+
 	public String getExternalDataSrc(FormComponent component) {
-		
-		Element external_instance = ((ComponentSelectDataBean)component.getXformsComponentDataBean()).getExternalItemsetInstance();
-		
-		if(external_instance == null)
-			return null;
-		
-		return external_instance.getAttribute(FormManagerUtil.src_att);
+
+		final Element externalInstance = ((ComponentSelectDataBean) component
+				.getComponentDataBean()).getExternalItemsetInstance();
+
+		final String src;
+
+		if (externalInstance == null)
+			src = null;
+		else
+			src = externalInstance.getAttribute(FormManagerUtil.src_att);
+
+		return src;
 	}
-	
+
 	public LocalizedItemsetBean getItemset(FormComponent component) {
 
-		Element local_instance = ((ComponentSelectDataBean)component.getXformsComponentDataBean()).getLocalItemsetInstance();
-		
-		if(local_instance == null)
+		Element localInstance = ((ComponentSelectDataBean) component
+				.getComponentDataBean()).getLocalItemsetInstance();
+
+		if (localInstance == null)
 			return null;
-		
-		LocalizedItemsetBean itemset_bean = new LocalizedItemsetBean();
-		itemset_bean.setLocalDataSrcElement(local_instance);
-		itemset_bean.setComponentsXFormsDocument(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate());
-		itemset_bean.setComponent(component);
-		
-		return itemset_bean;
+
+		LocalizedItemsetBean itemsetBean = new LocalizedItemsetBean();
+		itemsetBean.setLocalDataSrcElement(localInstance);
+		itemsetBean.setComponentsXFormsDocument(component.getFormDocument()
+				.getContext().getCacheManager().getComponentsTemplate());
+		itemsetBean.setComponent(component);
+
+		return itemsetBean;
 	}
-	
+
 	@Override
 	public void update(FormComponent component, ConstUpdateType what) {
-		
+
 		super.update(component, what);
-		
+
 		switch (what) {
 		case DATA_SRC_USED:
 			updateDataSrcUsed(component);
 			break;
-			
+
 		case EXTERNAL_DATA_SRC:
 			updateExternalDataSrc(component);
 			break;
-			
+
 		default:
 			break;
 		}
 	}
-	
+
 	protected void updateDataSrcUsed(FormComponent component) {
-		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
-		
-		PropertiesSelect properties = (PropertiesSelect)component.getProperties();
-		Integer data_src_used = properties.getDataSrcUsed();
-		
-		Element component_element = xformsComponentDataBean.getElement();
-		
-		if(data_src_used == null) {
-			
-			Element itemset = DOMUtil.getChildElement(component_element, FormManagerUtil.itemset_tag);
-			
-			if(itemset != null)
-				component_element.removeChild(itemset);
-			
+
+		ComponentDataBean xformsComponentDataBean = component
+				.getComponentDataBean();
+
+		PropertiesSelect properties = (PropertiesSelect) component
+				.getProperties();
+		Integer dataSrcUsed = properties.getDataSrcUsed();
+
+		Element componentElement = xformsComponentDataBean.getElement();
+
+		if (dataSrcUsed == null) {
+
+			Element itemset = DOMUtil.getChildElement(componentElement,
+					FormManagerUtil.itemset_tag);
+
+			if (itemset != null)
+				componentElement.removeChild(itemset);
+
 		} else {
-			
-			String itemset_instance_str = null; 
-			
-			if(data_src_used == PropertiesSelect.EXTERNAL_DATA_SRC) {
-				
-				itemset_instance_str = constructItemsetInstance(component, PropertiesSelect.EXTERNAL_DATA_SRC);
-				
-			} else if(data_src_used == PropertiesSelect.LOCAL_DATA_SRC) {
-				itemset_instance_str = constructItemsetInstance(component, PropertiesSelect.LOCAL_DATA_SRC);
-			}
-			
-			if(itemset_instance_str == null)
+
+			final String itemsetInstanceStr;
+
+			if (dataSrcUsed == PropertiesSelect.EXTERNAL_DATA_SRC) {
+				itemsetInstanceStr = constructItemsetInstance(
+						component.getId(), PropertiesSelect.EXTERNAL_DATA_SRC);
+
+			} else if (dataSrcUsed == PropertiesSelect.LOCAL_DATA_SRC) {
+				itemsetInstanceStr = constructItemsetInstance(
+						component.getId(), PropertiesSelect.LOCAL_DATA_SRC);
+			} else
 				return;
-			
-			Element itemset = DOMUtil.getChildElement(component_element, FormManagerUtil.itemset_tag);
-			
-			if(itemset == null) {
-				
-				itemset = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getCacheManager().getComponentsTemplate(), "itemset");
-				itemset = (Element)component_element.getOwnerDocument().importNode(itemset, true);
-				component_element.appendChild(itemset);
+
+			Element itemset = DOMUtil.getChildElement(componentElement,
+					FormManagerUtil.itemset_tag);
+
+			if (itemset == null) {
+
+				itemset = FormManagerUtil.getItemElementById(component
+						.getFormDocument().getContext().getCacheManager()
+						.getComponentsTemplate(), "itemset");
+				itemset = (Element) componentElement.getOwnerDocument()
+						.importNode(itemset, true);
+				componentElement.appendChild(itemset);
 			}
-			
-			itemset.setAttribute(FormManagerUtil.nodeset_att, itemset_instance_str);
+
+			itemset.setAttribute(FormManagerUtil.nodeset_att,
+					itemsetInstanceStr);
 		}
 	}
-	
-	private String constructItemsetInstance(FormComponent component, Integer data_source) {
-	
-		return constructItemsetInstance(component.getId(), data_source);
-	}
-	
-	private String constructItemsetInstance(String component_id, Integer data_source) {
-		
+
+	private String constructItemsetInstance(String componentId,
+			Integer dataSource) {
+
 		StringBuffer buf = new StringBuffer();
-		
-		buf.append("instance('")
-		.append(component_id);
-		
-		if(data_source != null) {
-			
-			if(data_source == PropertiesSelect.LOCAL_DATA_SRC)
+
+		buf.append("instance('").append(componentId);
+
+		if (dataSource != null) {
+
+			if (dataSource == PropertiesSelect.LOCAL_DATA_SRC)
 				buf.append("_lds");
 			else
 				buf.append("_eds");
 		}
-		
-		buf.append("')/localizedEntries[@lang=instance('localized_strings')/current_language]/item");
-		
+
+		buf
+				.append("')/localizedEntries[@lang=instance('localized_strings')/current_language]/item");
+
 		return buf.toString();
 	}
 
 	protected void updateExternalDataSrc(FormComponent component) {
-		
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
-		
-		Element external_instance = ((ComponentSelectDataBean)xformsComponentDataBean).getExternalItemsetInstance();
-		
-		if(external_instance == null)
+
+		ComponentDataBean xformsComponentDataBean = component
+				.getComponentDataBean();
+
+		Element externalInstance = ((ComponentSelectDataBean) xformsComponentDataBean)
+				.getExternalItemsetInstance();
+
+		if (externalInstance == null)
 			return;
-		
-		String external_data_src = ((PropertiesSelect)component.getProperties()).getExternalDataSrc();
-		
-		if(external_data_src == null)
+
+		String externalDataSrc = ((PropertiesSelect) component
+				.getProperties()).getExternalDataSrc();
+
+		if (externalDataSrc == null)
 			return;
-		
-		external_instance.setAttribute(FormManagerUtil.src_att, external_data_src);
+
+		externalInstance.setAttribute(FormManagerUtil.src_att,
+				externalDataSrc);
 	}
-	
-	public void removeSelectComponentSourcesFromXFormsDocument(FormComponent component) {
-		
-		ComponentSelectDataBean xforms_component = (ComponentSelectDataBean)component.getXformsComponentDataBean();
-		Element data_src_element = xforms_component.getExternalItemsetInstance();
-		
-		if(data_src_element != null)
-			data_src_element.getParentNode().removeChild(data_src_element);
-		
-		data_src_element = xforms_component.getLocalItemsetInstance();
-		
-		if(data_src_element != null)
-			data_src_element.getParentNode().removeChild(data_src_element);
+
+	public void removeSelectComponentSourcesFromXFormsDocument(
+			FormComponent component) {
+
+		ComponentSelectDataBean componentDataBean = (ComponentSelectDataBean) component
+				.getComponentDataBean();
+		Element externalItemsetInstance = componentDataBean
+				.getExternalItemsetInstance();
+
+		if (externalItemsetInstance != null)
+			externalItemsetInstance.getParentNode().removeChild(externalItemsetInstance);
+
+		Element localItemsetInstance = componentDataBean.getLocalItemsetInstance();
+
+		if (localItemsetInstance != null)
+			localItemsetInstance.getParentNode().removeChild(localItemsetInstance);
 	}
 }
