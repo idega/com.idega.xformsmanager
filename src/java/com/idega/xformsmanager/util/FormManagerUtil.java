@@ -44,9 +44,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 20:53:52 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -447,6 +447,9 @@ public class FormManagerUtil {
 	private static XPathUtil validatorMessagesElementsXPath 
 	= new XPathUtil(".//idega:validator/idega:message", new Prefix("idega", idega_namespace));
 	
+	private static XPathUtil validatorBlockElementsXPath 
+	= new XPathUtil(".//idega:validator", new Prefix("idega", idega_namespace));
+	
 	public static Map<ErrorType, LocalizedStringBean> getErrorLabelLocalizedStrings(Node context) {
 		
 //		<idega:validator ev:event="idega-validate">
@@ -487,26 +490,79 @@ public class FormManagerUtil {
 		return errors;
 	}
 	
-	public void setErrorLabelLocalizedStrings(Node context, ErrorStringBean errString) {
+	public static void setErrorLabelLocalizedStrings(Element componentElement, ErrorStringBean errString) {
 		
-		NodeList validatorMessagesElements = validatorMessagesElementsXPath.getNodeset(context);
+//		Element componentElement = component.getComponentDataBean().getElement();
+		
+		NodeList validatorMessagesElements = validatorMessagesElementsXPath.getNodeset(componentElement);
 		
 //		String attributeName, String key, String oldKey, Element element, Document xform, LocalizedStringBean localizedStr
-		putLocalizedText(value_att, "newkey", "oldkey", null, null, null);
+//		putLocalizedText(value_att, "newkey", "oldkey", null, null, null);
 		
-		for (int i = 0; i < validatorMessagesElements.getLength(); i++) {
-			
-			Element el = (Element)validatorMessagesElements.item(i);
-			String errorTypeAtt = el.getAttribute("errorType");
-			
-			ErrorType errorType = ErrorType.getByStringRepresentation(errorTypeAtt);
-			
-			if(errString.getErrorType() == errorType) {
+		if(validatorMessagesElements.getLength() != 0) {
+		
+			for (int i = 0; i < validatorMessagesElements.getLength(); i++) {
 				
-				String value = el.getAttribute(value_att);
+				Element el = (Element)validatorMessagesElements.item(i);
+				String errorTypeAtt = el.getAttribute("errorType");
 				
-				break;
+				ErrorType errorType = ErrorType.getByStringRepresentation(errorTypeAtt);
+				
+				if(errString.getErrorType() == errorType) {
+					
+					putLocalizedText(value_att, null, null, el, el.getOwnerDocument(), errString.getLocalizedStringBean());
+					return;
+				}
 			}
+		} else {
+			
+			System.out.println("creating________ validation block");
+//			assuming there are no validation block
+			
+			try {
+				
+				DocumentBuilder db = XmlUtil.getDocumentBuilder();
+				Document d = db.parse(new File("/Users/civilis/dev/workspace/eplatform-4-bpm/com.idega.xformsmanager/resources/templates/form-components.xhtml"));
+				
+				List<Element> validationBlockElements = FormManagerUtil.getItemElementsById(d, "validationMessagesHandling");
+				
+				for (Element element : validationBlockElements) {
+				
+					Element validationBlock = (Element)componentElement.getOwnerDocument().importNode(element, true);
+					validationBlock = (Element)componentElement.appendChild(validationBlock);
+				}
+				
+				replaceAttributesByExpression(componentElement, "componentId", "XXXXCOMPONENTID");
+				
+//				replaceAttributesByExpression(validationBlock, "componentId", component.getId());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+//			d = component.getFormDocument().getContext().getComponentsXforms()
+		}
+		
+//		create message element
+		
+		try {
+			DocumentBuilder db = XmlUtil.getDocumentBuilder();
+			Document d = db.parse(new File("/Users/civilis/dev/workspace/eplatform-4-bpm/com.idega.xformsmanager/resources/templates/form-components.xhtml"));
+			
+			Element validationBlock = validatorBlockElementsXPath.getNode(componentElement);
+			
+//			<idega:message errorType="" model="data_model" value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
+			
+			Element messageElement = FormManagerUtil.getItemElementById(d, "validationMessage");
+			messageElement = (Element)validationBlock.getOwnerDocument().importNode(messageElement, true);
+			messageElement = (Element)validationBlock.appendChild(messageElement);
+			messageElement.setAttribute("errorType", errString.getErrorType().toString());
+			
+			replaceAttributesByExpression(validationBlock, "messageKey", "XXXXXXcomponentID"+CoreConstants.MINUS+errString.getErrorType());
+			putLocalizedText(value_att, null, null, messageElement, messageElement.getOwnerDocument(), errString.getLocalizedStringBean());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		/*
@@ -688,11 +744,22 @@ public class FormManagerUtil {
 	
 	public static Element getItemElementById(Document item_doc, String item_id) {
 		
-		Element item = FormManagerUtil.getElementByIdFromDocument(item_doc, head_tag, item_id);
+		Element item = FormManagerUtil.getElementById(item_doc, item_id);
 		if(item == null)
 			return null;
 		
 		return DOMUtil.getFirstChildElement(item);
+	}
+	
+	public static List<Element> getItemElementsById(Document item_doc, String item_id) {
+		
+		Element item = FormManagerUtil.getElementById(item_doc, item_id);
+		if(item == null)
+			return null;
+		
+		@SuppressWarnings("unchecked")
+		List<Element> childEls = DOMUtil.getChildElements(item);
+		return childEls;
 	}
 	
 	public static void removeTextNodes(Node node) {
@@ -897,8 +964,16 @@ public class FormManagerUtil {
 			
 			Map<ErrorType, LocalizedStringBean> errStrs = getErrorLabelLocalizedStrings(emailElement);
 			
-			System.out.println("keys="+errStrs.keySet());
-			System.out.println(errStrs);
+			Element textElement = getElementById(d, "fbc_text");
+			
+			LocalizedStringBean sb = errStrs.get(ErrorType.validation);
+			ErrorStringBean errstr = new ErrorStringBean(ErrorType.custom, sb);
+			
+			errstr.getLocalizedStringBean().setString(new Locale("en"), "uhuauaha");
+			
+			setErrorLabelLocalizedStrings(textElement, errstr);
+			
+			DOMUtil.prettyPrintDOM(textElement.getOwnerDocument());
 			
 			if(true)
 				return;

@@ -295,8 +295,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<xf:label ref="itemLabel" />
 				<xf:value ref="itemValue" />
 			</xf:itemset> </item> 
-			<item id="alert">
-			    <xf:alert ref="instance('error-instance')/error[@for='$id']"/> 
+			<item id="validationMessagesHandling">
+			    <xf:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="#{componentId}"/>
+                <xf:dispatch ev:event="xforms-value-changed" name="idega-validate" target="#{componentId}"/>
+	            <idega:validator ev:event="idega-validate">
+	            </idega:validator>
+                <xf:alert ref="instance('error-instance')/error[@for='#{componentId}']"/> 
+			</item>
+			<item id="validationMessage">
+			     <idega:message errorType="" model="data_model" value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
 			</item>
 			<item id="help"> 
 				<xf:help>
