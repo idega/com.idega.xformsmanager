@@ -8,9 +8,9 @@ import com.idega.xformsmanager.manager.XFormsManagerMultiUploadDescription;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:39 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
  */
 public class FormComponentMultiUploadDescriptionImpl extends FormComponentImpl implements ComponentMultiUploadDescription{
 	
@@ -67,9 +67,9 @@ public class FormComponentMultiUploadDescriptionImpl extends FormComponentImpl i
 	}
 	
 	@Override
-	public void update(ConstUpdateType what) {
+	public void update(ConstUpdateType what, Object prop) {
 		
-	    	getXFormsManager().update(this, what);
+		getXFormsManager().update(this, what, prop);
 		
 		switch (what) {
 		case ADD_BUTTON_LABEL:

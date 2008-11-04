@@ -1,6 +1,9 @@
 package com.idega.xformsmanager.manager;
 
+import java.util.Map;
+
 import com.idega.block.process.variables.Variable;
+import com.idega.chiba.web.xml.xforms.validation.ErrorType;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentPage;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
@@ -8,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/04 17:53:01 $ by $Author: civilis $
  */
 public interface XFormsManager {
 
@@ -41,7 +44,7 @@ public interface XFormsManager {
 	 */
 	public abstract void addComponentToDocument(FormComponent component);
 
-	public abstract void update(FormComponent component, ConstUpdateType what);
+	public abstract void update(FormComponent component, ConstUpdateType what, Object property);
 
 	public abstract void moveComponent(FormComponent component,
 			String nextSiblingId);
@@ -58,7 +61,7 @@ public interface XFormsManager {
 	public abstract LocalizedStringBean getLocalizedStrings(
 			FormComponent component);
 
-	public abstract LocalizedStringBean getErrorLabelLocalizedStrings(
+	public abstract Map<ErrorType, LocalizedStringBean> getErrorLabelLocalizedStrings(
 			FormComponent component);
 
 	public abstract LocalizedStringBean getHelpText(FormComponent component);

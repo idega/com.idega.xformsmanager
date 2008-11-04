@@ -20,9 +20,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/03 12:59:00 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:08 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -162,7 +162,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		properties.setPlainLabel(getXFormsManager().getLocalizedStrings(this));
 		properties.setPlainRequired(getXFormsManager().isRequired(this));
-		properties.setPlainErrorMsg(getXFormsManager().getErrorLabelLocalizedStrings(this));
+		properties.setErrorsMessages(getXFormsManager().getErrorLabelLocalizedStrings(this));
 		properties.setPlainAutofillKey(getXFormsManager().getAutofillKey(this));
 		properties.setPlainHelpText(getXFormsManager().getHelpText(this));
 		properties.setPlainVariable(getXFormsManager().getVariable(this));
@@ -178,6 +178,8 @@ public class FormComponentImpl implements FormComponent, Component {
 
 //			TODO: do the same with nodeset
 			LocalizedStringBean localizedLabel = getProperties().getLabel();
+			
+			System.out.println("localized label = "+localizedLabel);
 			String defaultLocaleLabel = localizedLabel.getString(getFormDocument().getDefaultLocale());
 			
 			String newBindName = new StringBuffer(defaultLocaleLabel)
@@ -317,10 +319,16 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	public void update(ConstUpdateType what) {
 		
-		getXFormsManager().update(this, what);
+		update(what, null);
+	}
+	
+	public void update(ConstUpdateType what, Object prop) {
+		
+		getXFormsManager().update(this, what, prop);
 		
 		switch (what) {
 		case LABEL:
+			
 			getHtmlManager().clearHtmlComponents(this);
 			getFormDocument().setFormDocumentModified(true);
 			changeBindNames();

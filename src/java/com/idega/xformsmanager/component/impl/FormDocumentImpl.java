@@ -39,9 +39,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/03 18:05:27 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements com.idega.xformsmanager.business.Document, com.idega.xformsmanager.component.FormDocument {
 	
@@ -529,7 +529,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	@Override
 	public void update(ConstUpdateType what) {
 		
-		getXFormsManager().update(this, what);
+		getXFormsManager().update(this, what, null);
 		
 		switch (what) {
 		

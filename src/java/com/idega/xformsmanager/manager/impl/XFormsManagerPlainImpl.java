@@ -21,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:07 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.plain)
 @Service
@@ -31,7 +31,7 @@ import com.idega.xformsmanager.xform.Bind;
 public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsManagerPlain {
 
 	@Override
-	public void update(FormComponent component, ConstUpdateType what) {
+	public void update(FormComponent component, ConstUpdateType what, Object prop) {
 		
 		switch (what) {
 			
@@ -74,7 +74,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		} else
 			output = (Element)outputs.item(0);
 		
-		FormManagerUtil.putLocalizedText(localizationKey, null, 
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizationKey, null, 
 				output,
 				component.getFormDocument().getXformsDocument(),
 				localizedText
@@ -172,7 +172,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		
 		String ref = label.getAttribute(FormManagerUtil.ref_s_att);
 		
-		FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(".label").toString(), null, 
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(".label").toString(), null, 
 				label,
 				component.getFormDocument().getXformsDocument(),
 				locStr

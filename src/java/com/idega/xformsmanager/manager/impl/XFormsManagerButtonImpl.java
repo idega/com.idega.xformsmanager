@@ -27,9 +27,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:07 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -382,9 +382,9 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	}
 	
 	@Override
-	public void update(FormComponent component, ConstUpdateType what) {
+	public void update(FormComponent component, ConstUpdateType what, Object prop) {
 		
-		super.update(component, what);
+		super.update(component, what, prop);
 	
 		switch (what) {
 			case BUTTON_REFER_TO_ACTION:

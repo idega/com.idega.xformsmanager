@@ -24,9 +24,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:06 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.document)
 @Service
@@ -178,7 +178,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 	}
 	
 	@Override
-	public void update(FormComponent component, ConstUpdateType what) {
+	public void update(FormComponent component, ConstUpdateType what, Object prop) {
 		
 		switch (what) {
 			case STEPS_VISUALIZATION_USED:

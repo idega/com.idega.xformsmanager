@@ -7,9 +7,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.manager.XFormsManagerMultiUpload;
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:40 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
  */
 public class FormComponentMultiUploadImpl extends FormComponentImpl implements ComponentMultiUpload{
 	
@@ -65,9 +65,9 @@ public class FormComponentMultiUploadImpl extends FormComponentImpl implements C
 	}
 	
 	@Override
-	public void update(ConstUpdateType what) {
+	public void update(ConstUpdateType what, Object prop) {
 		
-	    	getXFormsManager().update(this, what);
+	    	getXFormsManager().update(this, what, prop);
 		
 		switch (what) {
 		case ADD_BUTTON_LABEL:

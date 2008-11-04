@@ -648,13 +648,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <xf:label model="data_model"
                 ref="instance('localized_strings')/email-label[@lang=instance('localized_strings')/current_language]"/>
                                
-            <xf:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="fbc_email"/>
-            <xf:dispatch ev:event="xforms-value-changed" name="idega-validate" target="fbc_email"/>
+            <xf:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="#{componentId}"/>
+            <xf:dispatch ev:event="xforms-value-changed" name="idega-validate" target="#{componentId}"/>
             <idega:validator ev:event="idega-validate">
                 <idega:message errorType="required" model="data_model" value="instance('localized_strings')/email-required[@lang=instance('localized_strings')/current_language]"/>
                 <idega:message errorType="validation" model="data_model" value="instance('localized_strings')/email-validation[@lang=instance('localized_strings')/current_language]"/>
             </idega:validator>
-            <xf:alert ref="instance('error-instance')/error[@for='fbc_email']"/>
+            <xf:alert ref="instance('error-instance')/error[@for='#{componentId}']"/>
         </xf:input>
 		
 		<div type="fbc_static_output" id="fbc_static_output">

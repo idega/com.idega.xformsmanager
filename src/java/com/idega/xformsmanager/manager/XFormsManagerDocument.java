@@ -8,9 +8,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:34 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:05 $ by $Author: civilis $
  */
 public interface XFormsManagerDocument extends XFormsManagerContainer {
 
@@ -27,8 +27,6 @@ public interface XFormsManagerDocument extends XFormsManagerContainer {
 			FormComponent component);
 
 	public abstract boolean getIsStepsVisualizationUsed(FormComponent component);
-
-	public abstract void update(FormComponent component, ConstUpdateType what);
 
 	public abstract String getSubmissionAction(FormComponent component);
 	

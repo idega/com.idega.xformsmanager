@@ -8,9 +8,9 @@ import com.idega.xformsmanager.manager.XFormsManagerPlain;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:40 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
  */
 public class FormComponentPlainImpl extends FormComponentImpl implements ComponentPlain {
 
@@ -46,7 +46,7 @@ public class FormComponentPlainImpl extends FormComponentImpl implements Compone
 	@Override
 	public void update(ConstUpdateType what) {
 		
-		getXFormsManager().update(this, what);
+		getXFormsManager().update(this, what, null);
 		
 		switch (what) {
 		case LABEL:

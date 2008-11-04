@@ -2,7 +2,6 @@ package com.idega.xformsmanager.manager.impl;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -13,17 +12,17 @@ import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.ComponentMultiUploadBean;
+import com.idega.xformsmanager.component.beans.ErrorStringBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.manager.XFormsManagerMultiUploadDescription;
 import com.idega.xformsmanager.util.FormManagerUtil;
-import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:07 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.multiupload)
 @Service
@@ -164,7 +163,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
     }
     
     @Override
-    public void update(FormComponent component, ConstUpdateType what) {
+    public void update(FormComponent component, ConstUpdateType what, Object prop) {
 		
 		switch (what) {
 			
@@ -182,7 +181,9 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 		    	updateLabel(component);
 		    	break;
 		case ERROR_MSG:
-			updateErrorMsg(component);
+			
+			ErrorStringBean errString = (ErrorStringBean)prop;
+			updateErrorMsg(component, errString);
 			break;
 		case UPLOADING_FILE_DESC:
 		    	updateUploadingFileDescription(component);
@@ -214,7 +215,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	
 	String ref = addButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_LABEL).toString(), null, 
+	FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_LABEL).toString(), null, 
 		addButtonlabel,
 			component.getFormDocument().getXformsDocument(),
 			localizedText
@@ -234,7 +235,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element removeButtonlabel = (Element)labels.item(REMOVE_BUTTON_LABEL);
 	String ref = removeButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_REMOVE).toString(), null, 
+	FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_REMOVE).toString(), null, 
 		removeButtonlabel,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -252,7 +253,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element label = (Element)labels.item(UPLOADING_FILE_DESC);
 	String ref = label.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_NAME).toString(), null, 
+	FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_NAME).toString(), null, 
 		label,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -271,7 +272,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element descriptionButtonlabel = (Element)labels.item(DESCRIPTION_BUTTON_LABEL);
 	String ref = descriptionButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 	
-	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_DESCRIPTION).toString(), null, 
+	FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_DESCRIPTION).toString(), null, 
 		descriptionButtonlabel,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -290,7 +291,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
 	Element title = (Element)labels.item(TITLE_LABEL);
 	String ref = title.getAttribute(FormManagerUtil.ref_s_att);
 
-	FormManagerUtil.putLocalizedText(!StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_TITLE).toString(), null, 
+	FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(APPEND_TITLE).toString(), null, 
 		title,
 		component.getFormDocument().getXformsDocument(),
 		localizedText
@@ -299,7 +300,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
    }
      
    @Override
-   protected void updateErrorMsg(FormComponent component){
+   protected void updateErrorMsg(FormComponent component, ErrorStringBean errString){
        
        ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
        
@@ -307,7 +308,7 @@ public class XFormsManagerMultiUploadDescriptionImpl extends XFormsManagerImpl i
        
        Element output = (Element) outputXPUT.getNode(xformsComponentDataBean.getElement());
             
-       FormManagerUtil.putLocalizedText( new StringBuilder(component.getId()).append(".info").toString(), FormManagerUtil.localized_entries, output, component.getFormDocument().getXformsDocument(), properties.getErrorMsg());
+//       TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, new StringBuilder(component.getId()).append(".info").toString(), FormManagerUtil.localized_entries, output, component.getFormDocument().getXformsDocument(), properties.getErrorMsg());
        output.removeAttribute(FormManagerUtil.ref_s_att);
           
        

@@ -1,5 +1,6 @@
 package com.idega.xformsmanager.manager.impl;
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.idega.block.process.variables.Variable;
-import com.idega.util.CoreConstants;
+import com.idega.chiba.web.xml.xforms.validation.ErrorType;
 import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
@@ -22,6 +23,7 @@ import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentPage;
 import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
+import com.idega.xformsmanager.component.beans.ErrorStringBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.manager.XFormsManager;
@@ -31,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  *
- * Last modified: $Date: 2008/11/03 17:36:07 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:08 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -252,6 +254,8 @@ public class XFormsManagerImpl implements XFormsManager {
 		String componentId = component.getId();
 		componentElement.setAttribute(FormManagerUtil.id_att, componentId);
 		
+		FormManagerUtil.replaceAttributesByExpression(componentElement, "componentId", componentId);
+		
 		localizeComponent(componentId, componentElement, xform, component.getFormDocument().getContext().getCacheManager().getComponentsTemplate());
 		
 //		TODO: is this something we need?
@@ -287,23 +291,37 @@ public class XFormsManagerImpl implements XFormsManager {
 //		return component_after_this.getXformsComponentDataBean().getElement();
 //	}
 	
-	protected void localizeComponent(String comp_id, Element component_container, Document xforms_doc_to, Document xforms_doc_from) {
+	protected void localizeComponent(String componentId, Element context, Document xform, Document componentsTemplate) {
 		
 //		TODO: remake this, localizations could be alrady there in the xform document, just keys would be changed
-		NodeList children = component_container.getElementsByTagName("*");
+		NodeList elements = FormManagerUtil.getLocalizableElements(context);
 		
-		for (int i = 0; i < children.getLength(); i++) {
+		for (int i = 0; i < elements.getLength(); i++) {
 			
-			Element child = (Element)children.item(i);
+			Element localizableElement = (Element)elements.item(i);
 			
-			String ref = child.getAttribute(FormManagerUtil.ref_s_att);
+			final String ref = localizableElement.getAttribute(FormManagerUtil.ref_s_att);
+			final String value = localizableElement.getAttribute(FormManagerUtil.value_att);
+			final String attributeValue;
+			final String attributeName;
 			
-			if(FormManagerUtil.isRefFormCorrect(ref)) {
+			if(FormManagerUtil.isLocalizableExpressionCorrect(ref)) {
+				attributeName = FormManagerUtil.ref_s_att;
+				attributeValue = ref;
+			} else if(FormManagerUtil.isLocalizableExpressionCorrect(value)) {
+				attributeName = FormManagerUtil.value_att;
+				attributeValue = value;
+			} else {
+				attributeName = null;
+				attributeValue = null;
+			}
+			
+			if(attributeName != null) {
 				
-				String key = FormManagerUtil.getKeyFromRef(ref);
-				FormManagerUtil.putLocalizedText(
-					FormManagerUtil.getComponentLocalizationKey(comp_id, key), null, child, xforms_doc_to,
-					FormManagerUtil.getLocalizedStrings(key, xforms_doc_from)
+				String key = FormManagerUtil.getKeyFromRef(attributeValue);
+				FormManagerUtil.putLocalizedText(attributeName,
+					FormManagerUtil.getComponentLocalizationKey(componentId, key), null, localizableElement, xform,
+					FormManagerUtil.getLocalizedStrings(key, componentsTemplate)
 				);
 			}
 		}
@@ -407,7 +425,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
-	public void update(FormComponent component, ConstUpdateType what) {
+	public void update(FormComponent component, ConstUpdateType what, Object property) {
 		
 //		TODO: perhaps implement it another way: register updatables, which would listen to update event and update themselves if neccessary
 		switch (what) {
@@ -416,7 +434,9 @@ public class XFormsManagerImpl implements XFormsManager {
 			break;
 			
 		case ERROR_MSG:
-			updateErrorMsg(component);
+			
+			ErrorStringBean errString = (ErrorStringBean)property;
+			updateErrorMsg(component, errString);
 			break;
 			
 		case HELP_TEXT:
@@ -463,7 +483,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		Element label = (Element)labels.item(0);
 		
-		FormManagerUtil.putLocalizedText(null, null, 
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null, 
 				label,
 				component.getFormDocument().getXformsDocument(),
 				locStr
@@ -484,7 +504,7 @@ public class XFormsManagerImpl implements XFormsManager {
 //		setReadonly(component, component.getProperties().isReadonly());
 //	}
 	
-	protected void updateErrorMsg(FormComponent component) {
+	protected void updateErrorMsg(FormComponent component, ErrorStringBean errString) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		PropertiesComponent properties = component.getProperties();
@@ -502,12 +522,12 @@ public class XFormsManagerImpl implements XFormsManager {
 			element.appendChild(alert);
 		
 			String localizedKey = new StringBuilder(component.getId()).append(".error").toString();
-			
-			FormManagerUtil.putLocalizedText(localizedKey, FormManagerUtil.localized_entries, alert, xform, properties.getErrorMsg());
+		
+//			TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizedKey, FormManagerUtil.localized_entries, alert, xform, properties.getErrorMsg());
 		} else {
 			
 			Element alert = (Element)alerts.item(0);
-			FormManagerUtil.putLocalizedText(null, null, alert, component.getFormDocument().getXformsDocument(), properties.getErrorMsg());
+//			TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null, alert, component.getFormDocument().getXformsDocument(), properties.getErrorMsg());
 		}
 	}
 	
@@ -536,7 +556,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			
 			String localizedKey = new StringBuilder(component.getId()).append(".help").toString();
 			
-			FormManagerUtil.putLocalizedText(localizedKey, FormManagerUtil.localized_entries, output, xform, properties.getHelpText());
+			FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizedKey, FormManagerUtil.localized_entries, output, xform, properties.getHelpText());
 			
 		} else {
 			
@@ -544,7 +564,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 			Element output = (Element) outputXPUT.getNode(help);
 		
-			FormManagerUtil.putLocalizedText(
+			FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att,
 					null, null, output, component.getFormDocument().getXformsDocument(), properties.getHelpText());
 		}
 	}
@@ -574,7 +594,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			
 			Element output = (Element) outputXPUT.getNode(helpFormDoc);
 				
-			FormManagerUtil.putLocalizedText(localizedKey, FormManagerUtil.localized_entries, output, xform, properties.getValidationText());
+			FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizedKey, FormManagerUtil.localized_entries, output, xform, properties.getValidationText());
 			
 			Bind bind = xformsComponentDataBean.getBind();
 
@@ -599,7 +619,7 @@ public class XFormsManagerImpl implements XFormsManager {
 
 			output.setAttribute(FormManagerUtil.ref_s_att, outputFromDoc.getAttribute(FormManagerUtil.ref_s_att));
 
-			FormManagerUtil.putLocalizedText(localizedKey, null, output, component.getFormDocument().getXformsDocument(), properties.getValidationText());
+			FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizedKey, null, output, component.getFormDocument().getXformsDocument(), properties.getValidationText());
 			output.removeAttribute(FormManagerUtil.ref_s_att);
 			  
 		}
@@ -730,7 +750,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			
 			String ref = child.getAttribute(FormManagerUtil.ref_s_att);
 			
-			if(FormManagerUtil.isRefFormCorrect(ref)) {
+			if(FormManagerUtil.isLocalizableExpressionCorrect(ref)) {
 				
 				String key = FormManagerUtil.getKeyFromRef(ref);
 				
@@ -994,10 +1014,9 @@ public class XFormsManagerImpl implements XFormsManager {
 		return bind != null && bind.isReadonly();
 	}
 	
-	public LocalizedStringBean getErrorLabelLocalizedStrings(FormComponent component) {
+	public Map<ErrorType, LocalizedStringBean> getErrorLabelLocalizedStrings(FormComponent component) {
 		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
-		
-		return FormManagerUtil.getErrorLabelLocalizedStrings(xformsComponentDataBean.getElement(), component.getFormDocument().getXformsDocument());
+		return FormManagerUtil.getErrorLabelLocalizedStrings(xformsComponentDataBean.getElement());
 	}
 	public LocalizedStringBean getHelpText(FormComponent component) {
 		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();

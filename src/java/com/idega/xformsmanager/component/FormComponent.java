@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
  * manager
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/04 17:53:08 $ by $Author: civilis $
  */
 public interface FormComponent {
 
@@ -88,6 +88,8 @@ public interface FormComponent {
 	public abstract FormComponentContainer getParent();
 
 	public abstract void update(ConstUpdateType what);
+
+	public abstract void update(ConstUpdateType what, Object property);
 
 	public abstract ComponentDataBean getComponentDataBean();
 

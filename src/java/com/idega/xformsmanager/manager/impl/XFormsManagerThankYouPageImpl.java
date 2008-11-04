@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:53:07 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.thankYouPage)
 @Service
@@ -26,9 +26,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 public class XFormsManagerThankYouPageImpl extends XFormsManagerPageImpl implements XFormsManagerThankYouPage {
 
 	@Override
-	public void update(FormComponent component, ConstUpdateType what) {
+	public void update(FormComponent component, ConstUpdateType what, Object prop) {
 		
-		super.update(component, what);
+		super.update(component, what, prop);
 		
 		switch (what) {
 		case THANKYOU_TEXT:
@@ -54,7 +54,7 @@ public class XFormsManagerThankYouPageImpl extends XFormsManagerPageImpl impleme
 		
 		Element output = (Element)outputs.item(0);
 		
-		FormManagerUtil.putLocalizedText(null, null, 
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null, 
 				output,
 				component.getFormDocument().getXformsDocument(),
 				loc_str

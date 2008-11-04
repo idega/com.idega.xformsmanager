@@ -20,9 +20,9 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/03 17:36:07 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
  */
 public class FormDocumentTemplateImpl implements FormDocument {
 
@@ -298,5 +298,10 @@ public class FormDocumentTemplateImpl implements FormDocument {
 		throw new UnsupportedOperationException(
 				"Unsupported for template document");
 
+	}
+
+	public void update(ConstUpdateType what, Object property) {
+		throw new UnsupportedOperationException(
+		"Unsupported for template document");
 	}
 }

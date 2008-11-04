@@ -29,7 +29,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * Initial components description is kept in xforms document.<br />
  * This class parses all those components to html format components into xml document.
  * 
- * Last modified: $Date: 2008/10/27 10:27:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/04 17:52:49 $ by $Author: civilis $
  * 
  */
 public class ComponentsGeneratorImpl implements Singleton, ComponentsGenerator  {
@@ -137,7 +137,7 @@ public class ComponentsGeneratorImpl implements Singleton, ComponentsGenerator  
 				
 				String ref = child.getAttribute(FormManagerUtil.ref_s_att);
 				
-				if(!FormManagerUtil.isRefFormCorrect(ref))
+				if(!FormManagerUtil.isLocalizableExpressionCorrect(ref))
 					continue;
 				
 				String key = FormManagerUtil.getKeyFromRef(ref);
