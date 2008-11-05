@@ -17,14 +17,13 @@ import com.idega.xformsmanager.business.component.properties.PropertiesComponent
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentPage;
-import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements
 		FormComponentContainer, Container {
@@ -145,8 +144,6 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 
 		addComponentToChildren(component, nextSiblingId);
 		
-		System.out.println("components list after add child="+getContainedComponentsIds());
-
 		return component;
 	}
 
@@ -202,8 +199,6 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 	public void rearrangeComponents() {
 
 		final List<String> containedComponentsIds = getContainedComponentsIds();
-		
-		System.out.println("contained in the rearrange="+containedComponentsIds);
 		
 		int size = containedComponentsIds.size();
 		Map<String, FormComponent> containedComponents = getContainedComponents();

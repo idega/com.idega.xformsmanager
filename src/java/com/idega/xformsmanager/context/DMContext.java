@@ -10,9 +10,9 @@ import com.idega.xformsmanager.manager.impl.CacheManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/10/30 22:01:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
  */
 public class DMContext {
 
@@ -53,7 +53,7 @@ public class DMContext {
 	public void setHtmlManagerFactory(HtmlManagerFactory htmlManagerFactory) {
 		this.htmlManagerFactory = htmlManagerFactory;
 	}
-	public Document getComponentsXforms() {
+	public Document getComponentsTemplate() {
 		return getCacheManager().getComponentsTemplate();
 	}
 	public FormComponentFactory getFormComponentFactory() {

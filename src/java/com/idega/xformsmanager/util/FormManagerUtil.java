@@ -35,16 +35,15 @@ import com.idega.util.StringUtil;
 import com.idega.util.xml.Prefix;
 import com.idega.util.xml.XPathUtil;
 import com.idega.util.xml.XmlUtil;
-import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.beans.ErrorStringBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  *
- * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -153,22 +152,22 @@ public class FormManagerUtil {
 	private static Pattern non_xml_pattern = Pattern.compile("[a-zA-Z0-9{-}{_}]");
 	
 	
-	private static XPathUtil formInstanceModelElementXPath = new XPathUtil(".//xf:model[xf:instance/@id='data-instance']");
-	private static XPathUtil defaultFormModelElementXPath = new XPathUtil(".//xf:model");
-	private static XPathUtil formModelElementXPath = new XPathUtil(".//xf:model[@id=$modelId]");
-	private static XPathUtil formSubmissionInstanceElementXPath = new XPathUtil(".//xf:instance[@id='data-instance']");
-	private static XPathUtil instanceElementXPath = new XPathUtil(".//xf:instance");
-	private static XPathUtil submissionElementXPath = new XPathUtil(".//xf:submission[@id='submit_data_submission']");
-	private static XPathUtil formTitleOutputElementXPath = new XPathUtil(".//h:title/xf:output");
-	private static XPathUtil instanceElementByIdXPath = new XPathUtil(".//xf:instance[@id=$instanceId]");
-	private static XPathUtil formSubmissionInstanceDataElementXPath = new XPathUtil(".//xf:instance[@id='data-instance']/data");
-	private static XPathUtil localizedStringElementXPath = new XPathUtil(".//xf:instance[@id='localized_strings']/localized_strings");
-	private static XPathUtil elementByIdXPath = new XPathUtil(".//*[@id=$id]");
-	private static XPathUtil elementsContainingAttributeXPath = new XPathUtil(".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
-	private static XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(".//*/attribute::*[contains(., $expression)]");
-	private static XPathUtil localizaionSetValueElement = new XPathUtil(".//xf:setvalue[@model='data_model']");
-	private static XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='submission-error']/xf:message");
-	private static XPathUtil formParamsXPath = new XPathUtil(".//*[@nodeType='formParams']");
+	private static final XPathUtil formInstanceModelElementXPath = new XPathUtil(".//xf:model[xf:instance/@id='data-instance']");
+	private static final XPathUtil defaultFormModelElementXPath = new XPathUtil(".//xf:model");
+	private static final XPathUtil formModelElementXPath = new XPathUtil(".//xf:model[@id=$modelId]");
+	private static final XPathUtil formSubmissionInstanceElementXPath = new XPathUtil(".//xf:instance[@id='data-instance']");
+	private static final XPathUtil instanceElementXPath = new XPathUtil(".//xf:instance");
+	private static final XPathUtil submissionElementXPath = new XPathUtil(".//xf:submission[@id='submit_data_submission']");
+	private static final XPathUtil formTitleOutputElementXPath = new XPathUtil(".//h:title/xf:output");
+	private static final XPathUtil instanceElementByIdXPath = new XPathUtil(".//xf:instance[@id=$instanceId]");
+	private static final XPathUtil formSubmissionInstanceDataElementXPath = new XPathUtil(".//xf:instance[@id='data-instance']/data");
+	private static final XPathUtil localizedStringElementXPath = new XPathUtil(".//xf:instance[@id='localized_strings']/localized_strings");
+	private static final XPathUtil elementByIdXPath = new XPathUtil(".//*[@id=$id]");
+	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
+	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil("//*/attribute::*[contains(., $expression)]");
+	private static final XPathUtil localizaionSetValueElement = new XPathUtil(".//xf:setvalue[@model='data_model']");
+	private static final XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='submission-error']/xf:message");
+	private static final XPathUtil formParamsXPath = new XPathUtil(".//*[@nodeType='formParams']");
 	
 	private final static String expressionVariable = "expression";
 	private final static String elementNameVariable = "elementName";
@@ -442,10 +441,10 @@ public class FormManagerUtil {
 		}		
 	}
 	
-	private static XPathUtil validatorMessagesElementsXPath 
+	private static final XPathUtil validatorMessagesElementsXPath 
 	= new XPathUtil(".//idega:validator/idega:message", new Prefix("idega", idega_namespace));
 	
-	private static XPathUtil validatorBlockElementsXPath 
+	private static final XPathUtil validatorBlockElementsXPath 
 	= new XPathUtil(".//idega:validator", new Prefix("idega", idega_namespace));
 	
 	public static Map<ErrorType, LocalizedStringBean> getErrorLabelLocalizedStrings(Node context) {
@@ -488,9 +487,8 @@ public class FormManagerUtil {
 		return errors;
 	}
 	
-	public static void setErrorLabelLocalizedStrings(FormComponent component, ErrorStringBean errString) {
+	public static void setErrorLabelLocalizedStrings(Element componentElement, String componentId, String componentKey, ErrorStringBean errString, Document componentsTemplate) {
 		
-		Element componentElement = component.getComponentDataBean().getElement();
 		NodeList validatorMessagesElements = validatorMessagesElementsXPath.getNodeset(componentElement);
 		
 		if(validatorMessagesElements.getLength() != 0) {
@@ -513,7 +511,7 @@ public class FormManagerUtil {
 //			assuming there are no validation block
 			
 			List<Element> validationBlockElements = FormManagerUtil.getItemElementsById(
-					component.getFormDocument().getContext().getComponentsXforms(), "validationMessagesHandling");
+					componentsTemplate, "validationMessagesHandling");
 			
 			for (Element element : validationBlockElements) {
 			
@@ -521,7 +519,7 @@ public class FormManagerUtil {
 				validationBlock = (Element)componentElement.appendChild(validationBlock);
 			}
 			
-			replaceAttributesByExpression(componentElement, "componentId", component.getId());
+			replaceAttributesByExpression(componentElement, "componentId", componentId);
 		}
 		
 //		create message element
@@ -531,41 +529,55 @@ public class FormManagerUtil {
 //		<idega:message errorType="" model="data_model" value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
 		
 		Element messageElement = FormManagerUtil.getItemElementById(
-				component.getFormDocument().getContext().getComponentsXforms(), "validationMessage");
+				componentsTemplate, "validationMessage");
 		messageElement = (Element)validationBlock.getOwnerDocument().importNode(messageElement, true);
 		messageElement = (Element)validationBlock.appendChild(messageElement);
 		messageElement.setAttribute("errorType", errString.getErrorType().toString());
 		
-		String messageKey = component.getId()+CoreConstants.MINUS+errString.getErrorType();
+		String messageKey = componentKey+CoreConstants.MINUS+errString.getErrorType();
 		
 		replaceAttributesByExpression(validationBlock, "messageKey", messageKey);
 		putLocalizedText(value_att, null, null, messageElement, messageElement.getOwnerDocument(), errString.getLocalizedStringBean());
 	}
 	
-	public static LocalizedStringBean getHelpTextLocalizedStrings(Element component, Document xforms_doc) {
+	private static final XPathUtil helpOutputXPath = new XPathUtil(".//xf:help/xf:output");
+	
+	public static LocalizedStringBean getHelpTextLocalizedStrings(Element componentElement) {
 		
-		NodeList helps = component.getElementsByTagName(FormManagerUtil.help_tag);
+		Element helpOutput = helpOutputXPath.getNode(componentElement);
 		
-		if(helps == null || helps.getLength() == 0)
-			return new LocalizedStringBean();
+		LocalizedStringBean helpMsg;
 		
-		Element help = (Element)helps.item(0);
-		
-		XPathUtil outputXPUT= new XPathUtil(".//xf:output[@helptype='helptext']");
-
-		Element output = (Element) outputXPUT.getNode(help);
-		    
-		if (output == null || !output.hasAttribute(FormManagerUtil.ref_s_att))
-		    return new LocalizedStringBean();
+		if(helpOutput == null) {
 			
-		String  ref = output.getAttribute(ref_s_att);
-				
-		if(!isLocalizableExpressionCorrect(ref))
-			return new LocalizedStringBean();
+			helpMsg = new LocalizedStringBean();
+		} else {
 		
-		String key = getKeyFromRef(ref);
+			String ref = helpOutput.getAttribute(ref_s_att);
+			String key = getKeyFromRef(ref);
+			
+			helpMsg = getLocalizedStrings(key, helpOutput.getOwnerDocument());
+		}
 		
-		return getLocalizedStrings(key, xforms_doc);
+		return helpMsg;
+	}
+	
+	public static void setHelpTextLocalizedStrings(Element componentElement, String componentKey, LocalizedStringBean helpMsg, Document componentsTemplate) {
+		
+		Element helpOutput = helpOutputXPath.getNode(componentElement);
+		
+		if(helpOutput == null) {
+			
+			Element help = FormManagerUtil.getItemElementById(componentsTemplate, "help");
+			
+			help = (Element)componentElement.getOwnerDocument().importNode(help, true);
+			componentElement.appendChild(help);
+			helpOutput = helpOutputXPath.getNode(componentElement);
+			
+			replaceAttributesByExpression(helpOutput, "messageKey", componentKey+"-help");
+		}
+		
+		putLocalizedText(ref_s_att, null, null, helpOutput, helpOutput.getOwnerDocument(), helpMsg);
 	}
 
 	/*
@@ -821,7 +833,7 @@ public class FormManagerUtil {
 		return Integer.parseInt(id.substring(CTID.length()));
 	}
 	
-	private static XPathUtil componentsContainerElementXPath 
+	private static final XPathUtil componentsContainerElementXPath 
 		= new XPathUtil(".//h:body//idega:switch", new Prefix("idega", idega_namespace));
 	
 	public static Element getComponentsContainerElement(Document xform) {
@@ -846,7 +858,7 @@ public class FormManagerUtil {
 	}
 	
 	private static Pattern componentIdPattern = Pattern.compile("fbc_[\\d]*");
-	private static XPathUtil allComponentsIdsXPath 
+	private static final XPathUtil allComponentsIdsXPath 
 	= new XPathUtil(".//@id[starts-with(., 'fbc_')]");
 
 	public static Set<String> getAllComponentsIds(Document xform) {
@@ -896,16 +908,9 @@ public class FormManagerUtil {
 		}
 	}
 	
-	
-//	public static final String loc_ref_part1 = "instance('localized_strings')/";
-//	public static final String loc_ref_part2 = "[@lang=instance('localized_strings')/current_language]";
-	private static XPathUtil getLocalizableElementsXPath = new XPathUtil(".//*/attribute::*[(name(.) = 'ref' or name(.) = 'value') and starts-with(., \"instance('localized_strings')/\")]");
-	
-//	return ref != null && ref.length() != 0 && ref.startsWith(loc_ref_part1) && ref.endsWith(loc_ref_part2) && !ref.contains(CoreConstants.SPACE);
+	private static final XPathUtil getLocalizableElementsXPath = new XPathUtil(".//*[attribute::*[(name(.) = 'ref' or name(.) = 'value') and starts-with(., \"instance('localized_strings')/\")] ]");
 	
 	public static NodeList getLocalizableElements(Node context) {
-		
-		getLocalizableElementsXPath = new XPathUtil(".//*[attribute::*[(name(.) = 'ref' or name(.) = 'value') and starts-with(., \"instance('localized_strings')/\")] ]");
 		
 		return getLocalizableElementsXPath.getNodeset(context);
 	}
@@ -928,6 +933,8 @@ public class FormManagerUtil {
 			errstr.getLocalizedStringBean().setString(new Locale("en"), "uhuauaha");
 			
 //			setErrorLabelLocalizedStrings(textElement, errstr);
+			
+			setHelpTextLocalizedStrings(textElement, "asdfads", errstr.getLocalizedStringBean(), d);
 			
 			DOMUtil.prettyPrintDOM(textElement.getOwnerDocument());
 			

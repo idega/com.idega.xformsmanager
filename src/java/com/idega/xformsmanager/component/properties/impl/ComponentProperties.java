@@ -2,6 +2,7 @@ package com.idega.xformsmanager.component.properties.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import com.idega.block.process.variables.Variable;
@@ -15,9 +16,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -35,13 +36,7 @@ public class ComponentProperties implements PropertiesComponent {
 	
 	public LocalizedStringBean getErrorMsg(ErrorType errorType) {
 		
-		LocalizedStringBean errMsg = getErrorsMessages().get(errorType);
-		
-		if(errMsg == null) {
-
-		}
-		
-		return errMsg;
+		return getErrorsMessages().get(errorType);
 	}
 	public void setErrorMsg(ErrorType errorType, LocalizedStringBean errorMsg) {
 		getErrorsMessages().put(errorType, errorMsg);
@@ -49,7 +44,16 @@ public class ComponentProperties implements PropertiesComponent {
 	}
 	
 	public Collection<ErrorType> getExistingErrors() {
-		return getErrorsMessages().keySet();
+
+		Collection<ErrorType> errors = getErrorsMessages().keySet();
+		
+		if(!isRequired() && errors.contains(ErrorType.required)) {
+			
+			errors = new HashSet<ErrorType>(errors);
+			errors.remove(ErrorType.required);
+		}
+		
+		return errors;
 	}
 	
 //	public LocalizedStringBean getErrorMsg() {
