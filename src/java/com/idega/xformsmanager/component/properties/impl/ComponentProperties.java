@@ -15,9 +15,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -26,7 +26,7 @@ public class ComponentProperties implements PropertiesComponent {
 	private LocalizedStringBean label;
 	private Map<ErrorType, LocalizedStringBean> errorsMessages;
 	private LocalizedStringBean helpText;
-	private LocalizedStringBean validationText;
+//	private LocalizedStringBean validationText;
 	private String p3ptype;
 	private String autofillKey;
 	private Variable variable;
@@ -34,7 +34,14 @@ public class ComponentProperties implements PropertiesComponent {
 	protected FormComponent component;
 	
 	public LocalizedStringBean getErrorMsg(ErrorType errorType) {
-		return getErrorsMessages().get(errorType);
+		
+		LocalizedStringBean errMsg = getErrorsMessages().get(errorType);
+		
+		if(errMsg == null) {
+
+		}
+		
+		return errMsg;
 	}
 	public void setErrorMsg(ErrorType errorType, LocalizedStringBean errorMsg) {
 		getErrorsMessages().put(errorType, errorMsg);
@@ -91,8 +98,8 @@ public class ComponentProperties implements PropertiesComponent {
 		.append(getErrorsMessages())
 //		.append("\nreadonly: ")
 //		.append(readonly)
-		.append("\nvalidationText: ")
-		.append(validationText)
+//		.append("\nvalidationText: ")
+//		.append(validationText)
 		.toString();
 	}
 
@@ -155,18 +162,18 @@ public class ComponentProperties implements PropertiesComponent {
 //		this.readonly = readonly;
 //	}
 	
-	public LocalizedStringBean getValidationText() {
-	    return validationText;
-	}
-	
-	public void setValidationText(LocalizedStringBean validationText) {
-	    this.validationText = validationText;
-	    component.update(ConstUpdateType.VALIDATION);
-	}
-	
-	public void setPlainValidationText(LocalizedStringBean validationText) {
-	    this.validationText = validationText;
-	}
+//	public LocalizedStringBean getValidationText() {
+//	    return validationText;
+//	}
+//	
+//	public void setValidationText(LocalizedStringBean validationText) {
+//	    this.validationText = validationText;
+//	    component.update(ConstUpdateType.VALIDATION);
+//	}
+//	
+//	public void setPlainValidationText(LocalizedStringBean validationText) {
+//	    this.validationText = validationText;
+//	}
 	
 	public boolean isHasValidationConstraints() {
 		

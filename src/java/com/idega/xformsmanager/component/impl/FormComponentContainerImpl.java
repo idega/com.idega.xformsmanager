@@ -22,9 +22,9 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
- *          Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements
 		FormComponentContainer, Container {
@@ -144,6 +144,8 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 		component.create();
 
 		addComponentToChildren(component, nextSiblingId);
+		
+		System.out.println("components list after add child="+getContainedComponentsIds());
 
 		return component;
 	}
@@ -200,6 +202,9 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 	public void rearrangeComponents() {
 
 		final List<String> containedComponentsIds = getContainedComponentsIds();
+		
+		System.out.println("contained in the rearrange="+containedComponentsIds);
+		
 		int size = containedComponentsIds.size();
 		Map<String, FormComponent> containedComponents = getContainedComponents();
 

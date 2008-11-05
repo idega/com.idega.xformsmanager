@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  *
- * Last modified: $Date: 2008/11/05 08:57:34 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -409,19 +409,21 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		bind.setIsRequired(props.isRequired());
 		
-		checkUpdateComponentValidation(component);
+		if(props.isRequired())
+			checkUpdateComponentValidation(component, ErrorType.required);
 	}
 	
-	protected void checkUpdateComponentValidation(FormComponent component) {
+	protected void checkUpdateComponentValidation(FormComponent component, ErrorType errType) {
 		
 		PropertiesComponent props = component.getProperties();
 		
-		if(props.isHasValidationConstraints()) {
+		LocalizedStringBean locStr = props.getErrorMsg(errType);
+		
+		if(locStr == null) {
 			
-			
-			
-		} else {
-			
+			locStr = FormManagerUtil.getDefaultErrorMessage(errType, component.getFormDocument().getContext().getComponentsXforms());
+//			create default one and set to properties
+			props.setErrorMsg(errType, locStr);
 		}
 	}
 	
@@ -462,8 +464,8 @@ public class XFormsManagerImpl implements XFormsManager {
 //		case READ_ONLY:
 //			updateReadonly(component);
 //			break;
-		case VALIDATION:
-		    	updateValidationText(component);
+//		case VALIDATION:
+//		    	updateValidationText(component);
 		default:
 			break;
 		}
@@ -547,6 +549,8 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
+//	TODO: remove
+	/*
 	protected void updateValidationText(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
@@ -602,6 +606,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			  
 		}
 	}
+	*/
 	
 	public void moveComponent(FormComponent component, String nextSiblingId) {
 		
@@ -1002,11 +1007,13 @@ public class XFormsManagerImpl implements XFormsManager {
 		return FormManagerUtil.getHelpTextLocalizedStrings(xformsComponentDataBean.getElement(), component.getFormDocument().getXformsDocument());
 	}
 	
+	/*
 	public LocalizedStringBean getValidationText(FormComponent component) {
 		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
 		return FormManagerUtil.getValidationTextLocalizedStrings(xformsComponentDataBean.getElement(), component.getFormDocument().getXformsDocument());
 	}
+	*/
 	
 	public Variable getVariable(FormComponent component) {
 		

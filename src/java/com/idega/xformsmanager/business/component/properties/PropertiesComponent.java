@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
  * for every property change
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 public interface PropertiesComponent {
 
@@ -48,9 +48,9 @@ public interface PropertiesComponent {
 
 	public abstract void setHelpText(LocalizedStringBean help_text);
 
-	public abstract void setValidationText(LocalizedStringBean validation_text);
-
-	public abstract LocalizedStringBean getValidationText();
+//	public abstract void setValidationText(LocalizedStringBean validation_text);
+//
+//	public abstract LocalizedStringBean getValidationText();
 
 	public abstract Variable getVariable();
 

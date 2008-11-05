@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import org.w3c.dom.Element;
 
+import com.idega.chiba.web.xml.xforms.validation.ErrorType;
 import com.idega.xformsmanager.business.component.Component;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
@@ -20,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  *
- * Last modified: $Date: 2008/11/04 17:53:08 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -167,7 +168,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		properties.setPlainHelpText(getXFormsManager().getHelpText(this));
 		properties.setPlainVariable(getXFormsManager().getVariable(this));
 //		properties.setPlainReadonly(getXFormsManager().isReadonly(this));
-		properties.setPlainValidationText(getXFormsManager().getValidationText(this));
+//		properties.setPlainValidationText(getXFormsManager().getValidationText(this));
 	}
 	
 	protected void changeBindNames() {
@@ -347,10 +348,10 @@ public class FormComponentImpl implements FormComponent, Component {
 		case CONSTRAINT_REQUIRED:
 			getFormDocument().setFormDocumentModified(true);
 			break;
-		case VALIDATION:
-			getHtmlManager().clearHtmlComponents(this);
-		    getFormDocument().setFormDocumentModified(true);
-			break;
+//		case VALIDATION:
+//			getHtmlManager().clearHtmlComponents(this);
+//		    getFormDocument().setFormDocumentModified(true);
+//			break;
 		
 		case P3P_TYPE:
 			break;

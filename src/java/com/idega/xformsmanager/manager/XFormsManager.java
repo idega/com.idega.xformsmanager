@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
- *          Last modified: $Date: 2008/11/04 17:53:01 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 public interface XFormsManager {
 
@@ -66,8 +66,8 @@ public interface XFormsManager {
 
 	public abstract LocalizedStringBean getHelpText(FormComponent component);
 
-	public abstract LocalizedStringBean getValidationText(
-			FormComponent component);
+//	public abstract LocalizedStringBean getValidationText(
+//			FormComponent component);
 
 	public abstract void loadConfirmationElement(FormComponent component,
 			FormComponentPage confirmationPage);

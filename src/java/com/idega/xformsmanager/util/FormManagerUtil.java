@@ -42,9 +42,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  *
- * Last modified: $Date: 2008/11/05 08:57:33 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -568,6 +568,7 @@ public class FormManagerUtil {
 		return getLocalizedStrings(key, xforms_doc);
 	}
 
+	/*
 	public static LocalizedStringBean getValidationTextLocalizedStrings(Element component, Document xforms_doc) {
 
 	    	NodeList helps = component.getElementsByTagName(FormManagerUtil.help_tag);
@@ -592,6 +593,7 @@ public class FormManagerUtil {
 		
 		return getLocalizedStrings(key, xforms_doc);
 	}
+	*/
 	
 	public static boolean isLocalizationKeyCorrect(String loc_key) {
 		return !StringUtil.isEmpty(loc_key) && !loc_key.contains(CoreConstants.SPACE);
@@ -1258,5 +1260,11 @@ public class FormManagerUtil {
 		}
 		
 		return null;
+	}
+	
+	public static LocalizedStringBean getDefaultErrorMessage(ErrorType errType, Document templateDocument) {
+		
+		String key = "default_validation-"+errType;
+		return getLocalizedStrings(key, templateDocument);
 	}
 }
