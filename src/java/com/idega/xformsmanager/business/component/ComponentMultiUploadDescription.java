@@ -1,15 +1,15 @@
 package com.idega.xformsmanager.business.component;
 
-import com.idega.xformsmanager.business.component.properties.PropertiesMultiUploadDescription;
+import com.idega.xformsmanager.business.component.properties.PropertiesMultiUpload;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- * Last modified: $Date: 2008/10/27 10:27:36 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 17:07:03 $ by $Author: civilis $
  */
 public interface ComponentMultiUploadDescription extends Component {
     
-    public abstract PropertiesMultiUploadDescription getProperties();
+    public abstract PropertiesMultiUpload getProperties();
     
 }

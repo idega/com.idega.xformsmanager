@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.FormComponentType;
  * this there
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 17:07:06 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -40,10 +40,9 @@ public class XFormsManagerFactory {
 	@Autowired
 	@FormComponentType(FormComponentType.select)
 	private XFormsManagerSelect xformsManagerSelect;
-	private XFormsManagerMultiUpload xformsManagerMultiUpload;
 	@Autowired
 	@FormComponentType(FormComponentType.multiupload)
-	private XFormsManagerMultiUploadDescription xformsManagerMultiUploadDescription;
+	private XFormsManagerMultiUpload xformsManagerMultiUploadDescription;
 	@Autowired
 	@FormComponentType(FormComponentType.thankYouPage)
 	private XFormsManagerThankYouPage xformsManagerThankYouPage;
@@ -105,10 +104,6 @@ public class XFormsManagerFactory {
 		return xformsManagerSelect;
 	}
 
-	public XFormsManagerMultiUpload getXformsManagerMultiUpload() {
-		return xformsManagerMultiUpload;
-	}
-
 	public void setXformsManagerSelect(XFormsManagerSelect xformsManagerSelect) {
 		this.xformsManagerSelect = xformsManagerSelect;
 	}
@@ -122,17 +117,12 @@ public class XFormsManagerFactory {
 		this.xformsManagerThankYouPage = xformsManagerThankYouPage;
 	}
 
-	public void setXformsManagerMultiUpload(
-			XFormsManagerMultiUpload xformsManagerMultiUpload) {
-		this.xformsManagerMultiUpload = xformsManagerMultiUpload;
-	}
-
-	public XFormsManagerMultiUploadDescription getXformsManagerMultiUploadDescription() {
+	public XFormsManagerMultiUpload getXformsManagerMultiUploadDescription() {
 		return xformsManagerMultiUploadDescription;
 	}
 
 	public void setXformsManagerMultiUploadDescription(
-			XFormsManagerMultiUploadDescription xformsManagerMultiUploadDescription) {
+			XFormsManagerMultiUpload xformsManagerMultiUploadDescription) {
 		this.xformsManagerMultiUploadDescription = xformsManagerMultiUploadDescription;
 	}
 }

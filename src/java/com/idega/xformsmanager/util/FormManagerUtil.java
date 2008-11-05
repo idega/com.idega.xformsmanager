@@ -41,9 +41,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  *
- * Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 17:07:08 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -164,7 +164,7 @@ public class FormManagerUtil {
 	private static final XPathUtil localizedStringElementXPath = new XPathUtil(".//xf:instance[@id='localized_strings']/localized_strings");
 	private static final XPathUtil elementByIdXPath = new XPathUtil(".//*[@id=$id]");
 	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
-	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil("//*/attribute::*[contains(., $expression)]");
+	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(".//attribute::*[contains(., $expression)]");
 	private static final XPathUtil localizaionSetValueElement = new XPathUtil(".//xf:setvalue[@model='data_model']");
 	private static final XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='submission-error']/xf:message");
 	private static final XPathUtil formParamsXPath = new XPathUtil(".//*[@nodeType='formParams']");
@@ -932,7 +932,7 @@ public class FormManagerUtil {
 			
 			errstr.getLocalizedStringBean().setString(new Locale("en"), "uhuauaha");
 			
-//			setErrorLabelLocalizedStrings(textElement, errstr);
+			setErrorLabelLocalizedStrings(emailElement, "dfdf", "asdfdsf", errstr, d);
 			
 			setHelpTextLocalizedStrings(textElement, "asdfads", errstr.getLocalizedStringBean(), d);
 			

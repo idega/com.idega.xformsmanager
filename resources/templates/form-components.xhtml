@@ -480,7 +480,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	    </xf:upload>
 		
 		<xf:group appearance="full" bind="multiupload-group" id="fbc_multiupload" type="fbc_multiupload">
-	        <idega:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="//*[@id='fbc_multiupload']//xf:upload" stopOnError="true"/>
+	        <idega:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
 	        
 	        <xf:label model="data_model" ref="instance('localized_strings')/multiupload-title[@lang=instance('localized_strings')/current_language]"/>
 	        <xf:trigger>
@@ -490,15 +490,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	            </xf:action>
 	        </xf:trigger>
 	        
-	        <xf:repeat appearance="group" bind="multiupload" id="multiupload_entries">
+	        <xf:repeat appearance="group" bind="multiupload" id="#{componentId}-multiupload_entries">
 	            <xf:group>
 	                <xf:input ref="./description">
 	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-description-label[@lang=instance('localized_strings')/current_language]"/>
-	                    <idega:dispatch ev:event="xforms-value-changed" name="idega-validate" target="//*[@id='fbc_multiupload']//xf:upload" stopOnError="true"/>
+	                    <idega:dispatch ev:event="xforms-value-changed" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
 	                </xf:input>
 	                
 	                <xf:group ref=".[. !='' and ./description ='']" appearance="minimal" class="error">
-	                    <xf:output value="instance('error-instance')/error[@for='fbc_multiupload']"/>
+	                    <xf:output value="instance('error-instance')/error[@for='#{componentId}']"/>
 	                </xf:group>
 	                
 	                <xf:output ref="@filename">
@@ -508,8 +508,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	                <xf:upload ref=".">
 	                    <xf:filename ref="@filename"/>
 	                    <xf:mediatype ref="@mediatype"/>
-	                    <idega:dispatch ev:event="xforms-value-changed" name="idega-validate" target="//*[@id='fbc_multiupload']//xf:upload" stopOnError="true"/>
-	                    <idega:validator ev:event="idega-validate" validateif="(.!='' and ./description !='') or (.='' and ./description ='')" componentId="fbc_multiupload">
+	                    <idega:dispatch ev:event="xforms-value-changed" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
+	                    <idega:validator ev:event="idega-validate" validateif="(.!='' and ./description !='') or (.='' and ./description ='')" componentId="#{componentId}">
 	                        <idega:message errorType="custom" model="data_model" value="instance('localized_strings')/multiupload-custom[@lang=instance('localized_strings')/current_language]"/>
 	                    </idega:validator>
 	                </xf:upload>
@@ -517,7 +517,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	                <xf:trigger>
 	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-remove_trigger-label[@lang=instance('localized_strings')/current_language]"/>
 	                    <xf:action>
-	                        <xf:delete at="index('multiupload_entries')" nodeset="instance('data-instance')/multiupload/entry"/>
+	                        <xf:delete at="index('#{componentId}-multiupload_entries')" nodeset="instance('data-instance')/multiupload/entry"/>
 	                    </xf:action>
 	                </xf:trigger>
 	            </xf:group> 

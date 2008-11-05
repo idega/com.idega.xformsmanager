@@ -2,11 +2,17 @@ package com.idega.xformsmanager.component.properties.impl;
 
 import com.idega.xformsmanager.business.component.properties.PropertiesMultiUpload;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
-
+/**
+ * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
+ * @version $Revision: 1.2 $
+ * 
+ * Last modified: $Date: 2008/11/05 17:07:06 $ by $Author: civilis $
+ */
 public class ComponentPropertiesMultiUpload extends ComponentProperties implements PropertiesMultiUpload{
     
     private LocalizedStringBean addButtonLabel;
     private LocalizedStringBean removeButtonLabel;
+    private LocalizedStringBean descriptionLabel;
     private LocalizedStringBean uploadingFileDesc;
     
     public LocalizedStringBean getAddButtonLabel() {
@@ -36,6 +42,21 @@ public class ComponentPropertiesMultiUpload extends ComponentProperties implemen
 	this.addButtonLabel = addButtonLabel;
     }
     
+    public void setPlainDescriptionButtonLabel(LocalizedStringBean descriptionButtonLabel) {
+	this.descriptionLabel = descriptionButtonLabel;
+	
+    }
+    
+    public LocalizedStringBean getDescriptionLabel() {
+	return descriptionLabel;
+    }
+
+    public void setDescriptionLabel(LocalizedStringBean descriptionButtonLabel) {
+	this.descriptionLabel = descriptionButtonLabel;
+	component.update(ConstUpdateType.DESCRIPTION_BUTTON_LABEL);
+	
+    }
+    
     public LocalizedStringBean getUploadingFileDescription() {
 	return uploadingFileDesc;
     }
@@ -48,7 +69,6 @@ public class ComponentPropertiesMultiUpload extends ComponentProperties implemen
     public void setPlainUploadingFileDescription(LocalizedStringBean uploadingFileDesc) {
 	this.uploadingFileDesc = uploadingFileDesc;
     }
-    
   
 
 }

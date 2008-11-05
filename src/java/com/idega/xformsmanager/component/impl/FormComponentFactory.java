@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 17:07:07 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -30,7 +30,6 @@ public class FormComponentFactory {
 	private static final String type_non_display = "type_non_display";
 	private static final String type_plain = "type_plain";
 	private static final String type_upload = "type_upload";
-	private static final String type_upload_description = "type_upload_description";
 	public static final String page_type_tag = FormManagerUtil.idegans_case_tag;
 	public static final String page_type = "fbc_page";
 	public static final String confirmation_page_type = "fbc_confirmation_page";
@@ -96,12 +95,8 @@ public class FormComponentFactory {
 		components_tags_classified.put(type_plain, types);
 		
 		types = new ArrayList<String>();
-		types.add("fbc_multi_upload_file");
+		types.add("fbc_multiupload");
 		components_tags_classified.put(type_upload, types);
-		
-		types = new ArrayList<String>();
-		types.add("fbc_multi_upload_description_file");
-		components_tags_classified.put(type_upload_description, types);
 	}
 	
 //	public static FormComponentFactory getInstance() {
@@ -135,19 +130,9 @@ public class FormComponentFactory {
 		return component;
 	}
 	
-	private FormDocumentTemplateImpl getFormDocumentTemplate() {
-
-//		TODO: use as singleton
-		FormDocumentTemplateImpl template = new FormDocumentTemplateImpl();
-		template.setXformsDocument(getFormManager().getCacheManager().getComponentsTemplate());
-		return template;
-	}
-	
 	public FormComponent recognizeFormComponent(String componentType) {
 		if(components_tags_classified.get(type_upload).contains(componentType))
 			return new FormComponentMultiUploadImpl();
-		if(components_tags_classified.get(type_upload_description).contains(componentType))
-			return new FormComponentMultiUploadDescriptionImpl();
 		if(components_tags_classified.get(type_select).contains(componentType))
 			return new FormComponentSelectImpl();
 		if(componentType.equals(page_type_thx))
