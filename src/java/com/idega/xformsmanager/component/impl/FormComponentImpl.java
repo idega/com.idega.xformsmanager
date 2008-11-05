@@ -21,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  *
- * Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 19:42:43 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -180,7 +180,6 @@ public class FormComponentImpl implements FormComponent, Component {
 //			TODO: do the same with nodeset
 			LocalizedStringBean localizedLabel = getProperties().getLabel();
 			
-			System.out.println("localized label = "+localizedLabel);
 			String defaultLocaleLabel = localizedLabel.getString(getFormDocument().getDefaultLocale());
 			
 			String newBindName = new StringBuffer(defaultLocaleLabel)

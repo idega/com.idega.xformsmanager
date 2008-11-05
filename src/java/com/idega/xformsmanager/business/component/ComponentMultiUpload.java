@@ -4,11 +4,11 @@ import com.idega.xformsmanager.business.component.properties.PropertiesMultiUplo
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- * Last modified: $Date: 2008/11/05 17:07:03 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 19:42:18 $ by $Author: civilis $
  */
-public interface ComponentMultiUploadDescription extends Component {
+public interface ComponentMultiUpload extends Component {
     
     public abstract PropertiesMultiUpload getProperties();
     

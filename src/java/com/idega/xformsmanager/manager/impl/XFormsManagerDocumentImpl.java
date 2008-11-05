@@ -24,9 +24,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/04 17:53:06 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 19:42:36 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.document)
 @Service
@@ -154,7 +154,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 			Document xforms_doc = component.getFormDocument().getXformsDocument();
 			
-			Element instance = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.head_tag, FormManagerUtil.sections_visualization_instance_id);
+			Element instance = FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.sections_visualization_instance_id);
 			
 			if(instance == null) {
 				
@@ -174,7 +174,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 	public boolean getIsStepsVisualizationUsed(FormComponent component) {
 		
 		Document xforms_doc = component.getFormDocument().getXformsDocument();
-		return null != FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, FormManagerUtil.sections_visualization_id);
+		return null != FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.sections_visualization_id);
 	}
 	
 	@Override
@@ -208,7 +208,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 		
 		if(props.isStepsVisualizationUsed()) {
 
-			Element add = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, FormManagerUtil.sections_visualization_id);
+			Element add = FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.sections_visualization_id);
 			
 			if(add == null) {
 
@@ -224,7 +224,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			
 			ComponentDocumentDataBean componentDocumentDataBean = (ComponentDocumentDataBean)component.getComponentDataBean();
 			
-			Element rem = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, FormManagerUtil.sections_visualization_id);
+			Element rem = FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.sections_visualization_id);
 			
 			if(rem != null)
 				rem.getParentNode().removeChild(rem);
@@ -233,7 +233,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 				rem = componentDocumentDataBean.getSectionsVisualizationInstance();
 				componentDocumentDataBean.setSectionsVisualizationInstance(null);
 			} else
-				rem = FormManagerUtil.getElementByIdFromDocument(xforms_doc, FormManagerUtil.body_tag, FormManagerUtil.sections_visualization_id);
+				rem = FormManagerUtil.getElementById(xforms_doc, FormManagerUtil.sections_visualization_id);
 			
 			if(rem != null)
 				rem.getParentNode().removeChild(rem);

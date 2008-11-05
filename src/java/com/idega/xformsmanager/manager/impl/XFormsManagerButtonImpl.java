@@ -27,9 +27,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/04 17:53:07 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 19:42:27 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -154,7 +154,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 					removeSetValues(component);
 				} else {
 					
-					Element setval = FormManagerUtil.getElementByIdFromDocument(component.getFormDocument().getXformsDocument(), FormManagerUtil.body_tag, component.getId()+FormManagerUtil.set_section_vis_cur);
+					Element setval = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), component.getId()+FormManagerUtil.set_section_vis_cur);
 					
 					if(setval == null) {
 						
@@ -163,7 +163,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 					}
 					setval.setAttribute(FormManagerUtil.ref_s_att, "instance('"+FormManagerUtil.sections_visualization_instance_id+"')/section[id='"+component.getParent().getParentPage().getId()+"']/@selected");
 					
-					setval = FormManagerUtil.getElementByIdFromDocument(component.getFormDocument().getXformsDocument(), FormManagerUtil.body_tag, component.getId()+FormManagerUtil.set_section_vis_rel);
+					setval = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), component.getId()+FormManagerUtil.set_section_vis_rel);
 					
 					if(setval == null) {
 						
@@ -180,12 +180,12 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XForms
 	
 	private void removeSetValues(FormComponent component) {
 		
-		Element setval = FormManagerUtil.getElementByIdFromDocument(component.getFormDocument().getXformsDocument(), FormManagerUtil.body_tag, component.getId()+FormManagerUtil.set_section_vis_cur);
+		Element setval = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), component.getId()+FormManagerUtil.set_section_vis_cur);
 		
 		if(setval != null)
 			setval.getParentNode().removeChild(setval);
 		
-		setval = FormManagerUtil.getElementByIdFromDocument(component.getFormDocument().getXformsDocument(), FormManagerUtil.body_tag, component.getId()+FormManagerUtil.set_section_vis_rel);
+		setval = FormManagerUtil.getElementById(component.getFormDocument().getXformsDocument(), component.getId()+FormManagerUtil.set_section_vis_rel);
 		
 		if(setval != null)
 			setval.getParentNode().removeChild(setval);

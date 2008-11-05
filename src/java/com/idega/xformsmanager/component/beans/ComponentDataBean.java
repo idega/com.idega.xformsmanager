@@ -6,13 +6,14 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
+import com.idega.xformsmanager.util.FormManagerUtil;
 import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 19:42:44 $ by $Author: civilis $
  */
 public class ComponentDataBean implements Cloneable {
 
@@ -36,7 +37,22 @@ public class ComponentDataBean implements Cloneable {
 		return bind;
 	}
 
+	/**
+	 * sets bind only, also @see putBind
+	 * @param bind
+	 */
 	public void setBind(Bind bind) {
+		this.bind = bind;
+	}
+	
+	/**
+	 * sets bind and updates component element to reference the bind
+	 * @param bind
+	 */
+	public void putBind(Bind bind) {
+
+		bind.getFormComponent().getComponentDataBean().getElement()
+				.setAttribute(FormManagerUtil.bind_att, bind.getId());
 		this.bind = bind;
 	}
 

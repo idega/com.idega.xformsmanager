@@ -1,8 +1,11 @@
 package com.idega.xformsmanager.xform;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.chiba.xml.dom.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -14,14 +17,16 @@ import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
+ * TODO: move static bind methods to binds factory
+ * 
  * TODO: when bind is shared, all the components should point to the same bind object (shared bind instance)
  * also, bind could have more than one form component
  * 
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
- *          Last modified: $Date: 2008/11/03 16:56:32 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 19:42:43 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -43,6 +48,8 @@ public class Bind implements Cloneable {
 	private String relevant;
 	private Boolean isRelevant;
 	private Boolean isShared;
+	private List<Bind> childBinds;
+	private Bind parentBind;
 
 	public Element getBindElement() {
 		return bindElement;
@@ -170,7 +177,35 @@ public class Bind implements Cloneable {
 		bind.setBindElement(bindElement);
 		bind.setFormComponent(formComponent);
 
+		loadChildBinds(bind);
+
 		return bind;
+	}
+	
+	private static void loadChildBinds(Bind parentBind) {
+		
+		Element parentBindElement = parentBind.getBindElement();
+		
+		@SuppressWarnings("unchecked")
+		List<Element> childElements = DOMUtil.getChildElements(parentBindElement);
+		
+		if(childElements != null && !childElements.isEmpty()) {
+			
+			ArrayList<Bind> childBinds = new ArrayList<Bind>(childElements.size());
+			
+			for (Element element : childElements) {
+				
+				if(FormManagerUtil.bind_tag.equals(element.getNodeName())) {
+					
+//					load child bind
+					Bind childBind = load(element);
+					childBind.setParentBind(parentBind);
+					childBinds.add(childBind);
+				}
+			}
+			
+			parentBind.setChildBinds(childBinds);
+		}
 	}
 
 	private static final String modelIdVariable = "modelId";
@@ -205,6 +240,8 @@ public class Bind implements Cloneable {
 		Bind bind = new Bind();
 		bind.setId(bindElement.getAttribute(FormManagerUtil.id_att));
 		bind.setBindElement(bindElement);
+		
+		loadChildBinds(bind);
 
 		return bind;
 	}
@@ -261,15 +298,10 @@ public class Bind implements Cloneable {
 		// insert bind element
 		String componentId = component.getId();
 		
-		ComponentDataBean xformsComponentDataBean = component
-				.getComponentDataBean();
-
 		// TODO: create bind id as nodeset (from label)
 //		if bind is shared, using the same id, as is in the template
 		String bindId = templateBind.getIsShared() ? templateBind.getId()
 				: FormManagerUtil.bind_att + CoreConstants.MINUS + componentId;
-		xformsComponentDataBean.getElement().setAttribute(
-				FormManagerUtil.bind_att, bindId);
 
 		// Element bindElement =
 		// (Element)xform.importNode(xformsComponentDataBean.getBind().getBindElement(),
@@ -360,6 +392,18 @@ public class Bind implements Cloneable {
 				: getBindElement().cloneNode(true)));
 		bind.setId(getId());
 		bind.setNodeset(getNodeset() == null ? null : getNodeset().clone());
+		
+		if(getChildBinds() != null) {
+			
+			ArrayList<Bind> childBinds = new ArrayList<Bind>(getChildBinds().size());
+			
+			for (Bind childBind : getChildBinds()) {
+				
+				childBinds.add(childBind.clone());
+			}
+			
+			bind.setChildBinds(childBinds);
+		}
 
 		return bind;
 	}
@@ -532,6 +576,11 @@ public class Bind implements Cloneable {
 	}
 
 	public FormComponent getFormComponent() {
+		
+		if(formComponent == null && getParentBind() != null) {
+			formComponent = getParentBind().getFormComponent();
+		}
+		
 		return formComponent;
 	}
 
@@ -567,5 +616,21 @@ public class Bind implements Cloneable {
 		else
 			getBindElement().removeAttributeNS(FormManagerUtil.idega_namespace,
 					FormManagerUtil.shared_att);
+	}
+
+	public List<Bind> getChildBinds() {
+		return childBinds;
+	}
+
+	protected void setChildBinds(List<Bind> childBinds) {
+		this.childBinds = childBinds;
+	}
+
+	protected Bind getParentBind() {
+		return parentBind;
+	}
+
+	protected void setParentBind(Bind parentBind) {
+		this.parentBind = parentBind;
 	}
 }

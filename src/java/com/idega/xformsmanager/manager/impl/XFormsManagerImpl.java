@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
- *          Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 19:42:42 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -49,6 +49,7 @@ public class XFormsManagerImpl implements XFormsManager {
 	private static final String nodesetVariable = "nodeset";
 	private static final String autofill_attr = "autofillkey";
 
+//	TODO: don't forget to remove the || true (i.e. use caching)
 	public void loadComponentFromTemplate(FormComponent component) {
 
 		final String componentType = component.getType();
@@ -217,13 +218,11 @@ public class XFormsManagerImpl implements XFormsManager {
 		Document xform = component.getFormDocument().getXformsDocument();
 
 		xformsComponentDataBean.setKeyExtInstance(FormManagerUtil
-				.getElementByIdFromDocument(xform, FormManagerUtil.head_tag,
-						component.getId()
-								+ FormManagerUtil.autofill_instance_ending));
-		xformsComponentDataBean.setKeySetvalue(FormManagerUtil
-				.getElementByIdFromDocument(xform, FormManagerUtil.head_tag,
-						component.getId()
-								+ FormManagerUtil.autofill_setvalue_ending));
+				.getElementById(xform, component.getId()
+						+ FormManagerUtil.autofill_instance_ending));
+		xformsComponentDataBean.setKeySetvalue(FormManagerUtil.getElementById(
+				xform, component.getId()
+						+ FormManagerUtil.autofill_setvalue_ending));
 	}
 
 	/*
@@ -285,14 +284,14 @@ public class XFormsManagerImpl implements XFormsManager {
 	 */
 	public void addComponentToDocument(FormComponent component) {
 
-		ComponentDataBean xformsComponentDataBean = component
+		ComponentDataBean componentDataBean = component
 				.getComponentDataBean();
 		Document xform = component.getFormDocument().getXformsDocument();
 
 		// resolving template element and importing to xform document
-		Element componentElement = xformsComponentDataBean.getElement();
+		Element componentElement = componentDataBean.getElement();
 		componentElement = (Element) xform.importNode(componentElement, true);
-		xformsComponentDataBean.setElement(componentElement);
+		componentDataBean.setElement(componentElement);
 
 		String componentId = component.getId();
 		componentElement.setAttribute(FormManagerUtil.id_att, componentId);
@@ -308,23 +307,23 @@ public class XFormsManagerImpl implements XFormsManager {
 		if (removeTextNodes())
 			FormManagerUtil.removeTextNodes(componentElement);
 
-		if (xformsComponentDataBean.getBind() != null) {
+		if (componentDataBean.getBind() != null) {
 
-			Bind bind = Bind.createFromTemplate(xformsComponentDataBean
+			Bind bind = Bind.createFromTemplate(componentDataBean
 					.getBind());
-			xformsComponentDataBean.setBind(bind);
+			componentDataBean.putBind(bind);
 		}
 		// addBindingsAndNodesets(component);
 
 		FormComponentContainer parent = component.getParent();
 		parent.getXFormsManager().addChild(parent, component);
-		componentElement = xformsComponentDataBean.getElement();
+		componentElement = componentDataBean.getElement();
 
-		if (xformsComponentDataBean.getElement()
+		if (componentDataBean.getElement()
 				.getAttributeNode(autofill_attr) != null) {
 
 			component.getProperties().setAutofillKey(
-					xformsComponentDataBean.getElement().getAttributeNode(
+					componentDataBean.getElement().getAttributeNode(
 							autofill_attr).getValue());
 			componentElement.removeAttribute(autofill_attr);
 
@@ -793,9 +792,9 @@ public class XFormsManagerImpl implements XFormsManager {
 		NodeList children = xformsComponentDataBean.getElement()
 				.getElementsByTagName("*");
 
-		Element loc_model = FormManagerUtil.getElementByIdFromDocument(
-				component.getFormDocument().getXformsDocument(),
-				FormManagerUtil.head_tag, FormManagerUtil.data_mod);
+		Element loc_model = FormManagerUtil.getElementById(component
+				.getFormDocument().getXformsDocument(),
+				FormManagerUtil.data_mod);
 
 		Element loc_strings = (Element) loc_model.getElementsByTagName(
 				FormManagerUtil.loc_tag).item(0);
@@ -1191,10 +1190,9 @@ public class XFormsManagerImpl implements XFormsManager {
 		ComponentDataBean xformsComponentDataBean = component
 				.getComponentDataBean();
 
-		Element preview_element = FormManagerUtil.getElementByIdFromDocument(
-				component.getFormDocument().getXformsDocument(),
-				FormManagerUtil.body_tag, FormManagerUtil.preview + '.'
-						+ component.getId());
+		Element preview_element = FormManagerUtil.getElementById(component
+				.getFormDocument().getXformsDocument(), FormManagerUtil.preview
+				+ '.' + component.getId());
 
 		if (preview_element != null) {
 			xformsComponentDataBean.setPreviewElement(preview_element);

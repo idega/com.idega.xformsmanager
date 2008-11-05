@@ -41,9 +41,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  *
- * Last modified: $Date: 2008/11/05 17:07:08 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 19:42:45 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -182,10 +182,10 @@ public class FormManagerUtil {
 	 * @param id_value
 	 * @return - <b>reference</b> to element in document
 	 */
-	public static Element getElementByIdFromDocument(Document doc, String start_tag, String id_value) {
-		
-		return getElementByAttributeFromDocument(doc, start_tag, id_att, id_value);
-	}
+//	public static Element getElementByIdFromDocument(Document doc, String start_tag, String id_value) {
+//		
+//		return getElementByAttributeFromDocument(doc, start_tag, id_att, id_value);
+//	}
 	
 	/**
 	 * 
@@ -195,17 +195,17 @@ public class FormManagerUtil {
 	 * @param attribute_value
 	 * @return - Reference to element in document
 	 */
-	public static Element getElementByAttributeFromDocument(Document doc, String start_tag, String attribute_name, String attribute_value) {
-		
-		Element start_element;
-		
-		if(start_tag != null)
-			start_element = (Element)doc.getElementsByTagName(start_tag).item(0);
-		else
-			start_element = doc.getDocumentElement();
-		
-		return DOMUtil.getElementByAttributeValue(start_element, CoreConstants.STAR, attribute_name, attribute_value);
-	}
+//	public static Element getElementByAttributeFromDocument(Document doc, String start_tag, String attribute_name, String attribute_value) {
+//		
+//		Element start_element;
+//		
+//		if(start_tag != null)
+//			start_element = (Element)doc.getElementsByTagName(start_tag).item(0);
+//		else
+//			start_element = doc.getDocumentElement();
+//		
+//		return DOMUtil.getElementByAttributeValue(start_element, CoreConstants.STAR, attribute_name, attribute_value);
+//	}
 	
 	public static void insertNodesetElement(Document form_xforms, Element new_nodeset_element) {
 		
@@ -341,7 +341,7 @@ public class FormManagerUtil {
 	
 	public static LocalizedStringBean getLocalizedStrings(String key, Document xformsDoc) {
 
-		Element locModel = getElementByIdFromDocument(xformsDoc, head_tag, data_mod);
+		Element locModel = getElementById(xformsDoc, data_mod);
 		Element locStrings = (Element)locModel.getElementsByTagName(loc_tag).item(0);
 		
 		NodeList keyElements = locStrings.getElementsByTagName(key);
@@ -391,7 +391,7 @@ public class FormManagerUtil {
 	
 	public static void clearLocalizedMessagesFromDocument(Document doc) {
 		
-		Element loc_model = getElementByIdFromDocument(doc, head_tag, data_mod);
+		Element loc_model = getElementById(doc, data_mod);
 		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
 		@SuppressWarnings("unchecked")
 		List<Element> loc_elements = DOMUtil.getChildElements(loc_strings);
@@ -402,7 +402,7 @@ public class FormManagerUtil {
 	
 	public static Locale getDefaultFormLocale(Document xformsDoc) {
 		
-		Element locModel = getElementByIdFromDocument(xformsDoc, head_tag, data_mod);
+		Element locModel = getElementById(xformsDoc, data_mod);
 		Element locStrings = (Element)locModel.getElementsByTagName(loc_tag).item(0);
 		NodeList defaultLanguages = locStrings.getElementsByTagName(default_language_tag);
 		
@@ -418,7 +418,7 @@ public class FormManagerUtil {
 	}
 	
 	public static void setCurrentFormLocale(Document form_xforms, Locale locale) {
-		Element loc_model = getElementByIdFromDocument(form_xforms, head_tag, data_mod);
+		Element loc_model = getElementById(form_xforms, data_mod);
 		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
 		NodeList current_language_node_list = loc_strings.getElementsByTagName(current_language_tag);
 		
@@ -430,7 +430,7 @@ public class FormManagerUtil {
 	}
 	
 	public static void setDefaultFormLocale(Document form_xforms, Locale locale) {
-		Element loc_model = getElementByIdFromDocument(form_xforms, head_tag, data_mod);
+		Element loc_model = getElementById(form_xforms, data_mod);
 		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
 		NodeList current_language_node_list = loc_strings.getElementsByTagName(default_language_tag);
 		
@@ -997,7 +997,7 @@ public class FormManagerUtil {
 	
 	public static Map<String, List<String>> getCategorizedComponentsTypes(Document form_components_doc) {
 		
-		Element instance_element = getElementByIdFromDocument(form_components_doc, head_tag, "component_categories");
+		Element instance_element = getElementById(form_components_doc, "component_categories");
 		NodeList categories = instance_element.getElementsByTagName("category");
 		Map<String, List<String>> categorized_types = new HashMap<String, List<String>>();
 		
@@ -1171,7 +1171,7 @@ public class FormManagerUtil {
 	
 	public static Map<String, List<ComponentType>> getComponentsTypesByDatatype(Document form_components_doc) {
 		
-		Element instance_element = getElementByIdFromDocument(form_components_doc, head_tag, "components-datatypes-mappings");
+		Element instance_element = getElementById(form_components_doc, "components-datatypes-mappings");
 		NodeList list = instance_element.getElementsByTagName("component");
 		
 		Map<String, List<ComponentType>> types = new HashMap<String, List<ComponentType>>();

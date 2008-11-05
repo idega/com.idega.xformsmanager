@@ -17,9 +17,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/03 15:48:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/05 19:42:32 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.page)
 @Service
@@ -52,7 +52,7 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 
 		super.addComponentToDocument(component);
 		loadChildrenContainerElement(component);
-		
+
 		// ComponentDataBean xformsComponentDataBean =
 		// component.getXformsComponentDataBean();
 		//		
@@ -81,11 +81,13 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 		checkForSpecialTypes(component);
 		pageContextChanged(component);
 	}
-	
+
 	private void loadChildrenContainerElement(FormComponent component) {
-		
-		ComponentContainerDataBean containerDataBean = (ComponentContainerDataBean)component.getComponentDataBean();
-		Element groupElement = DOMUtil.getChildElement(containerDataBean.getElement(), FormManagerUtil.group_tag);
+
+		ComponentContainerDataBean containerDataBean = (ComponentContainerDataBean) component
+				.getComponentDataBean();
+		Element groupElement = DOMUtil.getChildElement(containerDataBean
+				.getElement(), FormManagerUtil.group_tag);
 		containerDataBean.setChildrenContainerElement(groupElement);
 	}
 
@@ -248,10 +250,10 @@ public class XFormsManagerPageImpl extends XFormsManagerContainerImpl implements
 			Element section) {
 
 		if (relevant_page != null) {
-			Element relevant_section = FormManagerUtil
-					.getElementByIdFromDocument(component.getFormDocument()
-							.getXformsDocument(), FormManagerUtil.head_tag,
-							relevant_page.getId() + "_section");
+			Element relevant_section = FormManagerUtil.getElementById(component
+					.getFormDocument().getXformsDocument(), relevant_page
+					.getId()
+					+ "_section");
 
 			if (relevant_section == null)
 				return false;
