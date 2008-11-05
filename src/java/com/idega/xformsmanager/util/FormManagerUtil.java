@@ -35,18 +35,16 @@ import com.idega.util.StringUtil;
 import com.idega.util.xml.Prefix;
 import com.idega.util.xml.XPathUtil;
 import com.idega.util.xml.XmlUtil;
-import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
-import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.ErrorStringBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  *
- * Last modified: $Date: 2008/11/04 20:53:52 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 08:57:33 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -490,14 +488,10 @@ public class FormManagerUtil {
 		return errors;
 	}
 	
-	public static void setErrorLabelLocalizedStrings(Element componentElement, ErrorStringBean errString) {
+	public static void setErrorLabelLocalizedStrings(FormComponent component, ErrorStringBean errString) {
 		
-//		Element componentElement = component.getComponentDataBean().getElement();
-		
+		Element componentElement = component.getComponentDataBean().getElement();
 		NodeList validatorMessagesElements = validatorMessagesElementsXPath.getNodeset(componentElement);
-		
-//		String attributeName, String key, String oldKey, Element element, Document xform, LocalizedStringBean localizedStr
-//		putLocalizedText(value_att, "newkey", "oldkey", null, null, null);
 		
 		if(validatorMessagesElements.getLength() != 0) {
 		
@@ -516,76 +510,36 @@ public class FormManagerUtil {
 			}
 		} else {
 			
-			System.out.println("creating________ validation block");
 //			assuming there are no validation block
 			
-			try {
-				
-				DocumentBuilder db = XmlUtil.getDocumentBuilder();
-				Document d = db.parse(new File("/Users/civilis/dev/workspace/eplatform-4-bpm/com.idega.xformsmanager/resources/templates/form-components.xhtml"));
-				
-				List<Element> validationBlockElements = FormManagerUtil.getItemElementsById(d, "validationMessagesHandling");
-				
-				for (Element element : validationBlockElements) {
-				
-					Element validationBlock = (Element)componentElement.getOwnerDocument().importNode(element, true);
-					validationBlock = (Element)componentElement.appendChild(validationBlock);
-				}
-				
-				replaceAttributesByExpression(componentElement, "componentId", "XXXXCOMPONENTID");
-				
-//				replaceAttributesByExpression(validationBlock, "componentId", component.getId());
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+			List<Element> validationBlockElements = FormManagerUtil.getItemElementsById(
+					component.getFormDocument().getContext().getComponentsXforms(), "validationMessagesHandling");
+			
+			for (Element element : validationBlockElements) {
+			
+				Element validationBlock = (Element)componentElement.getOwnerDocument().importNode(element, true);
+				validationBlock = (Element)componentElement.appendChild(validationBlock);
 			}
 			
-//			d = component.getFormDocument().getContext().getComponentsXforms()
+			replaceAttributesByExpression(componentElement, "componentId", component.getId());
 		}
 		
 //		create message element
 		
-		try {
-			DocumentBuilder db = XmlUtil.getDocumentBuilder();
-			Document d = db.parse(new File("/Users/civilis/dev/workspace/eplatform-4-bpm/com.idega.xformsmanager/resources/templates/form-components.xhtml"));
-			
-			Element validationBlock = validatorBlockElementsXPath.getNode(componentElement);
-			
-//			<idega:message errorType="" model="data_model" value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
-			
-			Element messageElement = FormManagerUtil.getItemElementById(d, "validationMessage");
-			messageElement = (Element)validationBlock.getOwnerDocument().importNode(messageElement, true);
-			messageElement = (Element)validationBlock.appendChild(messageElement);
-			messageElement.setAttribute("errorType", errString.getErrorType().toString());
-			
-			replaceAttributesByExpression(validationBlock, "messageKey", "XXXXXXcomponentID"+CoreConstants.MINUS+errString.getErrorType());
-			putLocalizedText(value_att, null, null, messageElement, messageElement.getOwnerDocument(), errString.getLocalizedStringBean());
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		/*
-		NodeList alerts = element.getElementsByTagName(FormManagerUtil.alert_tag);
+		Element validationBlock = validatorBlockElementsXPath.getNode(componentElement);
 		
-		if(alerts == null || alerts.getLength() == 0) {
-			
-			Element alert = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getComponentsXforms(), "alert");
-			
-			Document xform = component.getFormDocument().getXformsDocument();
-			
-			alert = (Element)xform.importNode(alert, true);
-			element.appendChild(alert);
+//		<idega:message errorType="" model="data_model" value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
 		
-			String localizedKey = new StringBuilder(component.getId()).append(".error").toString();
+		Element messageElement = FormManagerUtil.getItemElementById(
+				component.getFormDocument().getContext().getComponentsXforms(), "validationMessage");
+		messageElement = (Element)validationBlock.getOwnerDocument().importNode(messageElement, true);
+		messageElement = (Element)validationBlock.appendChild(messageElement);
+		messageElement.setAttribute("errorType", errString.getErrorType().toString());
 		
-//			TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizedKey, FormManagerUtil.localized_entries, alert, xform, properties.getErrorMsg());
-		} else {
-			
-			Element alert = (Element)alerts.item(0);
-//			TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null, alert, component.getFormDocument().getXformsDocument(), properties.getErrorMsg());
-		}
-		*/
+		String messageKey = component.getId()+CoreConstants.MINUS+errString.getErrorType();
+		
+		replaceAttributesByExpression(validationBlock, "messageKey", messageKey);
+		putLocalizedText(value_att, null, null, messageElement, messageElement.getOwnerDocument(), errString.getLocalizedStringBean());
 	}
 	
 	public static LocalizedStringBean getHelpTextLocalizedStrings(Element component, Document xforms_doc) {
@@ -971,7 +925,7 @@ public class FormManagerUtil {
 			
 			errstr.getLocalizedStringBean().setString(new Locale("en"), "uhuauaha");
 			
-			setErrorLabelLocalizedStrings(textElement, errstr);
+//			setErrorLabelLocalizedStrings(textElement, errstr);
 			
 			DOMUtil.prettyPrintDOM(textElement.getOwnerDocument());
 			

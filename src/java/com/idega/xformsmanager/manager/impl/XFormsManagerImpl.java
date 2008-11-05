@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  *
- * Last modified: $Date: 2008/11/04 17:53:08 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/05 08:57:34 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -506,29 +506,7 @@ public class XFormsManagerImpl implements XFormsManager {
 	
 	protected void updateErrorMsg(FormComponent component, ErrorStringBean errString) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
-		PropertiesComponent properties = component.getProperties();
-		
-		Element element = xformsComponentDataBean.getElement();
-		NodeList alerts = element.getElementsByTagName(FormManagerUtil.alert_tag);
-		
-		if(alerts == null || alerts.getLength() == 0) {
-			
-			Element alert = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getComponentsXforms(), "alert");
-			
-			Document xform = component.getFormDocument().getXformsDocument();
-			
-			alert = (Element)xform.importNode(alert, true);
-			element.appendChild(alert);
-		
-			String localizedKey = new StringBuilder(component.getId()).append(".error").toString();
-		
-//			TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizedKey, FormManagerUtil.localized_entries, alert, xform, properties.getErrorMsg());
-		} else {
-			
-			Element alert = (Element)alerts.item(0);
-//			TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null, alert, component.getFormDocument().getXformsDocument(), properties.getErrorMsg());
-		}
+		FormManagerUtil.setErrorLabelLocalizedStrings(component, errString);
 	}
 	
 	protected void updateHelpText(FormComponent component) {
