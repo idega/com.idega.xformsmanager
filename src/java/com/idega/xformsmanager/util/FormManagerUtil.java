@@ -41,9 +41,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  *
- * Last modified: $Date: 2008/11/05 19:42:45 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 12:32:55 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -325,9 +325,11 @@ public class FormManagerUtil {
 		if(!isLocalizationKeyCorrect(localizationKey))
 			return null;
 		
-		return new StringBuilder(componentId)
-		.append(localizationKey.contains(CoreConstants.MINUS) ? localizationKey.substring(localizationKey.lastIndexOf(CoreConstants.MINUS)) : CoreConstants.EMPTY)
-		.toString();
+		String componentLocalizationKey = new StringBuilder(componentId)
+			.append(localizationKey.contains(CoreConstants.MINUS) ? localizationKey.substring(localizationKey.indexOf(CoreConstants.MINUS)) : CoreConstants.EMPTY)
+			.toString();
+		
+		return componentLocalizationKey;
 	}
 	
 	public static String getKeyFromRef(String ref) {
@@ -950,8 +952,6 @@ public class FormManagerUtil {
 				Node attNode = nodes.item(i);
 				String attValue = attNode.getNodeValue();
 				attValue = attValue.replaceAll("#\\{componentId\\}", "_theID_");
-				
-				System.out.println("node = "+attNode);
 				
 				attNode.setNodeValue(attValue);
 			}

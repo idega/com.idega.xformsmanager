@@ -21,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- *          Last modified: $Date: 2008/11/05 19:42:25 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 12:32:52 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.multiupload)
 @Service
@@ -249,7 +249,7 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 
 		PropertiesMultiUpload properties = (PropertiesMultiUpload) component
 				.getProperties();
-		LocalizedStringBean localizedText = properties.getAddButtonLabel();
+		LocalizedStringBean localizedText = properties.getInsertButtonLabel();
 		NodeList labels = getLabelNodeList(component);
 
 		if (labels == null || labels.getLength() == 0)

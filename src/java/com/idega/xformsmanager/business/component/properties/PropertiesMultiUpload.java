@@ -3,9 +3,9 @@ package com.idega.xformsmanager.business.component.properties;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- * Last modified: $Date: 2008/11/05 17:07:05 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 12:32:55 $ by $Author: civilis $
  */
 public interface PropertiesMultiUpload extends PropertiesComponent{
     
@@ -13,9 +13,9 @@ public interface PropertiesMultiUpload extends PropertiesComponent{
 
     public abstract void setRemoveButtonLabel(LocalizedStringBean removeButtonLabel);
     
-    public abstract LocalizedStringBean getAddButtonLabel();
+    public abstract LocalizedStringBean getInsertButtonLabel();
 
-    public abstract void setAddButtonLabel(LocalizedStringBean addButtonLabel);
+    public abstract void setInsertButtonLabel(LocalizedStringBean addButtonLabel);
     
     public abstract LocalizedStringBean getDescriptionLabel();
 
