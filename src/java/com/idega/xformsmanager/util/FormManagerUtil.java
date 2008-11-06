@@ -41,9 +41,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  *
- * Last modified: $Date: 2008/11/06 12:32:55 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -431,8 +431,11 @@ public class FormManagerUtil {
 		}		
 	}
 	
-	public static void setDefaultFormLocale(Document form_xforms, Locale locale) {
-		Element loc_model = getElementById(form_xforms, data_mod);
+	public static void setDefaultFormLocale(Document xform, Locale locale) {
+		
+		DOMUtil.prettyPrintDOM(xform);
+		
+		Element loc_model = getElementById(xform, data_mod);
 		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
 		NodeList current_language_node_list = loc_strings.getElementsByTagName(default_language_tag);
 		

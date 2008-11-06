@@ -39,9 +39,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  *
- * Last modified: $Date: 2008/11/04 17:53:09 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements com.idega.xformsmanager.business.Document, com.idega.xformsmanager.component.FormDocument {
 	
@@ -219,6 +219,8 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	}
 	
 	public String getFormSourceCode() throws Exception {
+		
+		System.out.println("xform document="+getXformsDocument());
 		return FormManagerUtil.serializeDocument(getXformsDocument());
 	}
 	
@@ -486,7 +488,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 	public void clear() {
 
 		setXformsDocument(null);
-		setDefaultLocale(null);
 //		formComponents = null;
 		lastComponentId = 0;
 		setFormDocumentModified(true);

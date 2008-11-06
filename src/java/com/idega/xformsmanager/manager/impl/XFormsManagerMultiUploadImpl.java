@@ -21,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
- *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.multiupload)
 @Service
@@ -100,65 +100,56 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 	public static final XPathUtil uploadRepeatElementXPath = new XPathUtil(
 			".//xf:repeat");
 
-	@Override
-	protected void loadBindsAndNodesets(FormComponent component) {
-		ComponentDataBean xformsComponentDataBean = component
-				.getComponentDataBean();
-
-		Element repeatElement = uploadRepeatElementXPath
-				.getNode(xformsComponentDataBean.getElement());
-
-		String bindId = repeatElement.getAttribute(FormManagerUtil.bind_att);
-
-		Bind bind = Bind.locate(component, bindId);
-
-		if (bind == null)
-			throw new NullPointerException("Binding not found by bind id: "
-					+ bindId + " in the form "
-					+ component.getFormDocument().getId());
-
-		xformsComponentDataBean.setBind(bind);
-	}
+//	@Override
+//	protected void loadBindsAndNodesets(FormComponent component) {
+//		ComponentDataBean xformsComponentDataBean = component
+//				.getComponentDataBean();
+//
+//		Element repeatElement = uploadRepeatElementXPath
+//				.getNode(xformsComponentDataBean.getElement());
+//
+//		String bindId = repeatElement.getAttribute(FormManagerUtil.bind_att);
+//
+//		Bind bind = Bind.locate(component, bindId);
+//
+//		if (bind == null)
+//			throw new NullPointerException("Binding not found by bind id: "
+//					+ bindId + " in the form "
+//					+ component.getFormDocument().getId());
+//
+//		xformsComponentDataBean.setBind(bind);
+//	}
 
 	@Override
 	public void addComponentToDocument(FormComponent component) {
 
 		super.addComponentToDocument(component);
-
-		// ComponentMultiUploadBean xfMultiUploadComponentBean =
-		// (ComponentMultiUploadBean) component
-		// .getComponentDataBean();
-
-		// Element nodeElement = (Element) insertXPUT
-		// .getNode(xfMultiUploadComponentBean.getElement());
-		// nodeElement.setAttribute(FormManagerUtil.nodeset_att,
-		// constructInsertNodeset(component));
-		//
-		// nodeElement = (Element) repeatXPUT.getNode(xfMultiUploadComponentBean
-		// .getElement());
-		// nodeElement.setAttribute(FormManagerUtil.bind_att,
-		// constructBindValue(component.getId()));
-		// nodeElement.setAttribute(FormManagerUtil.id_att,
-		// constructRepeatId(component.getId()));
-		//
-		// nodeElement = bindXPUT.getNode(xfMultiUploadComponentBean.getBind()
-		// .getBindElement());
-		// nodeElement.setAttribute(FormManagerUtil.id_att,
-		// constructBindValue(component.getId()));
-		//
-		// nodeElement = (Element) deleteXPUT.getNode(xfMultiUploadComponentBean
-		// .getElement());
-		// nodeElement.setAttribute(FormManagerUtil.nodeset_att,
-		// constructInsertNodeset(component));
-		// nodeElement.setAttribute(FormManagerUtil.at_att,
-		// constructDeleteAt(component.getId()));
-		//
-		// nodeElement = (Element) outputXPUT.getNode(xfMultiUploadComponentBean
-		// .getElement());
-		// nodeElement.setAttribute(FormManagerUtil.value_att,
-		// constructOutputValueAt(component.getId()));
-		// nodeElement.removeAttribute(FormManagerUtil.ref_s_att);
-
+		updateNodesetReferencingAttributes(component);
+	}
+	
+	private final XPathUtil insertElementXPath = new XPathUtil(".//xf:insert[@at]");
+	private final XPathUtil deleteElementXPath = new XPathUtil(".//xf:delete[@at]");
+	
+	private void updateNodesetReferencingAttributes(FormComponent component) {
+		
+		String nodesetName = component.getComponentDataBean().getBind().getNodeset().getNodesetElement().getNodeName();
+		
+		Element insertElement = insertElementXPath.getNode(component.getComponentDataBean().getElement());
+		Element deleteElement = deleteElementXPath.getNode(component.getComponentDataBean().getElement());
+		
+		String insertNodeset = insertElement.getAttribute(FormManagerUtil.nodeset_att);
+		
+		insertNodeset = "instance('data-instance')/"+nodesetName+"/entry";
+		
+		insertElement.setAttribute(FormManagerUtil.nodeset_att, insertNodeset);
+		deleteElement.setAttribute(FormManagerUtil.nodeset_att, insertNodeset);
+	}
+	
+	@Override
+	public void bindsRenamed(FormComponent component) {
+		
+		super.bindsRenamed(component);
+		updateNodesetReferencingAttributes(component);
 	}
 
 	// private String constructInsertNodeset(FormComponent component) {

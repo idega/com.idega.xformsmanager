@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 public interface XFormsManager {
 
@@ -83,4 +83,6 @@ public interface XFormsManager {
 	// public abstract boolean isReadonly(FormComponent component);
 	//	
 	// public void setReadonly(FormComponent component, boolean readonly);
+	
+	public abstract void bindsRenamed(FormComponent component);
 }

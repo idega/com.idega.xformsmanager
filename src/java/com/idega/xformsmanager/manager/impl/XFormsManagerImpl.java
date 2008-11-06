@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
- *          Last modified: $Date: 2008/11/06 14:32:30 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -228,6 +228,10 @@ public class XFormsManagerImpl implements XFormsManager {
 
 			updateAutofillKey(component);
 		}
+	}
+	
+	public void bindsRenamed(FormComponent component) {
+		
 	}
 
 	protected boolean removeTextNodes() {

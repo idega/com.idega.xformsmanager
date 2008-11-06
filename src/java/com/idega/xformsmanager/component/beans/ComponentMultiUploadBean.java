@@ -8,9 +8,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/06 14:15:58 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 public class ComponentMultiUploadBean extends ComponentDataBean {
 
@@ -38,17 +38,19 @@ public class ComponentMultiUploadBean extends ComponentDataBean {
 
 	@Override
 	public void putBind(Bind bind) {
-		setBind(bind);
+		
+		super.putBind(bind);
+//		setBind(bind);
 
-		Bind groupBind = bind.getChildBinds().iterator().next();
+		Bind entriesBind = bind.getChildBinds().iterator().next();
 
 		// our component element is group
-		getElement().setAttribute(FormManagerUtil.bind_att, groupBind.getId());
+//		getElement().setAttribute(FormManagerUtil.bind_att, bind.getId());
 
 		// and component repeat element references root bind of this component
 		Element repeatElement = XFormsManagerMultiUploadImpl.uploadRepeatElementXPath
 				.getNode(getElement());
-		repeatElement.setAttribute(FormManagerUtil.bind_att, bind.getId());
+		repeatElement.setAttribute(FormManagerUtil.bind_att, entriesBind.getId());
 	}
 
 	public Element getMultiUploadInstance() {

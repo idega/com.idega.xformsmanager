@@ -20,9 +20,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
- *          Last modified: $Date: 2008/11/06 12:32:51 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 
@@ -133,6 +133,8 @@ public class FormComponentImpl implements FormComponent, Component {
 
 			bind.rename(newBindName);
 		}
+		
+		getXFormsManager().bindsRenamed(this);
 	}
 
 	public void setNextSibling(FormComponent component) {

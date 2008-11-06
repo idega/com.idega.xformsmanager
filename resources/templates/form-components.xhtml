@@ -64,9 +64,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 	<!-- types hexBinary anyURI base64Binary -->
     <xf:bind id="upload" nodeset="upload/entry" type="xs:anyURI" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'"/>
-    
+
+<!--      
     <xf:bind id="multiupload" nodeset="multiupload/entry[position() != last()]" type="xs:anyURI">
         <xf:bind id="multiupload-group" nodeset="../group" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'"/>
+    </xf:bind>
+    -->
+    
+    <xf:bind id="multiupload" nodeset="multiupload/group" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'">
+        <xf:bind id="multiupload-entries" nodeset="../entry[position() != last()]" type="xs:anyURI" />
     </xf:bind>
     
     <!--  
@@ -479,7 +485,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	            <xf:mediatype ref="@mediatype"/>
 	    </xf:upload>
 		
-		<xf:group appearance="full" bind="multiupload-group" id="fbc_multiupload" type="fbc_multiupload">
+		<xf:group appearance="full" bind="multiupload" id="fbc_multiupload" type="fbc_multiupload">
 	        <idega:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
 	        
 	        <xf:label model="data_model" ref="instance('localized_strings')/multiupload-title[@lang=instance('localized_strings')/current_language]"/>
@@ -490,7 +496,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	            </xf:action>
 	        </xf:trigger>
 	        
-	        <xf:repeat appearance="group" bind="multiupload" id="#{componentId}-multiupload_entries">
+	        <xf:repeat appearance="group" bind="multiupload-entries" id="#{componentId}-multiupload_entries">
 	            <xf:group>
 	                <xf:input ref="./description">
 	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-description-label[@lang=instance('localized_strings')/current_language]"/>
