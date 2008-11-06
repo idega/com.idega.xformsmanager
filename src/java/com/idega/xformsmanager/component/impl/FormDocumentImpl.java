@@ -39,9 +39,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 17:46:51 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements com.idega.xformsmanager.business.Document, com.idega.xformsmanager.component.FormDocument {
 	
@@ -259,12 +259,13 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements com.
 			setFormType(persistedForm.getFormType());
 			
 		} else {
+
+			Long formId = getFormId();
 			
-			try {
-				setFormId(new Long(FormManagerUtil.getFormId(xformsXmlDoc)));
-			} catch (Exception e) {
-				setFormId(null);
-			}
+			if(formId == null)
+				formId = new Long(FormManagerUtil.getFormId(xformsXmlDoc));
+			
+			setFormId(formId);
 		}
 		
 		setContainerElement(FormManagerUtil.getComponentsContainerElement(xformsXmlDoc));

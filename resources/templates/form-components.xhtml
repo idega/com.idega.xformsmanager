@@ -65,25 +65,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<!-- types hexBinary anyURI base64Binary -->
     <xf:bind id="upload" nodeset="upload/entry" type="xs:anyURI" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'"/>
 
-<!--      
-    <xf:bind id="multiupload" nodeset="multiupload/entry[position() != last()]" type="xs:anyURI">
-        <xf:bind id="multiupload-group" nodeset="../group" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'"/>
-    </xf:bind>
-    -->
-    
     <xf:bind id="multiupload" nodeset="multiupload/group" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'">
         <xf:bind id="multiupload-entries" nodeset="../entry[position() != last()]" type="xs:anyURI" />
     </xf:bind>
-    
-    <!--  
-    <xf:bind id="multiupload.group" nodeset="multiupload/group">
-		<xf:bind id="multiupload" nodeset="../entry[position() != last()]" type="xs:anyURI"/>
-	</xf:bind>
-
-    <xf:bind id="multiupload_description.group" nodeset="multiupload_description/group">
-		<xf:bind id="multiupload" nodeset="../entry[position() != last()]" type="xs:anyURI"/>
-	</xf:bind>
-	-->
 	    
     <xf:bind id="identifier_number" nodeset="id_number" readonly="true()" type="xs:string" />
     
