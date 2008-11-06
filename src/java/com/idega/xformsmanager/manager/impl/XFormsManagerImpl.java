@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
- *          Last modified: $Date: 2008/11/05 19:42:42 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 11:39:38 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -57,17 +57,17 @@ public class XFormsManagerImpl implements XFormsManager {
 				.getContext().getCacheManager();
 		// cacheManager.checkForComponentType(componentType);
 
-		ComponentDataBean xformsComponentDataBean = cacheManager
+		ComponentDataBean templateComponentDataBean = cacheManager
 				.getXformsComponentTemplate(componentType);
 
-		if (xformsComponentDataBean == null || true) {
+		if (templateComponentDataBean == null || true) {
 
 			synchronized (this) {
 
-				xformsComponentDataBean = cacheManager
+				templateComponentDataBean = cacheManager
 						.getXformsComponentTemplate(componentType);
 
-				if (xformsComponentDataBean == null || true) {
+				if (templateComponentDataBean == null || true) {
 
 					// Document componentsTemplate =
 					// cacheManager.getComponentsTemplate();
@@ -81,10 +81,10 @@ public class XFormsManagerImpl implements XFormsManager {
 						// componentsTemplate, componentTemplateElement);
 
 						// this is template component data bean
-						xformsComponentDataBean = newXFormsComponentDataBeanInstance();
-						xformsComponentDataBean
+						templateComponentDataBean = newXFormsComponentDataBeanInstance();
+						templateComponentDataBean
 								.setElement(componentTemplateElement);
-						component.setComponentDataBean(xformsComponentDataBean);
+						component.setComponentDataBean(templateComponentDataBean);
 
 						// the component now serves as the templated component
 
@@ -119,7 +119,7 @@ public class XFormsManagerImpl implements XFormsManager {
 			// throw new NullPointerException(msg);
 			// }
 
-			if (xformsComponentDataBean == null) {
+			if (templateComponentDataBean == null) {
 				throw new RuntimeException(
 						"Component not found in components template document by provided type: "
 								+ componentType
@@ -127,17 +127,20 @@ public class XFormsManagerImpl implements XFormsManager {
 			}
 		}
 
-		if (xformsComponentDataBean != null) {
-			xformsComponentDataBean = (ComponentDataBean) xformsComponentDataBean
-					.clone();
-			component.setId(xformsComponentDataBean.getElement().getAttribute(
+		if (templateComponentDataBean != null) {
+			
+//			TODO: here clone is not needed, later we still create from template everything
+//			xformsComponentDataBean = (ComponentDataBean) xformsComponentDataBean
+//					.clone();
+			component.setId(templateComponentDataBean.getElement().getAttribute(
 					FormManagerUtil.id_att));
-			Bind bind = xformsComponentDataBean.getBind();
+//			Bind bind = xformsComponentDataBean.getBind();
+//
+//			if (bind != null)
+//				bind.setFormComponent(component);
 
-			if (bind != null)
-				bind.setFormComponent(component);
-
-			component.setComponentDataBean(xformsComponentDataBean);
+//			here we set only templat ecomponent data bean
+			component.setComponentDataBean(templateComponentDataBean);
 		}
 
 		// xformsComponentDataBean =
@@ -284,12 +287,15 @@ public class XFormsManagerImpl implements XFormsManager {
 	 */
 	public void addComponentToDocument(FormComponent component) {
 
-		ComponentDataBean componentDataBean = component
+		ComponentDataBean templateComponentDataBean = component
 				.getComponentDataBean();
+		
+		ComponentDataBean componentDataBean = newXFormsComponentDataBeanInstance();
+		component.setComponentDataBean(componentDataBean);
 		Document xform = component.getFormDocument().getXformsDocument();
 
 		// resolving template element and importing to xform document
-		Element componentElement = componentDataBean.getElement();
+		Element componentElement = templateComponentDataBean.getElement();
 		componentElement = (Element) xform.importNode(componentElement, true);
 		componentDataBean.setElement(componentElement);
 
@@ -307,13 +313,12 @@ public class XFormsManagerImpl implements XFormsManager {
 		if (removeTextNodes())
 			FormManagerUtil.removeTextNodes(componentElement);
 
-		if (componentDataBean.getBind() != null) {
+		if (templateComponentDataBean.getBind() != null) {
 
-			Bind bind = Bind.createFromTemplate(componentDataBean
-					.getBind());
+			Bind bind = Bind.createFromTemplate(templateComponentDataBean
+					.getBind(), component);
 			componentDataBean.putBind(bind);
 		}
-		// addBindingsAndNodesets(component);
 
 		FormComponentContainer parent = component.getParent();
 		parent.getXFormsManager().addChild(parent, component);

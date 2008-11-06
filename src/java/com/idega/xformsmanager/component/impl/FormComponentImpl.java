@@ -2,6 +2,7 @@ package com.idega.xformsmanager.component.impl;
 
 import java.util.Locale;
 
+import org.chiba.xml.dom.DOMUtil;
 import org.w3c.dom.Element;
 
 import com.idega.chiba.web.xml.xforms.validation.ErrorType;
@@ -21,9 +22,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  *
- * Last modified: $Date: 2008/11/05 19:42:43 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 11:39:37 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -174,6 +175,9 @@ public class FormComponentImpl implements FormComponent, Component {
 	protected void changeBindNames() {
 		
 		Bind bind = getComponentDataBean().getBind();
+		
+		System.out.println("______BIND ELEMENT_BEFORE RENAME");
+		DOMUtil.prettyPrintDOM(bind.getBindElement());
 		
 		if(!bind.getIsShared()) {
 

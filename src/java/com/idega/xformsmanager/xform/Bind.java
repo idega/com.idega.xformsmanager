@@ -19,14 +19,15 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 /**
  * TODO: move static bind methods to binds factory
  * 
- * TODO: when bind is shared, all the components should point to the same bind object (shared bind instance)
- * also, bind could have more than one form component
+ * TODO: when bind is shared, all the components should point to the same bind
+ * object (shared bind instance) also, bind could have more than one form
+ * component
  * 
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
- *          Last modified: $Date: 2008/11/05 19:42:43 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 11:39:37 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -86,7 +87,14 @@ public class Bind implements Cloneable {
 			}
 
 			Element model = (Element) getBindElement().getParentNode();
-			nodeset = Nodeset.locate(model, nodesetPath);
+
+			if (getParentBind() == null) {
+
+				nodeset = Nodeset.locate(model, nodesetPath);
+			} else {
+				nodeset = Nodeset.locate(model, nodesetPath, getParentBind()
+						.getNodeset());
+			}
 
 			if (nodeset == null)
 				throw new NullPointerException(
@@ -181,29 +189,31 @@ public class Bind implements Cloneable {
 
 		return bind;
 	}
-	
+
 	private static void loadChildBinds(Bind parentBind) {
-		
+
 		Element parentBindElement = parentBind.getBindElement();
-		
+
 		@SuppressWarnings("unchecked")
-		List<Element> childElements = DOMUtil.getChildElements(parentBindElement);
-		
-		if(childElements != null && !childElements.isEmpty()) {
-			
-			ArrayList<Bind> childBinds = new ArrayList<Bind>(childElements.size());
-			
+		List<Element> childElements = DOMUtil
+				.getChildElements(parentBindElement);
+
+		if (childElements != null && !childElements.isEmpty()) {
+
+			ArrayList<Bind> childBinds = new ArrayList<Bind>(childElements
+					.size());
+
 			for (Element element : childElements) {
-				
-				if(FormManagerUtil.bind_tag.equals(element.getNodeName())) {
-					
-//					load child bind
+
+				if (FormManagerUtil.bind_tag.equals(element.getNodeName())) {
+
+					// load child bind
 					Bind childBind = load(element);
 					childBind.setParentBind(parentBind);
 					childBinds.add(childBind);
 				}
 			}
-			
+
 			parentBind.setChildBinds(childBinds);
 		}
 	}
@@ -240,7 +250,7 @@ public class Bind implements Cloneable {
 		Bind bind = new Bind();
 		bind.setId(bindElement.getAttribute(FormManagerUtil.id_att));
 		bind.setBindElement(bindElement);
-		
+
 		loadChildBinds(bind);
 
 		return bind;
@@ -276,32 +286,36 @@ public class Bind implements Cloneable {
 		return bind;
 	}
 
-	public static Bind createFromTemplate(Bind templateBind) {
-		
-		FormComponent component = templateBind.getFormComponent();
+	public static Bind createFromTemplate(Bind templateBind,
+			FormComponent component) {
+
 		Document xform = component.getFormDocument().getXformsDocument();
+
+		System.out.println("____TEMPLATE BIND ELEMENT");
+		DOMUtil.prettyPrintDOM(templateBind.getBindElement());
 
 		if (templateBind.getIsShared()) {
 
 			// check, if bind already exist in the document and use that instead
-			Element sharedBindElement = FormManagerUtil.getElementById(xform, templateBind.getId());
-			
-			if(sharedBindElement != null) {
-				
+			Element sharedBindElement = FormManagerUtil.getElementById(xform,
+					templateBind.getId());
+
+			if (sharedBindElement != null) {
+
 				Bind bind = Bind.load(sharedBindElement);
 				bind.setFormComponent(component);
-				
+
 				return bind;
 			}
 		}
 
 		// insert bind element
 		String componentId = component.getId();
-		
+
 		// TODO: create bind id as nodeset (from label)
-//		if bind is shared, using the same id, as is in the template
+		// if bind is shared, using the same id, as is in the template
 		String bindId = templateBind.getIsShared() ? templateBind.getId()
-				: FormManagerUtil.bind_att + CoreConstants.MINUS + componentId;
+				: componentId + CoreConstants.UNDER + FormManagerUtil.bind_att;
 
 		// Element bindElement =
 		// (Element)xform.importNode(xformsComponentDataBean.getBind().getBindElement(),
@@ -343,7 +357,20 @@ public class Bind implements Cloneable {
 		bind.setFormComponent(component);
 		// xformsComponentDataBean.setBind(bind);
 
+		bind.renameChildren(bind.getId());
+
 		return bind;
+	}
+
+	private void renameChildren(String newName) {
+
+		if (getChildBinds() != null) {
+
+			for (Bind childBind : getChildBinds()) {
+
+				childBind.rename(newName);
+			}
+		}
 	}
 
 	private static XPathUtil bindElementXPath;
@@ -384,24 +411,36 @@ public class Bind implements Cloneable {
 		id = null;
 	}
 
+	/**
+	 * clones only bind and nodeset objects, but not the elements, that are
+	 * referenced
+	 */
 	@Override
 	public Bind clone() {
 
+		// Bind bind = new Bind();
+		// bind.setBindElement((Element) (getBindElement() == null ? null
+		// : getBindElement().cloneNode(true)));
+		// bind.setId(getId());
+		// bind.setNodeset(getNodeset() == null ? null : getNodeset().clone());
+
 		Bind bind = new Bind();
-		bind.setBindElement((Element) (getBindElement() == null ? null
-				: getBindElement().cloneNode(true)));
+		bind.setBindElement(getBindElement());
 		bind.setId(getId());
 		bind.setNodeset(getNodeset() == null ? null : getNodeset().clone());
-		
-		if(getChildBinds() != null) {
-			
-			ArrayList<Bind> childBinds = new ArrayList<Bind>(getChildBinds().size());
-			
+
+		if (getChildBinds() != null) {
+
+			ArrayList<Bind> childBinds = new ArrayList<Bind>(getChildBinds()
+					.size());
+
 			for (Bind childBind : getChildBinds()) {
-				
-				childBinds.add(childBind.clone());
+
+				Bind newChildBind = childBind.clone();
+				newChildBind.setParentBind(bind);
+				childBinds.add(newChildBind);
 			}
-			
+
 			bind.setChildBinds(childBinds);
 		}
 
@@ -485,22 +524,43 @@ public class Bind implements Cloneable {
 		renameTo = FormManagerUtil.escapeNonXmlTagSymbols(renameTo.replace(' ',
 				'_'));
 
-		Nodeset nodeset = getNodeset();
+		if (getParentBind() == null) {
 
-		if (nodeset != null) {
-			nodeset.rename(renameTo);
-		}
+			Nodeset nodeset = getNodeset();
 
-		setNodeset(nodeset);
+			if (nodeset != null) {
+				nodeset.rename(renameTo);
+			}
 
-		ComponentDataBean xformsComponentDataBean = getFormComponent()
-				.getComponentDataBean();
+			setNodeset(nodeset);
 
-		if (xformsComponentDataBean.getPreviewElement() != null) {
+			ComponentDataBean xformsComponentDataBean = getFormComponent()
+					.getComponentDataBean();
 
-			xformsComponentDataBean.getPreviewElement().setAttribute(
-					FormManagerUtil.ref_s_att,
-					getBindElement().getAttribute(FormManagerUtil.nodeset_att));
+			if (xformsComponentDataBean.getPreviewElement() != null) {
+
+				xformsComponentDataBean.getPreviewElement().setAttribute(
+						FormManagerUtil.ref_s_att,
+						getBindElement().getAttribute(
+								FormManagerUtil.nodeset_att));
+			}
+		} else {
+
+			// when parent bind present, renaming current with this logic:
+			// if the bind contains - symbol, rename only the string going
+			// before -
+			// e.g. multiupload-group, when renamed will be newname-group
+
+			String currentId = getId();
+
+			// currentId.substring(s)
+			String postfix = currentId.substring(currentId
+					.indexOf(CoreConstants.MINUS));
+
+			String newId = renameTo + postfix;
+
+			setId(newId);
+			getBindElement().setAttribute(FormManagerUtil.id_att, newId);
 		}
 	}
 
@@ -576,11 +636,11 @@ public class Bind implements Cloneable {
 	}
 
 	public FormComponent getFormComponent() {
-		
-		if(formComponent == null && getParentBind() != null) {
+
+		if (formComponent == null && getParentBind() != null) {
 			formComponent = getParentBind().getFormComponent();
 		}
-		
+
 		return formComponent;
 	}
 
