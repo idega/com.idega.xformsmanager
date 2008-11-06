@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
- *          Last modified: $Date: 2008/11/06 12:32:55 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:32:30 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -566,7 +566,7 @@ public class XFormsManagerImpl implements XFormsManager {
 				.getComponentDataBean();
 		Bind bind = xformsComponentDataBean.getBind();
 
-		if (bind == null)
+		if (bind == null || bind.getIsShared())
 			return;
 
 		Node bindElementParent = bind.getBindElement().getParentNode();

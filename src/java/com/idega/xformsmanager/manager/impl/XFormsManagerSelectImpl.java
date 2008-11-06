@@ -18,9 +18,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:32:30 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.select)
 @Service
@@ -58,9 +58,6 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 
 		Element localDataSourceInstance = FormManagerUtil.getElementById(xform,
 				getLocalDataSourceInstanceIdentifier(componentId));
-
-		System.out.println("__LOCAL DATA SOURCE INSTANCE in loadItemsets="
-				+ localDataSourceInstance);
 
 		Element externalDataSourceInstance = FormManagerUtil.getElementById(
 				xform, getExternalDataSourceInstanceIdentifier(componentId));
