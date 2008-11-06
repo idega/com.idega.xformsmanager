@@ -34,12 +34,11 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/02 18:54:21 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 18:56:59 $ by $Author: civilis $
  */
 @Scope("singleton")
-// @Service("xformsDocumentManager")
 @Service
 public class FormManager implements DocumentManager {
 
@@ -60,7 +59,6 @@ public class FormManager implements DocumentManager {
 	private HtmlManagerFactory htmlManagerFactory;
 	@Autowired
 	private FormComponentFactory formComponentFactory;
-	// @Autowired private _Form form;
 
 	private DMContext DMContext;
 	private Document componentsXforms;
@@ -77,9 +75,7 @@ public class FormManager implements DocumentManager {
 				.getFormXformsTemplateCopy());
 		formDocument.setContext(context);
 
-		// context.setXformsXmlDoc(context.getCacheManager().getFormXformsTemplateCopy());
 		formDocument.loadDocument();
-		// loadDocumentInternal(formDocument, null);
 
 		LocalizedStringBean formDocumentTitle = formDocument.getFormTitle();
 		for (Locale currentLocale : formTitle.getLanguagesKeySet())
@@ -91,21 +87,10 @@ public class FormManager implements DocumentManager {
 		formDocument.setDefaultLocale(currentDefaultLocale);
 		formDocument.setFormTitle(formDocumentTitle);
 
-		// form.formDocument.setFormId(null);
 		formDocument.setFormType(formType);
 
 		return formDocument;
 	}
-
-	// private DMContext getNewDMContext() {
-	//		
-	// DMContext context = new DMContext();
-	// context.setCacheManager(getCacheManager());
-	// context.setPersistenceManager(getPersistenceManager());
-	// context.setXformsManagerFactory(getXformsManagerFactory());
-	// context.setHtmlManagerFactory(getHtmlManagerFactory());
-	// return context;
-	// }
 
 	public com.idega.xformsmanager.business.Document openForm(Long formId) {
 
@@ -117,17 +102,11 @@ public class FormManager implements DocumentManager {
 		FormDocumentImpl formDocument = createFormDocument();
 		formDocument.setContext(context);
 
-		// Form form = new Form(context);
-		// form.setContext(context);
-		// form.formDocument.setLoad(true);
-
 		PersistedFormDocument persistedFormDocument = loadPersistedFormDocument(
 				context, formId);
 
 		formDocument.setXformsDocument(persistedFormDocument
 				.getXformsDocument());
-		// context.setXformsXmlDoc(persistedFormDocument.getXformsDocument());
-		// loadDocumentInternal(formDocument, persistedFormDocument);
 		formDocument.loadDocument(persistedFormDocument);
 
 		return formDocument;
@@ -138,16 +117,7 @@ public class FormManager implements DocumentManager {
 		FormDocumentImpl formDocument = createFormDocument();
 		formDocument.setContext(getDMContext());
 		formDocument.setXformsDocument(xformsDoc);
-		// loadDocumentInternal(formDocument, null);
 		formDocument.loadDocument();
-
-		// Form form = new Form(context);
-		// form.formDocument.setLoad(true);
-		// form.setContext(context);
-		// context.setXformsXmlDoc(xformsXmlDoc);
-
-		// form.loadDocumentInternal(null);
-		// form.formDocument.setFormId(null);
 
 		return formDocument;
 	}
@@ -162,17 +132,12 @@ public class FormManager implements DocumentManager {
 
 		FormDocumentImpl formDocument = createFormDocument();
 		formDocument.setContext(context);
-		// Form form = new Form(context);
-		// form.setContext(context);
-		// form.formDocument.setLoad(true);
 
 		PersistedFormDocument persistedFormDocument = takeAndloadFormDocument(
 				context, formIdToTakeFrom);
 
 		formDocument.setXformsDocument(persistedFormDocument
 				.getXformsDocument());
-		// context.setXformsXmlDoc(persistedFormDocument.getXformsDocument());
-		// loadDocumentInternal(formDocument, persistedFormDocument);
 		formDocument.loadDocument(persistedFormDocument);
 
 		return formDocument;
@@ -345,10 +310,6 @@ public class FormManager implements DocumentManager {
 	DMContext getDMContext() {
 		return DMContext;
 	}
-
-	// _Form getForm() {
-	// return form;
-	// }
 
 	private FormDocumentImpl createFormDocument() {
 
