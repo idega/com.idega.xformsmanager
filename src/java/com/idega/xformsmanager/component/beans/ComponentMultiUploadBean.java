@@ -8,14 +8,15 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/11/05 19:42:44 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:15:58 $ by $Author: civilis $
  */
 public class ComponentMultiUploadBean extends ComponentDataBean {
 
 	private Element multi_upload_instance;
 
+	/*
 	@Override
 	public Object clone() {
 
@@ -27,6 +28,7 @@ public class ComponentMultiUploadBean extends ComponentDataBean {
 					.cloneNode(true));
 		return clone;
 	}
+	*/
 
 	@Override
 	protected ComponentDataBean getDataBeanInstance() {

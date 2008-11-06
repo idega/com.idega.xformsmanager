@@ -4,9 +4,9 @@ import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:37 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/06 14:15:58 $ by $Author: civilis $
  */
 public class ComponentDocumentDataBean extends ComponentDataBean {
 
@@ -40,6 +40,7 @@ public class ComponentDocumentDataBean extends ComponentDataBean {
 		this.sectionsVisualizationInstance = sectionsVisualizationInstance;
 	}
 
+	/*
 	@Override
 	public Object clone() {
 		
@@ -64,6 +65,7 @@ public class ComponentDocumentDataBean extends ComponentDataBean {
 		
 		return clone;
 	}
+	*/
 	
 	@Override
 	protected ComponentDataBean getDataBeanInstance() {

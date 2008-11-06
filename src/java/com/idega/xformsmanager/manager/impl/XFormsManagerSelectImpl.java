@@ -18,9 +18,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
- *          Last modified: $Date: 2008/11/04 17:53:06 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.select)
 @Service
@@ -58,9 +58,13 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 
 		Element localDataSourceInstance = FormManagerUtil.getElementById(xform,
 				getLocalDataSourceInstanceIdentifier(componentId));
+
+		System.out.println("__LOCAL DATA SOURCE INSTANCE in loadItemsets="
+				+ localDataSourceInstance);
+
 		Element externalDataSourceInstance = FormManagerUtil.getElementById(
 				xform, getExternalDataSourceInstanceIdentifier(componentId));
-		
+
 		componentDataBean.setLocalItemsetInstance(localDataSourceInstance);
 		componentDataBean
 				.setExternalItemsetInstance(externalDataSourceInstance);
@@ -106,6 +110,9 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 	@Override
 	public void addComponentToDocument(FormComponent component) {
 
+		ComponentSelectDataBean templateComponentDataBean = (ComponentSelectDataBean) component
+				.getComponentDataBean();
+
 		super.addComponentToDocument(component);
 
 		Document xform = component.getFormDocument().getXformsDocument();
@@ -113,7 +120,7 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 		ComponentSelectDataBean componentDataBean = (ComponentSelectDataBean) component
 				.getComponentDataBean();
 
-		Element localItemsetInstanceElement = componentDataBean
+		Element localItemsetInstanceElement = templateComponentDataBean
 				.getLocalItemsetInstance();
 
 		Element dataModelElement = FormManagerUtil.getElementById(xform,
@@ -144,7 +151,7 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 								PropertiesSelect.LOCAL_DATA_SRC));
 		}
 
-		Element externalItemsetInstanceElement = componentDataBean
+		Element externalItemsetInstanceElement = templateComponentDataBean
 				.getExternalItemsetInstance();
 
 		if (externalItemsetInstanceElement != null) {
@@ -223,7 +230,8 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 	}
 
 	@Override
-	public void update(FormComponent component, ConstUpdateType what, Object prop) {
+	public void update(FormComponent component, ConstUpdateType what,
+			Object prop) {
 
 		super.update(component, what, prop);
 
@@ -324,14 +332,13 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 		if (externalInstance == null)
 			return;
 
-		String externalDataSrc = ((PropertiesSelect) component
-				.getProperties()).getExternalDataSrc();
+		String externalDataSrc = ((PropertiesSelect) component.getProperties())
+				.getExternalDataSrc();
 
 		if (externalDataSrc == null)
 			return;
 
-		externalInstance.setAttribute(FormManagerUtil.src_att,
-				externalDataSrc);
+		externalInstance.setAttribute(FormManagerUtil.src_att, externalDataSrc);
 	}
 
 	public void removeSelectComponentSourcesFromXFormsDocument(
@@ -343,11 +350,14 @@ public class XFormsManagerSelectImpl extends XFormsManagerImpl implements
 				.getExternalItemsetInstance();
 
 		if (externalItemsetInstance != null)
-			externalItemsetInstance.getParentNode().removeChild(externalItemsetInstance);
+			externalItemsetInstance.getParentNode().removeChild(
+					externalItemsetInstance);
 
-		Element localItemsetInstance = componentDataBean.getLocalItemsetInstance();
+		Element localItemsetInstance = componentDataBean
+				.getLocalItemsetInstance();
 
 		if (localItemsetInstance != null)
-			localItemsetInstance.getParentNode().removeChild(localItemsetInstance);
+			localItemsetInstance.getParentNode().removeChild(
+					localItemsetInstance);
 	}
 }

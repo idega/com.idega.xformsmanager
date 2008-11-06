@@ -4,9 +4,9 @@ import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/11/03 17:36:07 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:15:48 $ by $Author: civilis $
  */
 public class ComponentButtonDataBean extends ComponentDataBean {
 
@@ -20,6 +20,7 @@ public class ComponentButtonDataBean extends ComponentDataBean {
 		this.toggle_element = toggle_element;
 	}
 
+	/*
 	@Override
 	public Object clone() {
 
@@ -38,6 +39,7 @@ public class ComponentButtonDataBean extends ComponentDataBean {
 
 		return clone;
 	}
+	*/
 
 	@Override
 	protected ComponentDataBean getDataBeanInstance() {

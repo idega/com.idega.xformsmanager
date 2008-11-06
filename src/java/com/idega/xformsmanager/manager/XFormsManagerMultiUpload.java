@@ -5,16 +5,16 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/05 17:07:06 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
  */
 public interface XFormsManagerMultiUpload extends XFormsManager {
 
 	public abstract LocalizedStringBean getRemoveButtonLabel(
 			FormComponent component);
 
-	public abstract LocalizedStringBean getAddButtonLabel(
+	public abstract LocalizedStringBean getInsertButtonLabel(
 			FormComponent component);
 
 	public abstract LocalizedStringBean getDescriptionButtonLabel(

@@ -11,9 +11,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/05 19:42:44 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:15:56 $ by $Author: civilis $
  */
 public class ComponentDataBean implements Cloneable {
 
@@ -64,30 +64,30 @@ public class ComponentDataBean implements Cloneable {
 		this.element = element;
 	}
 
-	@Override
-	public Object clone() {
-
-		ComponentDataBean clone = getDataBeanInstance();
-
-		if (getElement() != null)
-			clone.setElement((Element) getElement().cloneNode(true));
-
-		if (getBind() != null)
-			clone.setBind(getBind().clone());
-
-		if (getPreviewElement() != null)
-			clone.setPreviewElement((Element) getPreviewElement().cloneNode(
-					true));
-
-		if (getKeyExtInstance() != null)
-			clone.setKeyExtInstance((Element) getKeyExtInstance().cloneNode(
-					true));
-
-		if (getKeySetvalue() != null)
-			clone.setKeySetvalue((Element) getKeySetvalue().cloneNode(true));
-
-		return clone;
-	}
+//	@Override
+//	public Object clone() {
+//
+//		ComponentDataBean clone = getDataBeanInstance();
+//
+//		if (getElement() != null)
+//			clone.setElement((Element) getElement().cloneNode(true));
+//
+//		if (getBind() != null)
+//			clone.setBind(getBind().clone());
+//
+//		if (getPreviewElement() != null)
+//			clone.setPreviewElement((Element) getPreviewElement().cloneNode(
+//					true));
+//
+//		if (getKeyExtInstance() != null)
+//			clone.setKeyExtInstance((Element) getKeyExtInstance().cloneNode(
+//					true));
+//
+//		if (getKeySetvalue() != null)
+//			clone.setKeySetvalue((Element) getKeySetvalue().cloneNode(true));
+//
+//		return clone;
+//	}
 
 	protected ComponentDataBean getDataBeanInstance() {
 

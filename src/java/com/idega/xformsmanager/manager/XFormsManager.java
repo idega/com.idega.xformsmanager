@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
  */
 public interface XFormsManager {
 
@@ -38,13 +38,15 @@ public interface XFormsManager {
 	 * adds component, which is loaded from template (@see
 	 * loadComponentFromTemplate), to the form document provided. After this,
 	 * references of nodes are nomore to the template document. called in the
-	 * create phase
+	 * create phase after this is called, the component will no longer contain
+	 * the template elements (like template component data bean)
 	 * 
 	 * @param component
 	 */
 	public abstract void addComponentToDocument(FormComponent component);
 
-	public abstract void update(FormComponent component, ConstUpdateType what, Object property);
+	public abstract void update(FormComponent component, ConstUpdateType what,
+			Object property);
 
 	public abstract void moveComponent(FormComponent component,
 			String nextSiblingId);
@@ -66,8 +68,8 @@ public interface XFormsManager {
 
 	public abstract LocalizedStringBean getHelpText(FormComponent component);
 
-//	public abstract LocalizedStringBean getValidationText(
-//			FormComponent component);
+	// public abstract LocalizedStringBean getValidationText(
+	// FormComponent component);
 
 	public abstract void loadConfirmationElement(FormComponent component,
 			FormComponentPage confirmationPage);
