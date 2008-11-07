@@ -41,9 +41,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  *
- * Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/07 09:35:18 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -166,7 +166,7 @@ public class FormManagerUtil {
 	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
 	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(".//attribute::*[contains(., $expression)]");
 	private static final XPathUtil localizaionSetValueElement = new XPathUtil(".//xf:setvalue[@model='data_model']");
-	private static final XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='submission-error']/xf:message");
+	private static final XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='idega-submission-error']/xf:message");
 	private static final XPathUtil formParamsXPath = new XPathUtil(".//*[@nodeType='formParams']");
 	
 	private final static String expressionVariable = "expression";
