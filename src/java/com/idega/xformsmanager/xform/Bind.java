@@ -25,9 +25,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * 
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
- *          Last modified: $Date: 2008/11/07 10:02:44 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/07 12:04:15 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -340,7 +340,7 @@ public class Bind implements Cloneable {
 		}
 
 		Nodeset nodeset = templateBind.getNodeset();
-		String nodesetName = bindId;
+		String nodesetName = templateBind.getIsShared() ? nodeset.getNodesetElement().getNodeName() : bindId;
 
 		if (nodeset != null) {
 

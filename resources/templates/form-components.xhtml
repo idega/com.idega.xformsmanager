@@ -97,7 +97,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xf:bind id="page" nodeset="page" />
 	<xf:bind id="output_text" nodeset="output_text" />
 	
-	<xf:bind id="bind-controlsButton" nodeset="instance('control-instance')/controlsButton" relevant="instance('control-instance')/generatePdf != 'true'" />
+	<xf:bind id="bind-controlsButton" idega:shared="true" nodeset="instance('control-instance')/controlsButton" relevant="instance('control-instance')/generatePdf != 'true'" />
 	
 	<xf:bind id="bind-submissionButton" idega:shared="true" nodeset="instance('control-instance')/submissionButton" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'" />
 

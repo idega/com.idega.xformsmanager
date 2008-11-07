@@ -1,5 +1,6 @@
 package com.idega.xformsmanager.xform;
 
+import org.chiba.xml.dom.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -12,9 +13,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * represents bind nodeset attribute
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/06 11:39:38 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/07 12:04:15 $ by $Author: civilis $
  */
 public class Nodeset implements Cloneable {
 
@@ -240,16 +241,16 @@ public class Nodeset implements Cloneable {
 				nodesetElement, nodesetElement.getNamespaceURI(),
 				newNodesetName);
 
-		Element instance = FormManagerUtil.getInstanceElement(model);
-		Element parent = (Element) getNodesetElementParentXPath().getNode(
-				instance);
+		Element instance = findInstance(model, path);
+//		Element instance = FormManagerUtil.getInstanceElement(model);
+		Element parent = DOMUtil.getFirstChildElement(instance);
+//		(Element) getNodesetElementParentXPath().getNode(
+//				instance);
 		parent.appendChild(nodesetElement);
 
 		Nodeset nodeset = new Nodeset();
 		nodeset.setNodesetElement(nodesetElement);
 		nodeset.setPath(path);
-		
-		System.out.println("nodeset path after import="+path);
 		
 		return nodeset;
 	}
