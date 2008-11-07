@@ -732,7 +732,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <xf:action if="count-non-empty(instance('error-instance')/error)=0">
                     <xf:send submission="submit_data_submission"/>
                 </xf:action>
-                <xf:dispatch if="count-non-empty(instance('error-instance')/error)!=0" name="xforms-submit-error" target="submission-error"/>
+                <xf:dispatch if="count-non-empty(instance('error-instance')/error)!=0" name="idega-submit-error" target="idega-submission-error"/>
             </xf:action>
         </xf:trigger>
         

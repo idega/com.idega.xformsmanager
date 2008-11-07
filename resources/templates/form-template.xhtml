@@ -40,9 +40,12 @@
 	        	<idega:toggle ev:event="xforms-submit-done" case="fbc_4"/>
 	        </xf:submission>
 	    
-		    <xf:action ev:event="xforms-submit-error" id="submission-error">
-		        <xf:message level="modeless" ref="instance('localized_strings')/submission-error_message[@lang=instance('localized_strings')/current_language]"/>
-		    </xf:action>
+	        <xf:action ev:event="xforms-submit-error" id="submission-error">
+                <xf:dispatch name="idega-submit-error" target="idega-submission-error"/>
+            </xf:action>
+            <xf:action ev:event="idega-submit-error" id="idega-submission-error">
+                <xf:message level="modeless" ref="instance('localized_strings')/submission-error_message[@lang=instance('localized_strings')/current_language]"/>
+            </xf:action>
 			
         </xf:model>
         <xf:model id="data_model">
@@ -106,7 +109,7 @@
                                 <xf:action if="count-non-empty(instance('error-instance')/error)=0">
                                     <xf:send submission="submit_data_submission"/>
                                 </xf:action>
-                                <xf:dispatch if="count-non-empty(instance('error-instance')/error)!=0" name="xforms-submit-error" target="submission-error"/>
+                                <xf:dispatch if="count-non-empty(instance('error-instance')/error)!=0" name="idega-submit-error" target="idega-submission-error"/>
                             </xf:action>
                         </xf:trigger>
                     </div>
