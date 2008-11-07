@@ -25,9 +25,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * 
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
- *          Last modified: $Date: 2008/11/06 11:39:37 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/07 10:02:44 $ by $Author: civilis $
  */
 public class Bind implements Cloneable {
 
@@ -290,9 +290,6 @@ public class Bind implements Cloneable {
 			FormComponent component) {
 
 		Document xform = component.getFormDocument().getXformsDocument();
-
-		System.out.println("____TEMPLATE BIND ELEMENT");
-		DOMUtil.prettyPrintDOM(templateBind.getBindElement());
 
 		if (templateBind.getIsShared()) {
 
