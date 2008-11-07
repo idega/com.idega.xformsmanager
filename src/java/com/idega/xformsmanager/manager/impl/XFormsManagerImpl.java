@@ -33,9 +33,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
- *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/07 09:54:05 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -57,20 +57,23 @@ public class XFormsManagerImpl implements XFormsManager {
 		ComponentDataBean templateComponentDataBean = cacheManager
 				.getXformsComponentTemplate(componentType);
 
-		if (templateComponentDataBean == null || true) {
+//		if (templateComponentDataBean == null || true) {
+		if (templateComponentDataBean == null) {
 
 			synchronized (this) {
 
 				templateComponentDataBean = cacheManager
 						.getXformsComponentTemplate(componentType);
 
-				if (templateComponentDataBean == null || true) {
+//				if (templateComponentDataBean == null || true) {
+				if (templateComponentDataBean == null) {
 
 					Element componentTemplateElement = FormManagerUtil
 							.getElementById(component.getFormDocument()
 									.getXformsDocument(), componentType);
 
-					if (componentTemplateElement != null || true) {
+//					if (componentTemplateElement != null || true) {
+					if (componentTemplateElement != null) {
 
 						// loadXFormsComponentDataBean(component,
 						// componentsTemplate, componentTemplateElement);
