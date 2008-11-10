@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- *          Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/10 12:15:54 $ by $Author: anton $
  */
 public interface Form {
 
@@ -17,7 +17,7 @@ public interface Form {
 
 	public abstract Long getFormId();
 
-	public abstract Long getFormParent();
+	public abstract Form getFormParent();
 
 	public abstract String getFormStorageIdentifier();
 
