@@ -26,7 +26,7 @@ import com.idega.xformsmanager.component.impl.FormComponentFactory;
 import com.idega.xformsmanager.component.impl.FormDocumentImpl;
 import com.idega.xformsmanager.component.impl.FormDocumentTemplateImpl;
 import com.idega.xformsmanager.context.DMContext;
-import com.idega.xformsmanager.generator.impl.ComponentsGeneratorImpl;
+import com.idega.xformsmanager.generator.ComponentsGenerator;
 import com.idega.xformsmanager.manager.HtmlManagerFactory;
 import com.idega.xformsmanager.manager.XFormsManagerFactory;
 import com.idega.xformsmanager.util.FormManagerUtil;
@@ -34,9 +34,9 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
- *          Last modified: $Date: 2008/11/06 18:56:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/13 09:46:08 $ by $Author: civilis $
  */
 @Scope("singleton")
 @Service
@@ -59,6 +59,8 @@ public class FormManager implements DocumentManager {
 	private HtmlManagerFactory htmlManagerFactory;
 	@Autowired
 	private FormComponentFactory formComponentFactory;
+	@Autowired
+	private ComponentsGenerator componentsGenerator;
 
 	private DMContext DMContext;
 	private Document componentsXforms;
@@ -180,11 +182,8 @@ public class FormManager implements DocumentManager {
 			DMContext.setHtmlManagerFactory(getHtmlManagerFactory());
 			DMContext.setFormComponentFactory(getFormComponentFactory());
 
-			// setup ComponentsGenerator
-			ComponentsGeneratorImpl.init(iwma);
-			ComponentsGeneratorImpl componentsGenerator = ComponentsGeneratorImpl
-					.getInstance();
-			componentsGenerator.setTransformerService(getTransformerService());
+			getComponentsGenerator().init(iwma, getTransformerService());
+			DMContext.setComponentsGenerator(getComponentsGenerator());
 
 			List<String> componentsTypes = null;
 
@@ -337,5 +336,9 @@ public class FormManager implements DocumentManager {
 		template.setXformsDocument(getCacheManager().getComponentsTemplate());
 		template.setContext(getDMContext());
 		return template;
+	}
+
+	ComponentsGenerator getComponentsGenerator() {
+		return componentsGenerator;
 	}
 }

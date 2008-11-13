@@ -39,9 +39,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
- *          Last modified: $Date: 2008/11/06 18:56:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/13 09:43:54 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -110,8 +110,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 			try {
 
 				// TODO: change this to spring bean etc (now relies on impl)
-				ComponentsGenerator componentsGenerator = ComponentsGeneratorImpl
-						.getInstance();
+				ComponentsGenerator componentsGenerator = getContext().getComponentsGenerator();
 				Document xformClone = (Document) getXformsDocument().cloneNode(
 						true);
 
@@ -120,9 +119,9 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 				FormManagerUtil
 						.modifyFormForLocalisationInFormbuilder(xformClone);
 
-				componentsGenerator.setDocument(xformClone);
+//				componentsGenerator.setDocument(xformClone);
 
-				doc = componentsGenerator.generateHtmlComponentsDocument();
+				doc = componentsGenerator.generateHtmlRepresentation(xformClone);
 
 				localizedComponentsDocuments.put(locale, doc);
 				setFormDocumentModified(false);
