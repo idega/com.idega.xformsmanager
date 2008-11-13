@@ -33,15 +33,14 @@ import com.idega.xformsmanager.component.properties.impl.ComponentPropertiesDocu
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.context.DMContext;
 import com.idega.xformsmanager.generator.ComponentsGenerator;
-import com.idega.xformsmanager.generator.impl.ComponentsGeneratorImpl;
 import com.idega.xformsmanager.manager.XFormsManagerDocument;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
- *          Last modified: $Date: 2008/11/13 09:43:54 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/13 20:11:34 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -110,7 +109,8 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 			try {
 
 				// TODO: change this to spring bean etc (now relies on impl)
-				ComponentsGenerator componentsGenerator = getContext().getComponentsGenerator();
+				ComponentsGenerator componentsGenerator = getContext()
+						.getComponentsGenerator();
 				Document xformClone = (Document) getXformsDocument().cloneNode(
 						true);
 
@@ -119,9 +119,10 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 				FormManagerUtil
 						.modifyFormForLocalisationInFormbuilder(xformClone);
 
-//				componentsGenerator.setDocument(xformClone);
+				// componentsGenerator.setDocument(xformClone);
 
-				doc = componentsGenerator.generateHtmlRepresentation(xformClone);
+				doc = componentsGenerator
+						.generateHtmlRepresentation(xformClone);
 
 				localizedComponentsDocuments.put(locale, doc);
 				setFormDocumentModified(false);
@@ -253,20 +254,15 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 			setFormType(persistedForm.getFormType());
 		}
 		/*
-		else {
-
-			Long formId = getFormId();
-
-			if (formId == null) {
-
-				try {
-					formId = new Long(FormManagerUtil.getFormId(xformsXmlDoc));
-					setFormId(formId);
-				} catch (Exception e) {
-				}
-			}
-		}
-		*/
+		 * else {
+		 * 
+		 * Long formId = getFormId();
+		 * 
+		 * if (formId == null) {
+		 * 
+		 * try { formId = new Long(FormManagerUtil.getFormId(xformsXmlDoc));
+		 * setFormId(formId); } catch (Exception e) { } } }
+		 */
 
 		setContainerElement(FormManagerUtil
 				.getComponentsContainerElement(xformsXmlDoc));
@@ -363,7 +359,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 													.get(i + 1)));
 
 			page.pagesSiblingsChanged();
-
+			
 			if (page.getType().equals(
 					FormComponentFactory.confirmation_page_type))
 				setConfirmationPageId(page.getId());
