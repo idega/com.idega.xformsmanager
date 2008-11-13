@@ -1,35 +1,20 @@
 package com.idega.xformsmanager.generator;
 
+import org.chiba.xml.xslt.TransformerService;
 import org.w3c.dom.Document;
 
+import com.idega.idegaweb.IWMainApplication;
+
 /**
- * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version 1.0
- *
+ * @version $Revision: 1.2 $
+ * 
+ *          Last modified: $Date: 2008/11/13 09:45:08 $ by $Author: civilis $
  */
 public interface ComponentsGenerator {
 
-	public abstract boolean isInitiated();
+	public abstract void init(IWMainApplication iwma,
+			TransformerService transfService);
 
-	/**
-	 * 
-	 * Generates xml components document from xforms components document
-	 * 
-	 * @return HTML components xml document
-	 * @throws Exception. Concrete exceptions throwed depends on implementation.
-	 */
-	public abstract Document generateBaseComponentsDocument() throws Exception;
-	
-	public abstract Document generateHtmlComponentsDocument() throws Exception;
-	
-	/**
-	 * set input document
-	 * @param doc - document, to generate components from
-	 */
-	public abstract void setDocument(Document doc);
-	
-//	public abstract void setFormComponentsBaseUri(String base_uri);
-	
-//	public abstract Document generateFormHtmlDocument() throws NullPointerException, ParserConfigurationException, XFormsException, Exception;
+	public abstract Document generateHtmlRepresentation(Document xform);
 }
