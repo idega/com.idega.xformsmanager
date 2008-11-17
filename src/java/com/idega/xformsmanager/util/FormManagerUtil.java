@@ -41,9 +41,9 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  *
- * Last modified: $Date: 2008/11/07 09:45:59 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/17 18:03:58 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -168,6 +168,8 @@ public class FormManagerUtil {
 	private static final XPathUtil localizaionSetValueElement = new XPathUtil(".//xf:setvalue[@model='data_model']");
 	private static final XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='idega-submission-error']/xf:message");
 	private static final XPathUtil formParamsXPath = new XPathUtil(".//*[@nodeType='formParams']");
+	private static final XPathUtil labelElementXPath = new XPathUtil(".//xf:label");
+	
 	
 	private final static String expressionVariable = "expression";
 	private final static String elementNameVariable = "elementName";
@@ -1274,5 +1276,9 @@ public class FormManagerUtil {
 		
 		String key = "default_validation-"+errType;
 		return getLocalizedStrings(key, templateDocument);
+	}
+
+	public static XPathUtil getLabelElementXPath() {
+		return labelElementXPath;
 	}
 }
