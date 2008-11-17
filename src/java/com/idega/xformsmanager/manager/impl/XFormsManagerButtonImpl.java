@@ -1,6 +1,5 @@
 package com.idega.xformsmanager.manager.impl;
 
-import org.chiba.xml.dom.DOMUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -8,6 +7,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.idega.block.process.variables.Variable;
+import com.idega.block.process.variables.VariableDataType;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.ConstButtonType;
 import com.idega.xformsmanager.business.component.properties.PropertiesButton;
@@ -25,9 +26,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
- *          Last modified: $Date: 2008/11/13 20:12:52 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/17 18:04:25 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -36,7 +37,11 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		XFormsManagerButton {
 
 	private static final String actionTaken = "actionTaken";
-	private static final String bindIdVariable = "bindId";
+//	private static final String bindIdVariable = "bindId";
+
+	private final XPathUtil referActionSetValueElementXPath = new XPathUtil(
+			".//xf:setvalue[@bind='" + actionTaken + "']");
+//	private XPathUtil bindToExistsXPath;
 
 	@Override
 	public void loadComponentFromDocument(FormComponent component) {
@@ -271,7 +276,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		if (referAction == null)
 			removeReferAction(component);
 		else
-			setOrcreateReferAction(component, referAction);
+			setOrCreateReferAction(component, referAction);
 	}
 
 	private void removeReferAction(FormComponent component) {
@@ -280,43 +285,12 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 
-		if (setValueEl == null)
-			return;
-
-		String bindId = setValueEl.getAttribute(FormManagerUtil.bind_att);
-		// String modelId = setValueEl.getAttribute(FormManagerUtil.model_att);
-		setValueEl.getParentNode().removeChild(setValueEl);
-
-		if (bindId == null)
-			return;
-
-		// check if the last one who points to this bind
-		XPathUtil xutil = getBindToExistsXPath();
-		NodeList bindedTo;
-		Document xform = buttonElement.getOwnerDocument();
-
-		synchronized (xutil) {
-			xutil.clearVariables();
-			xutil.setVariable(bindIdVariable, bindId);
-			bindedTo = xutil.getNodeset(xform);
-		}
-
-		if (bindedTo == null || bindedTo.getLength() == 0) {
-
-			Bind bind = Bind.locate(component, bindId);
-			if (bind != null) {
-
-				Nodeset nodeset = bind.getNodeset();
-
-				if (nodeset != null)
-					nodeset.remove();
-
-				bind.remove();
-			}
+		if (setValueEl != null) {
+			setValueEl.getParentNode().removeChild(setValueEl);
 		}
 	}
 
-	private void setOrcreateReferAction(FormComponent formComponent,
+	private void setOrCreateReferAction(FormComponent formComponent,
 			String referAction) {
 
 		Element buttonElement = formComponent.getComponentDataBean()
@@ -329,27 +303,35 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 			setValueEl = xform.createElementNS(
 					FormManagerUtil.xforms_namespace_uri,
 					FormManagerUtil.setvalue_tag);
-			setValueEl.setAttribute(FormManagerUtil.event_att,
-					FormManagerUtil.DOMActivate_att_val);
+			// setValueEl.setAttribute(FormManagerUtil.event_att,
+			// FormManagerUtil.DOMActivate_att_val);
 
-			if (!DOMUtil.hasElementChildren(buttonElement)) {
-				buttonElement.appendChild(setValueEl);
+			// idega:dispatch name="idega-validate"
 
-			} else {
+			NodeList dispatces = FormManagerUtil
+					.getElementsContainingAttribute(buttonElement, "dispatch",
+							"name");
 
-				Element elToAppendAfter = getLabelElement(buttonElement);
+			Element validationDispatch = (Element) dispatces.item(0);
+			validationDispatch.getParentNode().insertBefore(setValueEl,
+					validationDispatch);
 
-				if (elToAppendAfter == null)
-					elToAppendAfter = DOMUtil
-							.getFirstChildElement(buttonElement);
-
-				Element next = DOMUtil.getNextSiblingElement(elToAppendAfter);
-
-				if (next != null)
-					buttonElement.insertBefore(setValueEl, next);
-				else
-					buttonElement.appendChild(setValueEl);
-			}
+			/*
+			 * if (!DOMUtil.hasElementChildren(buttonElement)) {
+			 * buttonElement.appendChild(setValueEl);
+			 * 
+			 * } else {
+			 * 
+			 * Element elToAppendAfter = getLabelElement(buttonElement);
+			 * 
+			 * if (elToAppendAfter == null) elToAppendAfter = DOMUtil
+			 * .getFirstChildElement(buttonElement);
+			 * 
+			 * Element next = DOMUtil.getNextSiblingElement(elToAppendAfter);
+			 * 
+			 * if (next != null) buttonElement.insertBefore(setValueEl, next);
+			 * else buttonElement.appendChild(setValueEl); }
+			 */
 
 			Bind bind = Bind.locate(formComponent, actionTaken);
 
@@ -363,11 +345,13 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 				if (nodeset == null)
 					nodeset = Nodeset.create(modelElement, actionTaken);
 
-				nodeset.setMapping("string_" + actionTaken);
+				Variable var = new Variable(actionTaken,
+						VariableDataType.STRING);
+				nodeset.setMapping(var.getDefaultStringRepresentation());
 
 				// create
 				bind = Bind.create(formComponent, actionTaken, null, nodeset);
-				bind.setType("string");
+				bind.setIsShared(true);
 			}
 
 			setValueEl.setAttribute(FormManagerUtil.bind_att, bind.getId());
@@ -386,35 +370,23 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		return setValueEl == null ? null : setValueEl.getTextContent();
 	}
 
-	private XPathUtil referActionSetValueElementXPath;
-	private XPathUtil labelElementXPath;
-	private XPathUtil bindToExistsXPath;
+	private Element getReferActionSetValueElement(Node context) {
 
-	private synchronized Element getReferActionSetValueElement(Node context) {
-
-		if (referActionSetValueElementXPath == null)
-			referActionSetValueElementXPath = new XPathUtil(new StringBuilder(
-					".//xf:setvalue[@bind='").append(actionTaken).append("']")
-					.toString());
-
-		return (Element) referActionSetValueElementXPath.getNode(context);
+		return referActionSetValueElementXPath.getNode(context);
 	}
 
-	private synchronized Element getLabelElement(Node context) {
+	// private Element getLabelElement(Node context) {
+	//
+	// return FormManagerUtil.getLabelElementXPath().getNode(context);
+	// }
 
-		if (labelElementXPath == null)
-			labelElementXPath = new XPathUtil(".//xf:label");
-
-		return (Element) labelElementXPath.getNode(context);
-	}
-
-	private synchronized XPathUtil getBindToExistsXPath() {
-
-		if (bindToExistsXPath == null)
-			bindToExistsXPath = new XPathUtil(".//*[@bind=$bindId]");
-
-		return bindToExistsXPath;
-	}
+	// private synchronized XPathUtil getBindToExistsXPath() {
+	//
+	// if (bindToExistsXPath == null)
+	// bindToExistsXPath = new XPathUtil(".//*[@bind=$bindId]");
+	//
+	// return bindToExistsXPath;
+	// }
 
 	@Override
 	public void update(FormComponent component, ConstUpdateType what,
