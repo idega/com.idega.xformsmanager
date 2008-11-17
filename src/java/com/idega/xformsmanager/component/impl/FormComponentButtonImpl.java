@@ -1,6 +1,7 @@
 package com.idega.xformsmanager.component.impl;
 
 import com.idega.xformsmanager.business.component.Button;
+import com.idega.xformsmanager.business.component.ConstButtonType;
 import com.idega.xformsmanager.business.component.properties.PropertiesButton;
 import com.idega.xformsmanager.component.FormComponentButton;
 import com.idega.xformsmanager.component.FormComponentPage;
@@ -10,9 +11,9 @@ import com.idega.xformsmanager.manager.XFormsManagerButton;
 /**
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/13 20:10:24 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/17 18:03:34 $ by $Author: civilis $
  */
 public class FormComponentButtonImpl extends FormComponentImpl implements
 		Button, FormComponentButton {
@@ -65,10 +66,7 @@ public class FormComponentButtonImpl extends FormComponentImpl implements
 		properties.setReferAction(xformsManager.getReferAction(this));
 	}
 
-	@Override
-	public void remove() {
-
-		getProperties().setReferAction(null);
-		super.remove();
+	public boolean isSubmitButton() {
+		return getType().equals(ConstButtonType.SUBMIT_FORM_BUTTON);
 	}
 }
