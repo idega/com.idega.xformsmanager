@@ -26,9 +26,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
- *          Last modified: $Date: 2008/11/17 18:04:25 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/19 14:21:40 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -298,7 +298,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 
 		if (setValueEl == null) {
-
+			
 			Document xform = buttonElement.getOwnerDocument();
 			setValueEl = xform.createElementNS(
 					FormManagerUtil.xforms_namespace_uri,
@@ -309,7 +309,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 			// idega:dispatch name="idega-validate"
 
 			NodeList dispatces = FormManagerUtil
-					.getElementsContainingAttribute(buttonElement, "dispatch",
+					.getElementsContainingAttribute(buttonElement, "idega:dispatch",
 							"name");
 
 			Element validationDispatch = (Element) dispatces.item(0);
