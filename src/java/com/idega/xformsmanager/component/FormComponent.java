@@ -4,6 +4,7 @@ import com.idega.xformsmanager.business.component.properties.PropertiesComponent
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.impl.FormComponentContainerImpl;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
+import com.idega.xformsmanager.context.Event;
 
 /**
  * this interface represents "internal to the xform document manager" form
@@ -11,9 +12,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
  * manager
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/04 17:53:08 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:27 $ by $Author: civilis $
  */
 public interface FormComponent {
 
@@ -98,15 +99,6 @@ public interface FormComponent {
 
 	public abstract FormDocument getFormDocument();
 
-	// public abstract DMContext getContext();
-	//
-	// public abstract void setContext(DMContext context);
-
-	// public abstract void setReadonly(boolean readonly);
-	//	
-	// public abstract boolean isReadonly();
-
-	// public abstract void setPdfForm(boolean generatePdf);
-	//
-	// public abstract boolean isPdfForm();
+	public abstract void dispatchEvent(Event event, Object eventContext,
+			FormComponent dispatcher);
 }

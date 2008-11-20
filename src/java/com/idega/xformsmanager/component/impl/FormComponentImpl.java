@@ -14,15 +14,16 @@ import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ComponentProperties;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
+import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.manager.HtmlManager;
 import com.idega.xformsmanager.manager.XFormsManager;
 import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
- *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 
@@ -133,7 +134,7 @@ public class FormComponentImpl implements FormComponent, Component {
 
 			bind.rename(newBindName);
 		}
-		
+
 		getXFormsManager().bindsRenamed(this);
 	}
 
@@ -296,5 +297,9 @@ public class FormComponentImpl implements FormComponent, Component {
 
 	public void setComponentDataBean(ComponentDataBean xformsComponentDataBean) {
 		this.xformsComponentDataBean = xformsComponentDataBean;
+	}
+
+	public void dispatchEvent(Event event, Object eventContext,
+			FormComponent dispatcher) {
 	}
 }

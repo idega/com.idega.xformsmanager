@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2008/11/05 17:07:07 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -30,6 +30,8 @@ public class FormComponentFactory {
 	private static final String type_non_display = "type_non_display";
 	private static final String type_plain = "type_plain";
 	private static final String type_upload = "type_upload";
+	private static final String type_page = "type_page";
+	
 	public static final String page_type_tag = FormManagerUtil.idegans_case_tag;
 	public static final String page_type = "fbc_page";
 	public static final String confirmation_page_type = "fbc_confirmation_page";
@@ -97,26 +99,17 @@ public class FormComponentFactory {
 		types = new ArrayList<String>();
 		types.add("fbc_multiupload");
 		components_tags_classified.put(type_upload, types);
+		
+		types = new ArrayList<String>();
+		types.add(page_type_tag);
+		types.add(page_type);
+		types.add(confirmation_page_type);
+		types.add(page_type_thx);
+		types.add("save_page");
+		components_tags_classified.put(type_page, types);
 	}
 	
-//	public static FormComponentFactory getInstance() {
-//		
-//		me = null;
-//		if (me == null) {
-//			
-//			synchronized (FormComponentFactory.class) {
-//				if (me == null) {
-//					me = new FormComponentFactory();
-//				}
-//			}
-//		}
-//
-//		return me;
-//	}
-	
 	public FormComponent getFormComponentByType(String componentType, boolean loadFromTemplate) {
-		
-//		Document componentsTemplate = cacheManager.getComponentsTemplate();
 		
 		FormComponent component = recognizeFormComponent(componentType);
 		component.setType(componentType);
@@ -131,13 +124,12 @@ public class FormComponentFactory {
 	}
 	
 	public FormComponent recognizeFormComponent(String componentType) {
+		
 		if(components_tags_classified.get(type_upload).contains(componentType))
 			return new FormComponentMultiUploadImpl();
 		if(components_tags_classified.get(type_select).contains(componentType))
 			return new FormComponentSelectImpl();
-		if(componentType.equals(page_type_thx))
-			return new FormComponentThankYouPageImpl();
-		if(componentType.equals(page_type_tag) || componentType.equals(page_type) || componentType.equals(confirmation_page_type))
+		if(components_tags_classified.get(type_page).contains(componentType))
 			return new FormComponentPageImpl();
 		if(componentType.equals(fbc_button_area))
 			return new FormComponentButtonAreaImpl();

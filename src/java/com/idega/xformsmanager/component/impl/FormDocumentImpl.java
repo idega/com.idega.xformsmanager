@@ -21,7 +21,6 @@ import com.idega.xformsmanager.business.PersistedFormDocument;
 import com.idega.xformsmanager.business.PersistenceManager;
 import com.idega.xformsmanager.business.component.Component;
 import com.idega.xformsmanager.business.component.Page;
-import com.idega.xformsmanager.business.component.PageThankYou;
 import com.idega.xformsmanager.business.component.properties.ParametersManager;
 import com.idega.xformsmanager.business.component.properties.PropertiesDocument;
 import com.idega.xformsmanager.business.ext.FormVariablesHandler;
@@ -32,23 +31,22 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ComponentPropertiesDocument;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.context.DMContext;
+import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.generator.ComponentsGenerator;
 import com.idega.xformsmanager.manager.XFormsManagerDocument;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
- *          Last modified: $Date: 2008/11/13 20:11:34 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
 		com.idega.xformsmanager.component.FormDocument {
 
-	private String confirmationPageId;
 	private FormVariablesHandler formVariablesHandler;
-	private String thxPageId;
 	private LocalizedStringBean formTitle;
 	private LocalizedStringBean formErrorMsg;
 	private Long formId;
@@ -107,8 +105,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		if (!localizedComponentsDocuments.containsKey(locale)) {
 
 			try {
-
-				// TODO: change this to spring bean etc (now relies on impl)
 				ComponentsGenerator componentsGenerator = getContext()
 						.getComponentsGenerator();
 				Document xformClone = (Document) getXformsDocument().cloneNode(
@@ -118,8 +114,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 				FormManagerUtil.setCurrentFormLocale(xformClone, locale);
 				FormManagerUtil
 						.modifyFormForLocalisationInFormbuilder(xformClone);
-
-				// componentsGenerator.setDocument(xformClone);
 
 				doc = componentsGenerator
 						.generateHtmlRepresentation(xformClone);
@@ -190,8 +184,22 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		throw new NullPointerException("Use addPage method instead");
 	}
 
-	public Page getPage(String page_id) {
-		return (Page) getContainedComponent(page_id);
+	public Page getPage(String pageId) {
+		return (Page) getContainedComponent(pageId);
+	}
+	
+	public List<Page> getSpecialPages() {
+		
+		ArrayList<Page> specialPages = new ArrayList<Page>(getContainedComponentsIds().size());
+		
+		for (FormComponent childPage : getContainedComponents().values()) {
+			
+			if(((FormComponentPage)childPage).isSpecialPage()) {
+				specialPages.add((Page)childPage);
+			}
+		}
+		
+		return specialPages;
 	}
 
 	public List<String> getContainedPagesIdList() {
@@ -335,8 +343,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		Map<String, FormComponent> contained_components = getContainedComponents();
 		int components_amount = getContainedComponents().size();
 		int i = 0;
-		setConfirmationPageId(null);
-		setThxPageId(null);
 
 		for (String comp_id : getContainedComponentsIds()) {
 
@@ -359,13 +365,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 													.get(i + 1)));
 
 			page.pagesSiblingsChanged();
-			
-			if (page.getType().equals(
-					FormComponentFactory.confirmation_page_type))
-				setConfirmationPageId(page.getId());
-			else if (page.getType().equals(FormComponentFactory.page_type_thx))
-				setThxPageId(page.getId());
-
 			i++;
 		}
 		announceRegisteredForLastPage();
@@ -373,9 +372,14 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 
 	protected void announceRegisteredForLastPage() {
 
-		for (String registered_id : getRegisteredForLastPageIdPages())
-			((FormComponentPage) getComponent(registered_id))
-					.announceLastPage(getThxPageId());
+		for (FormComponent childPage : getContainedComponents().values()) {
+
+			if (FormComponentFactory.page_type_thx.equals(childPage.getType())) {
+
+				dispatchEvent(Event.thxPageIdChanged, childPage.getId(), this);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -457,14 +461,15 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 
 	public FormComponentPage getFormConfirmationPage() {
 
-		return getConfirmationPageId() == null ? null
-				: (FormComponentPage) getContainedComponent(getConfirmationPageId());
-	}
+		for (FormComponent childPage : getContainedComponents().values()) {
 
-	public PageThankYou getThxPage() {
+			if (FormComponentFactory.confirmation_page_type.equals(childPage
+					.getType())) {
+				return (FormComponentPage) childPage;
+			}
+		}
 
-		return getThxPageId() == null ? null
-				: (PageThankYou) getContainedComponent(getThxPageId());
+		return null;
 	}
 
 	protected List<String> getRegisteredForLastPageIdPages() {
@@ -485,14 +490,14 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 			getRegisteredForLastPageIdPages().add(register_page_id);
 	}
 
-	public Page addConfirmationPage(String nextSiblingPageId) {
+	public Page addConfirmationPage() {
 
 		if (getConfirmationPage() != null)
 			throw new IllegalArgumentException(
 					"Confirmation page already exists in the form");
 
 		Page page = (Page) super.addComponent(
-				FormComponentFactory.confirmation_page_type, nextSiblingPageId);
+				FormComponentFactory.confirmation_page_type, null);
 
 		componentsOrderChanged();
 		addToConfirmationPage();
@@ -522,8 +527,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		setFormDocumentModified(true);
 
 		getLocalizedComponentsDocuments().clear();
-		setConfirmationPageId(null);
-		setThxPageId(null);
 		setRegisteredForLastPageIdPages(null);
 		clearFormTitle();
 		clearFormId();
@@ -575,22 +578,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		default:
 			break;
 		}
-	}
-
-	public String getConfirmationPageId() {
-		return confirmationPageId;
-	}
-
-	public void setConfirmationPageId(String confirmationPageId) {
-		this.confirmationPageId = confirmationPageId;
-	}
-
-	public String getThxPageId() {
-		return thxPageId;
-	}
-
-	public void setThxPageId(String thxPageId) {
-		this.thxPageId = thxPageId;
 	}
 
 	public void setRegisteredForLastPageIdPages(

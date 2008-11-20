@@ -10,9 +10,9 @@ import com.idega.xformsmanager.manager.XFormsManagerPage;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * Last modified: $Date: 2008/10/27 10:27:40 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 public class FormComponentPageImpl extends FormComponentContainerImpl implements Page, FormComponentPage {
 	
@@ -50,6 +50,11 @@ public class FormComponentPageImpl extends FormComponentContainerImpl implements
 		parent.componentsOrderChanged();
 	}
 	
+	public boolean isSpecialPage() {
+		
+		return getType() != null && (getType().equals(FormComponentFactory.page_type_thx) || getType().equals(FormComponentFactory.confirmation_page_type));
+	}
+	
 	public ButtonArea getButtonArea() {
 		
 		return button_area_id == null ? null : (ButtonArea)getContainedComponent(button_area_id);
@@ -82,13 +87,5 @@ public class FormComponentPageImpl extends FormComponentContainerImpl implements
 	}
 	public FormComponentPage getNextPage() {
 		return next_page;
-	}
-	public void announceLastPage(String last_page_id) {
-		FormComponentButtonArea button_area = (FormComponentButtonArea)getButtonArea();
-		
-		if(button_area == null)
-			return;
-		
-		button_area.announceLastPage(last_page_id);
 	}
 }

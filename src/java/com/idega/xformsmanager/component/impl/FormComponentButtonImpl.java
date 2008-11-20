@@ -3,17 +3,19 @@ package com.idega.xformsmanager.component.impl;
 import com.idega.xformsmanager.business.component.Button;
 import com.idega.xformsmanager.business.component.ConstButtonType;
 import com.idega.xformsmanager.business.component.properties.PropertiesButton;
+import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentButton;
 import com.idega.xformsmanager.component.FormComponentPage;
 import com.idega.xformsmanager.component.properties.impl.ComponentPropertiesButton;
+import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.manager.XFormsManagerButton;
 
 /**
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/17 18:03:34 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 public class FormComponentButtonImpl extends FormComponentImpl implements
 		Button, FormComponentButton {
@@ -68,5 +70,19 @@ public class FormComponentButtonImpl extends FormComponentImpl implements
 
 	public boolean isSubmitButton() {
 		return getType().equals(ConstButtonType.SUBMIT_FORM_BUTTON);
+	}
+	
+	@Override
+	public void dispatchEvent(Event event, Object eventContext,
+			FormComponent dispatcher) {
+		
+		if(event == Event.thxPageIdChanged) {
+		
+			if(ConstButtonType.SUBMIT_FORM_BUTTON.toString().equals(
+					getType())) {
+				
+				setLastPageId((String)eventContext);
+			}
+		}
 	}
 }

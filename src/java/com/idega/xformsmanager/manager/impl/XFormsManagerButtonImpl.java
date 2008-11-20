@@ -26,9 +26,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
- *          Last modified: $Date: 2008/11/19 14:21:40 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -37,11 +37,9 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		XFormsManagerButton {
 
 	private static final String actionTaken = "actionTaken";
-//	private static final String bindIdVariable = "bindId";
 
 	private final XPathUtil referActionSetValueElementXPath = new XPathUtil(
 			".//xf:setvalue[@bind='" + actionTaken + "']");
-//	private XPathUtil bindToExistsXPath;
 
 	@Override
 	public void loadComponentFromDocument(FormComponent component) {
@@ -84,26 +82,6 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 				ConstButtonType.NEXT_PAGE_BUTTON.toString())) {
 
 			renewControlButton(component, next);
-
-		} else if (component.getType().equals(
-				ConstButtonType.SUBMIT_FORM_BUTTON.toString())) {
-
-			FormDocument formDocument = component.getFormDocument();
-
-			formDocument.registerForLastPage(component.getParent()
-					.getParentPage().getId());
-
-			// TODO set page Id dynamically on submission toggle
-
-		} else if (component.getType().equals(
-				ConstButtonType.SAVE_FORM_BUTTON.toString())) {
-			// TODO
-			FormDocument formDocument = component.getFormDocument();
-
-			formDocument.registerForLastPage(component.getParent()
-					.getParentPage().getId());
-
-			// TODO set page Id dynamically on save toggle
 		}
 	}
 
@@ -115,14 +93,10 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 
 		Element toggleElement = buttonDataBean.getToggleElement();
 
-		if (relevantPage == null
-				|| (button.getFormDocument().getThxPage() != null && relevantPage
-						.getId().equals(
-								button.getFormDocument().getThxPage().getId()))) {
+		if (relevantPage == null || relevantPage.isSpecialPage()) {
 
 			buttonDataBean.setToggleElement(null);
 			toggleElement.getParentNode().removeChild(toggleElement);
-			// removeSetValues(button);
 
 		} else {
 
@@ -298,7 +272,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		Element setValueEl = getReferActionSetValueElement(buttonElement);
 
 		if (setValueEl == null) {
-			
+
 			Document xform = buttonElement.getOwnerDocument();
 			setValueEl = xform.createElementNS(
 					FormManagerUtil.xforms_namespace_uri,
@@ -309,8 +283,8 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 			// idega:dispatch name="idega-validate"
 
 			NodeList dispatces = FormManagerUtil
-					.getElementsContainingAttribute(buttonElement, "idega:dispatch",
-							"name");
+					.getElementsContainingAttribute(buttonElement,
+							"idega:dispatch", "name");
 
 			Element validationDispatch = (Element) dispatces.item(0);
 			validationDispatch.getParentNode().insertBefore(setValueEl,

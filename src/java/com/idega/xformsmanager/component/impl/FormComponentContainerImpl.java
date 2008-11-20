@@ -17,13 +17,14 @@ import com.idega.xformsmanager.business.component.properties.PropertiesComponent
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- *          Last modified: $Date: 2008/11/05 15:03:13 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements
 		FormComponentContainer, Container {
@@ -59,7 +60,7 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 			component.load();
 		}
 	}
-
+	
 	@Override
 	public XFormsManagerContainer getXFormsManager() {
 
@@ -314,16 +315,13 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 
 		return page;
 	}
+	
+	@Override
+	public void dispatchEvent(Event eventType, Object eventContext,
+			FormComponent dispatcher) {
 
-	// @Override
-	// public boolean isReadonly() {
-	// throw new UnsupportedOperationException("Not implemented yet");
-	// }
-	//	
-	// @Override
-	// public void setReadonly(boolean readonly) {
-	//
-	// for (FormComponent component : getContainedComponents().values())
-	// component.setReadonly(readonly);
-	// }
+		for (FormComponent child : getContainedComponents().values()) {
+			child.dispatchEvent(eventType, eventContext, dispatcher);
+		}
+	}
 }

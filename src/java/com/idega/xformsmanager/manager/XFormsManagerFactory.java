@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.FormComponentType;
  * this there
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/05 17:07:06 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 16:31:27 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -43,9 +43,6 @@ public class XFormsManagerFactory {
 	@Autowired
 	@FormComponentType(FormComponentType.multiupload)
 	private XFormsManagerMultiUpload xformsManagerMultiUploadDescription;
-	@Autowired
-	@FormComponentType(FormComponentType.thankYouPage)
-	private XFormsManagerThankYouPage xformsManagerThankYouPage;
 
 	public XFormsManagerFactory() {
 	}
@@ -106,15 +103,6 @@ public class XFormsManagerFactory {
 
 	public void setXformsManagerSelect(XFormsManagerSelect xformsManagerSelect) {
 		this.xformsManagerSelect = xformsManagerSelect;
-	}
-
-	public XFormsManagerThankYouPage getXformsManagerThankYouPage() {
-		return xformsManagerThankYouPage;
-	}
-
-	public void setXformsManagerThankYouPage(
-			XFormsManagerThankYouPage xformsManagerThankYouPage) {
-		this.xformsManagerThankYouPage = xformsManagerThankYouPage;
 	}
 
 	public XFormsManagerMultiUpload getXformsManagerMultiUploadDescription() {
