@@ -10,9 +10,9 @@ import com.idega.xformsmanager.manager.XFormsManagerPage;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
+ * Last modified: $Date: 2008/11/20 18:59:54 $ by $Author: civilis $
  */
 public class FormComponentPageImpl extends FormComponentContainerImpl implements Page, FormComponentPage {
 	
@@ -40,11 +40,6 @@ public class FormComponentPageImpl extends FormComponentContainerImpl implements
 	
 	@Override
 	public void remove() {
-		
-		if(getType().equals(FormComponentFactory.page_type_thx)) {
-			//TODO: log warning
-			System.out.println("removing page thx");
-		}
 		
 		super.remove();
 		parent.componentsOrderChanged();

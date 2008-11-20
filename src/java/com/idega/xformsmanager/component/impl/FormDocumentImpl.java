@@ -38,9 +38,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
- *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/20 18:59:54 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -172,6 +172,21 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 	}
 
 	public Page addPage(String nextSiblingPageId) {
+		
+		if(nextSiblingPageId == null && !getContainedPagesIdList().isEmpty()) {
+			
+//			find the first special page to insert before
+			
+			for (String pageId : getContainedPagesIdList()) {
+				
+				if(((FormComponentPage)getContainedComponent(pageId)).isSpecialPage()) {
+					
+					nextSiblingPageId = pageId;
+					break;
+				}
+			}
+		}
+		
 		Page page = (Page) super.addComponent(FormComponentFactory.page_type,
 				nextSiblingPageId);
 		componentsOrderChanged();
