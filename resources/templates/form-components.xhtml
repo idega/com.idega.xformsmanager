@@ -13,8 +13,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<xf:instance id="components_instance" xmlns="">
 		<data> 
+			<date />
 			<output_text />
-			<text /> 
+			<text />
 			<id_number nodeType="formIdentifier">IW2000-01-01-0001</id_number>
 			<email xsi:nil="true"/> 
 			<textarea />
@@ -91,6 +92,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xf:bind id="single_select_minimal" nodeset="single_select_minimal" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
 	<xf:bind id="multiple_select" nodeset="multiple_select" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
 	<xf:bind id="single_select" nodeset="single_select" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
+	<xf:bind id="date" nodeset="date" type="xs:date" calculate="substring(now(), 1, 10)" />
 
 	<xf:bind id="email" nodeset="email" type="fb_email" readonly="instance('control-instance')/readonly = 'true'"/>
 	
@@ -226,6 +228,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<static_output-text lang="is_IS">Skilaboð</static_output-text>
 			<static_output-text lang="en">Message</static_output-text>
 			
+			<date-label lang="is_IS">Date</date-label>
+            <date-label lang="en">Date</date-label>
+			
 			<default_validation-required lang="is_IS">Required</default_validation-required>
 			<default_validation-required lang="en">Required</default_validation-required>
 			<default_validation-validation lang="is_IS">Invalid</default_validation-validation>
@@ -277,6 +282,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<datatype>list</datatype>
 			</component>
 			<component component_id="fbc_header_text" accessSupport="r">
+				<datatype>string</datatype>
+			</component>
+			<component component_id="fbc_date" accessSupport="r">
 				<datatype>string</datatype>
 			</component>
 			<component component_id="fbc_static_output" accessSupport="r">
@@ -437,6 +445,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<component component_id="fbc_upload" />
 			<component component_id="fbc_multiupload"/>
 			<component component_id="fbc_text_output" />
+     		<component component_id="fbc_date" />
+			
 		</category>
 		
 		<category name="buttons">
@@ -669,6 +679,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		
 		<xf:output bind="output_text" id="fbc_text_output">
 			<xf:label model="data_model" ref="instance('localized_strings')/text_output-label[@lang=instance('localized_strings')/current_language]"/>				
+		</xf:output>
+		
+		<xf:output bind="date" id="fbc_date">
+			<xf:label model="data_model" ref="instance('localized_strings')/date-label[@lang=instance('localized_strings')/current_language]"/>				
 		</xf:output>
 			
 		<div id="fbc_button_area" type="fbc_button_area" class="fbc_button_area"></div>
