@@ -38,9 +38,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
- *          Last modified: $Date: 2008/11/20 18:59:54 $ by $Author: civilis $
+ *          Last modified: $Date: 2008/11/26 11:56:57 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -309,14 +309,6 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		return formErrorMsg;
 	}
 
-	protected void clearFormTitle() {
-		formTitle = null;
-	}
-
-	protected void clearFormId() {
-		formId = null;
-	}
-
 	public void setFormTitle(LocalizedStringBean formTitle) {
 
 		if (formTitle != null) {
@@ -543,8 +535,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 
 		getLocalizedComponentsDocuments().clear();
 		setRegisteredForLastPageIdPages(null);
-		clearFormTitle();
-		clearFormId();
+		formTitle = null;
 		parametersManager = null;
 		getContainedComponentsIds().clear();
 		getContainedComponents().clear();
