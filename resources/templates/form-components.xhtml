@@ -176,6 +176,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<simple_text-text lang="en">Paragraph text</simple_text-text>
 			<simple_text-label lang="is_IS"></simple_text-label>
 			<simple_text-label lang="en"></simple_text-label>
+			
+			<paragraph_alert-text lang="is_IS">Viðvörun</paragraph_alert-text>
+			<paragraph_alert-text lang="en">Alert text</paragraph_alert-text>
+			<paragraph_alert-label lang="is_IS"></paragraph_alert-label>
+			<paragraph_alert-label lang="en"></paragraph_alert-label>
 
             <header_text-text lang="is_IS">Fyrirsögn</header_text-text>
 			<header_text-text lang="en">Header text</header_text-text>
@@ -698,8 +703,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		</div>
 		
 		<div id="fbc_paragraph_alert" type="fbc_simple_text" class="paragraphAlert">
-			<xf:label ref="instance('localized_strings')/paragraph_text-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
-			<xf:output ref="instance('localized_strings')/paragraph_text-text[@lang=instance('localized_strings')/current_language]" model="data_model" />
+			<xf:label ref="instance('localized_strings')/paragraph_alert-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
+			<xf:output ref="instance('localized_strings')/paragraph_alert-text[@lang=instance('localized_strings')/current_language]" model="data_model" />
 		</div>
 		
 		<div id="fbc_header_text" type="fbc_header_text" class="fbc_header_text">
