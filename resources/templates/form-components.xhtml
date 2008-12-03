@@ -281,6 +281,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<datatype>string</datatype>
 				<datatype>list</datatype>
 			</component>
+			<component component_id="fbc_paragraph_alert" accessSupport="r">
+				<datatype>string</datatype>
+				<datatype>list</datatype>
+			</component>
 			<component component_id="fbc_header_text" accessSupport="r">
 				<datatype>string</datatype>
 			</component>
@@ -461,6 +465,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<component component_id="fbc_confirmation_page" />
 		</category>
 		<category name="plain">
+			<component component_id="fbc_paragraph_alert" />
 			<component component_id="fbc_simple_text" />
 			<component component_id="fbc_static_output" />
 			<component component_id="fbc_header_text" />
@@ -631,7 +636,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			id="fbc_single_select_minimal" appearance="minimal">
 			<xf:label
 				ref="instance('localized_strings')/select1_minimal-label[@lang=instance('localized_strings')/current_language]"
-				model="data_model" />
+				model="data_model" /> 
 			<xf:itemset model="data_model" nodeset="instance('fbc_single_select_minimal_lds')/localizedEntries[@lang=instance('localized_strings')/current_language]/item">
 	            <xf:label ref="itemLabel" />
                 <xf:value ref="itemValue" />
@@ -686,10 +691,17 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		</xf:output>
 			
 		<div id="fbc_button_area" type="fbc_button_area" class="fbc_button_area"></div>
+		
 		<div id="fbc_simple_text" type="fbc_simple_text" class="fbc_simple_text">
 			<xf:label ref="instance('localized_strings')/simple_text-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
 			<xf:output ref="instance('localized_strings')/simple_text-text[@lang=instance('localized_strings')/current_language]" model="data_model" />
 		</div>
+		
+		<div id="fbc_paragraph_alert" type="fbc_simple_text" class="paragraphAlert">
+			<xf:label ref="instance('localized_strings')/paragraph_text-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
+			<xf:output ref="instance('localized_strings')/paragraph_text-text[@lang=instance('localized_strings')/current_language]" model="data_model" />
+		</div>
+		
 		<div id="fbc_header_text" type="fbc_header_text" class="fbc_header_text">
 		      <xf:output ref="instance('localized_strings')/header_text-text[@lang=instance('localized_strings')/current_language]"
 						model="data_model" />
