@@ -34,9 +34,9 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/13 09:46:08 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/10 12:30:56 $ by $Author: civilis $
  */
 @Scope("singleton")
 @Service
@@ -114,6 +114,26 @@ public class FormManager implements DocumentManager {
 		return formDocument;
 	}
 
+	public com.idega.xformsmanager.business.Document openFormLazy(Long formId) {
+
+		if (formId == null)
+			throw new NullPointerException("Form id was not provided");
+
+		DMContext context = getDMContext();
+
+		FormDocumentImpl formDocument = createFormDocument();
+		formDocument.setContext(context);
+
+		PersistedFormDocument persistedFormDocument = loadPersistedFormDocument(
+				context, formId);
+
+		formDocument.setXformsDocument(persistedFormDocument
+				.getXformsDocument());
+		formDocument.lazyLoadDocument(persistedFormDocument);
+
+		return formDocument;
+	}
+
 	public com.idega.xformsmanager.business.Document openForm(Document xformsDoc) {
 
 		FormDocumentImpl formDocument = createFormDocument();
@@ -140,7 +160,7 @@ public class FormManager implements DocumentManager {
 
 		formDocument.setXformsDocument(persistedFormDocument
 				.getXformsDocument());
-		formDocument.loadDocument(persistedFormDocument);
+		formDocument.lazyLoadDocument(persistedFormDocument);
 
 		return formDocument;
 	}
