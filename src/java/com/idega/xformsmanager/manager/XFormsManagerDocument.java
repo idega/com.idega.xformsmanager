@@ -4,13 +4,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.idega.xformsmanager.component.FormComponent;
-import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/11/04 17:53:05 $ by $Author: civilis $
+ * Last modified: $Date: 2009/01/10 12:31:11 $ by $Author: civilis $
  */
 public interface XFormsManagerDocument extends XFormsManagerContainer {
 
