@@ -37,10 +37,14 @@ import com.idega.xformsmanager.manager.XFormsManagerDocument;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
- * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.14 $
+ * TODO: put isLazyLoaded(true) everywhere the loading of the document is needed
+ * for further processing. This could be accomplished by using aspects and
+ * annotations too
  * 
- *          Last modified: $Date: 2008/11/26 11:56:57 $ by $Author: civilis $
+ * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
+ * @version $Revision: 1.15 $
+ * 
+ *          Last modified: $Date: 2009/01/10 12:33:07 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -61,6 +65,9 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 
 	private DMContext context;
 	private Document xformsDocument;
+
+	private PersistedFormDocument persistedFormForLazyLoading;
+	private boolean loaded = false;
 
 	private int lastComponentId = 0;
 
@@ -172,21 +179,22 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 	}
 
 	public Page addPage(String nextSiblingPageId) {
-		
-		if(nextSiblingPageId == null && !getContainedPagesIdList().isEmpty()) {
-			
-//			find the first special page to insert before
-			
+
+		if (nextSiblingPageId == null && !getContainedPagesIdList().isEmpty()) {
+
+			// find the first special page to insert before
+
 			for (String pageId : getContainedPagesIdList()) {
-				
-				if(((FormComponentPage)getContainedComponent(pageId)).isSpecialPage()) {
-					
+
+				if (((FormComponentPage) getContainedComponent(pageId))
+						.isSpecialPage()) {
+
 					nextSiblingPageId = pageId;
 					break;
 				}
 			}
 		}
-		
+
 		Page page = (Page) super.addComponent(FormComponentFactory.page_type,
 				nextSiblingPageId);
 		componentsOrderChanged();
@@ -202,18 +210,19 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 	public Page getPage(String pageId) {
 		return (Page) getContainedComponent(pageId);
 	}
-	
+
 	public List<Page> getSpecialPages() {
-		
-		ArrayList<Page> specialPages = new ArrayList<Page>(getContainedComponentsIds().size());
-		
+
+		ArrayList<Page> specialPages = new ArrayList<Page>(
+				getContainedComponentsIds().size());
+
 		for (FormComponent childPage : getContainedComponents().values()) {
-			
-			if(((FormComponentPage)childPage).isSpecialPage()) {
-				specialPages.add((Page)childPage);
+
+			if (((FormComponentPage) childPage).isSpecialPage()) {
+				specialPages.add((Page) childPage);
 			}
 		}
-		
+
 		return specialPages;
 	}
 
@@ -268,6 +277,39 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		loadDocumentInternal(persistedForm);
 	}
 
+	public void lazyLoadDocument(PersistedFormDocument persistedForm) {
+
+		if (persistedForm != null) {
+			setFormId(persistedForm.getFormId());
+			setFormType(persistedForm.getFormType());
+		}
+
+		setContainerElement(FormManagerUtil
+				.getComponentsContainerElement(getXformsDocument()));
+
+		persistedFormForLazyLoading = persistedForm;
+	}
+
+	public void lazyLoadDocument() {
+		lazyLoadDocument(null);
+	}
+
+	/**
+	 * checks if document is loaded. If loadIfNotLoaded is true, then it loads
+	 * the document if it isn't already
+	 * 
+	 * @param loadIfNotLoaded
+	 */
+	protected boolean isLazyLoaded(boolean loadIfNotLoaded) {
+
+		if (!loaded && loadIfNotLoaded) {
+			loadDocumentInternal(persistedFormForLazyLoading);
+			loaded = true;
+		}
+
+		return loaded;
+	}
+
 	private void loadDocumentInternal(PersistedFormDocument persistedForm) {
 
 		Document xformsXmlDoc = getXformsDocument();
@@ -276,21 +318,13 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 			setFormId(persistedForm.getFormId());
 			setFormType(persistedForm.getFormType());
 		}
-		/*
-		 * else {
-		 * 
-		 * Long formId = getFormId();
-		 * 
-		 * if (formId == null) {
-		 * 
-		 * try { formId = new Long(FormManagerUtil.getFormId(xformsXmlDoc));
-		 * setFormId(formId); } catch (Exception e) { } } }
-		 */
 
 		setContainerElement(FormManagerUtil
 				.getComponentsContainerElement(xformsXmlDoc));
 		loadContainerComponents();
 		setProperties();
+
+		loaded = true;
 	}
 
 	public LocalizedStringBean getFormTitle() {
@@ -602,10 +636,12 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 	}
 
 	public Element getSubmissionElement() {
+		// TODO: this can be put to component data bean and lazy loaded there
 		return FormManagerUtil.getSubmissionElement(getXformsDocument());
 	}
 
 	public Element getSubmissionInstanceElement() {
+		// TODO: this can be put to component data bean and lazy loaded there
 		return FormManagerUtil
 				.getFormSubmissionInstanceElement(getXformsDocument());
 	}
