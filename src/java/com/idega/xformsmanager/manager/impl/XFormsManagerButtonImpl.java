@@ -26,9 +26,9 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
- *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/13 08:13:25 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -94,9 +94,12 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		Element toggleElement = buttonDataBean.getToggleElement();
 
 		if (relevantPage == null || relevantPage.isSpecialPage()) {
-
-			buttonDataBean.setToggleElement(null);
-			toggleElement.getParentNode().removeChild(toggleElement);
+			
+			if(toggleElement != null) {
+			
+				buttonDataBean.setToggleElement(null);
+				toggleElement.getParentNode().removeChild(toggleElement);
+			}
 
 		} else {
 
