@@ -13,84 +13,89 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
- * 
- *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
+ * @version $Revision: 1.3 $ Last modified: $Date: 2009/01/14 14:23:15 $ by $Author: civilis $
  */
 public interface Document extends Container {
-
+	
 	/**
 	 * Creates new form page.
 	 * 
 	 * @param nextSiblingPageId
-	 *            - where new component should be placed. If provided, new
-	 *            component will be inserted <b>before</b> component with
-	 *            nextSiblingPageId. If null is passed, page will be appended
-	 *            after last non special page.
+	 *            - where new component should be placed. If provided, new component will be
+	 *            inserted <b>before</b> component with nextSiblingPageId. If null is passed, page
+	 *            will be appended after last non special page.
 	 * @see getSpecialPages javadoc
 	 * @return newly created form page
 	 */
 	public abstract Page addPage(String nextSiblingPageId);
-
+	
 	public abstract String getFormSourceCode() throws Exception;
-
+	
 	public abstract void setFormSourceCode(String new_source_code)
-			throws Exception;
-
+	        throws Exception;
+	
 	public abstract LocalizedStringBean getFormTitle();
-
+	
 	public abstract LocalizedStringBean getFormErrorMsg();
-
+	
 	public abstract Long getFormId();
-
+	
 	public abstract void setFormTitle(LocalizedStringBean form_name)
-			throws Exception;
-
+	        throws Exception;
+	
 	public abstract void setFormErrorMsg(LocalizedStringBean form_error)
-			throws Exception;
-
+	        throws Exception;
+	
 	/**
-	 * using getContainedPagesIdList method get components id list, then use
-	 * this list to change the order of components, and then call this method
-	 * for changes to take an effect
-	 * 
+	 * using getContainedPagesIdList method get components id list, then use this list to change the
+	 * order of components, and then call this method for changes to take an effect
 	 */
 	public abstract void rearrangeDocument();
-
+	
 	public abstract Page getPage(String page_id);
-
+	
 	/**
-	 * special page reflects non usual step in the form - this is either some
-	 * behavioral page (e.g. save form), thank you page and so on
+	 * special page reflects non usual step in the form - this is either some behavioral page (e.g.
+	 * save form), thank you page and so on
 	 * 
 	 * @return
 	 */
 	public abstract List<Page> getSpecialPages();
-
+	
 	public abstract List<String> getContainedPagesIdList();
-
+	
 	public abstract void save() throws Exception;
-
+	
+	/**
+	 * stores document under the storeBasePath specified. This should be the relative path to the
+	 * content repository root in use. E.g. if the root is /files then the base path could look like
+	 * this: /bpm/forms/
+	 * 
+	 * @param storeBasePath
+	 * @throws Exception
+	 */
+	public abstract void save(String storeBasePath) throws Exception;
+	
 	public abstract org.w3c.dom.Document getXformsDocument();
-
-//	public abstract Page getConfirmationPage();
-
+	
+	// public abstract Page getConfirmationPage();
+	
 	public abstract Page addConfirmationPage();
-
+	
 	public abstract PropertiesDocument getProperties();
-
+	
 	public abstract ParametersManager getParametersManager();
-
+	
 	public abstract Element getSubmissionInstanceElement();
-
+	
 	public abstract FormVariablesHandler getFormVariablesHandler();
-
+	
 	public abstract void setReadonly(boolean readonly);
-
+	
 	public abstract void setPdfForm(boolean generatePdf);
-
+	
 	public abstract void setFormType(String formType);
-
+	
 	public abstract void populateSubmissionDataWithXML(
-			org.w3c.dom.Document submission, boolean clean);
+	        org.w3c.dom.Document submission, boolean clean);
 }
