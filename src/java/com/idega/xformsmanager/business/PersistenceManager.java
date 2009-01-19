@@ -11,13 +11,13 @@ import com.idega.xformsmanager.component.FormDocument;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $ Last modified: $Date: 2009/01/14 14:19:51 $ by $Author: civilis $
+ * @version $Revision: 1.5 $ Last modified: $Date: 2009/01/19 21:49:13 $ by $Author: civilis $
  */
 public interface PersistenceManager {
 	
 	public abstract PersistedFormDocument loadForm(Long formId);
 	
-	public abstract PersistedFormDocument loadPopulatedForm(Long submissionId);
+	public abstract PersistedFormDocument loadPopulatedForm(String submissionUUID);
 	
 	public abstract PersistedFormDocument saveForm(FormDocument document)
 	        throws IllegalAccessException;
@@ -40,20 +40,22 @@ public interface PersistenceManager {
 	public abstract List<Form> getStandaloneForms();
 	
 	/**
+	 * Stores submitted data
+	 * 
 	 * @param formId
 	 *            - not null
 	 * @param is
 	 *            - not null
 	 * @param identifier
-	 *            - could be null, would be generated some random identifier
-	 * @return submission id
+	 *            - could be null, some random identifier would be generated
+	 * @return submission UUID
 	 * @throws IOException
 	 */
-	public abstract Long saveSubmittedData(Long formId, InputStream is,
+	public abstract String saveSubmittedData(Long formId, InputStream is,
 	        String identifier, boolean finalSubmission) throws IOException;
 	
 	/**
-	 * @param submissionId
+	 * @param submissionUUID
 	 * @param formId
 	 *            - not null
 	 * @param is
@@ -63,8 +65,8 @@ public interface PersistenceManager {
 	 * @return submission id
 	 * @throws IOException
 	 */
-	public abstract Long saveSubmittedDataByExistingSubmission(
-	        Long submissionId, Long formId, InputStream is, String identifier)
+	public abstract String saveSubmittedDataByExistingSubmission(
+	        String submissionUUID, Long formId, InputStream is, String identifier)
 	        throws IOException;
 	
 	public abstract List<Submission> getAllStandaloneFormsSubmissions();
