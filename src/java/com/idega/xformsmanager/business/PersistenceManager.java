@@ -11,13 +11,14 @@ import com.idega.xformsmanager.component.FormDocument;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $ Last modified: $Date: 2009/01/19 21:49:13 $ by $Author: civilis $
+ * @version $Revision: 1.6 $ Last modified: $Date: 2009/01/20 17:36:20 $ by $Author: civilis $
  */
 public interface PersistenceManager {
 	
 	public abstract PersistedFormDocument loadForm(Long formId);
 	
-	public abstract PersistedFormDocument loadPopulatedForm(String submissionUUID);
+	public abstract PersistedFormDocument loadPopulatedForm(
+	        String submissionUUID) throws InvalidSubmissionException;
 	
 	public abstract PersistedFormDocument saveForm(FormDocument document)
 	        throws IllegalAccessException;
@@ -66,8 +67,18 @@ public interface PersistenceManager {
 	 * @throws IOException
 	 */
 	public abstract String saveSubmittedDataByExistingSubmission(
-	        String submissionUUID, Long formId, InputStream is, String identifier)
-	        throws IOException;
+	        String submissionUUID, Long formId, InputStream is,
+	        String identifier) throws IOException;
+	
+	/**
+	 * set submission to invalid, this is used for saved forms, and this means, that the saved form
+	 * cannot be viewed by the submissionUUID. This usually means that the form is already submitted
+	 * 
+	 * @param submissionUUID
+	 * @throws IOException
+	 */
+	public abstract void invalidateSubmittedDataByExistingSubmission(
+	        String submissionUUID);
 	
 	public abstract List<Submission> getAllStandaloneFormsSubmissions();
 	
