@@ -21,9 +21,9 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
- *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/20 13:10:55 $ by $Author: valdas $
  */
 public class FormComponentImpl implements FormComponent, Component {
 
@@ -122,7 +122,7 @@ public class FormComponentImpl implements FormComponent, Component {
 
 		Bind bind = getComponentDataBean().getBind();
 
-		if (!bind.getIsShared()) {
+		if (bind != null && !bind.getIsShared()) {
 
 			LocalizedStringBean localizedLabel = getProperties().getLabel();
 
