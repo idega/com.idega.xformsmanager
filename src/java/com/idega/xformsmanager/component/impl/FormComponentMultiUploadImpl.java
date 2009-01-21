@@ -8,9 +8,9 @@ import com.idega.xformsmanager.manager.XFormsManagerMultiUpload;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
  */
 public class FormComponentMultiUploadImpl extends FormComponentImpl implements
 		ComponentMultiUpload {
@@ -46,6 +46,7 @@ public class FormComponentMultiUploadImpl extends FormComponentImpl implements
 				.getDescriptionButtonLabel(this));
 		properties.setPlainUploadingFileDescription(getXFormsManager()
 				.getUploadingFileDescription(this));
+		properties.setPlainUploaderHeaderText(getXFormsManager().getUploaderHeaderText(this));
 	}
 
 	@Override
@@ -75,7 +76,10 @@ public class FormComponentMultiUploadImpl extends FormComponentImpl implements
 			getHtmlManager().clearHtmlComponents(this);
 			getFormDocument().setFormDocumentModified(true);
 			break;
-
+		case UPLOADER_HEADER_TEXT:
+			getHtmlManager().clearHtmlComponents(this);
+			getFormDocument().setFormDocumentModified(true);
+			break;
 		default:
 			break;
 		}

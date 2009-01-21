@@ -5,9 +5,9 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
- *          Last modified: $Date: 2008/11/06 14:15:59 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
  */
 public class ComponentPropertiesMultiUpload extends ComponentProperties
 		implements PropertiesMultiUpload {
@@ -16,6 +16,7 @@ public class ComponentPropertiesMultiUpload extends ComponentProperties
 	private LocalizedStringBean removeButtonLabel;
 	private LocalizedStringBean descriptionLabel;
 	private LocalizedStringBean uploadingFileDesc;
+	private LocalizedStringBean headerText;
 
 	public LocalizedStringBean getInsertButtonLabel() {
 		return addButtonLabel;
@@ -74,5 +75,18 @@ public class ComponentPropertiesMultiUpload extends ComponentProperties
 	public void setPlainUploadingFileDescription(
 			LocalizedStringBean uploadingFileDesc) {
 		this.uploadingFileDesc = uploadingFileDesc;
+	}
+	
+	public LocalizedStringBean getUploaderHeaderText() {
+		return headerText;
+	}
+
+	public void setUploaderHeaderText(LocalizedStringBean headerText) {
+		this.headerText = headerText;
+		component.update(ConstUpdateType.UPLOADER_HEADER_TEXT);
+	}
+	
+	public void setPlainUploaderHeaderText(	LocalizedStringBean headerText) {
+		this.headerText = headerText;
 	}
 }

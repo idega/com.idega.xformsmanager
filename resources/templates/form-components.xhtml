@@ -14,6 +14,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xf:instance id="components_instance" xmlns="">
 		<data> 
 			<date />
+			<current_date />
 			<output_text />
 			<text />
 			<id_number nodeType="formIdentifier">IW2000-01-01-0001</id_number>
@@ -92,8 +93,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xf:bind id="single_select_minimal" nodeset="single_select_minimal" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
 	<xf:bind id="multiple_select" nodeset="multiple_select" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
 	<xf:bind id="single_select" nodeset="single_select" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
-	<xf:bind id="date" nodeset="date" type="xs:date" calculate="substring(now(), 1, 10)" />
-
+	<xf:bind id="current_date" nodeset="current_date" type="xs:date" calculate="substring(now(), 1, 10)" />
+	<xf:bind id="date" nodeset="date" type="dateTime" />
+	
 	<xf:bind id="email" nodeset="email" type="fb_email" readonly="instance('control-instance')/readonly = 'true'"/>
 	
 	<xf:bind id="page" nodeset="page" />
@@ -153,6 +155,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <multiupload-custom lang="en">Uploaded file description can not be empty</multiupload-custom>
             <multiupload-filename-label lang="is_IS">Skráarnafn</multiupload-filename-label>
             <multiupload-filename-label lang="en">Uploaded file name</multiupload-filename-label>
+            <multiupload-paragraph-text lang="is_IS">Mögulegt er að senda viðbótarupplýsingar í viðhengi</multiupload-paragraph-text>
+            <multiupload-paragraph-text lang="en">Additional information can be sent with the form as attachments</multiupload-paragraph-text>
+            
 			
 			<page-label lang="is_IS">Svæði</page-label>
 			<page-label lang="en">Section</page-label>
@@ -233,7 +238,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<static_output-text lang="is_IS">Skilaboð</static_output-text>
 			<static_output-text lang="en">Message</static_output-text>
 			
-			<date-label lang="is_IS">Date</date-label>
+			<date-label lang="is_IS">Date </date-label>
             <date-label lang="en">Date</date-label>
 			
 			<default_validation-required lang="is_IS">Required</default_validation-required>
@@ -293,9 +298,14 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<component component_id="fbc_header_text" accessSupport="r">
 				<datatype>string</datatype>
 			</component>
-			<component component_id="fbc_date" accessSupport="r">
+			<component component_id="fbc_current_date" accessSupport="r">
 				<datatype>string</datatype>
 			</component>
+			
+			<component component_id="fbc_date" accessSupport="rw">
+				<datatype>string</datatype>
+			</component>
+			
 			<component component_id="fbc_static_output" accessSupport="r">
 				<datatype>string</datatype>
 			</component>
@@ -454,6 +464,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<component component_id="fbc_upload" />
 			<component component_id="fbc_multiupload"/>
 			<component component_id="fbc_text_output" />
+     		<component component_id="fbc_current_date" />
      		<component component_id="fbc_date" />
 			
 		</category>
@@ -491,6 +502,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		
 		<xf:group appearance="full" bind="multiupload" id="fbc_multiupload" type="fbc_multiupload">
 	        <idega:dispatch ev:event="idega-xforms-ready" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
+	        
+	          <div class="fbc_simple_text">
+					<xf:output model="data_model" ref="instance('localized_strings')/multiupload-paragraph-text[@lang=instance('localized_strings')/current_language]"/>
+				</div>	
 	        
 	        <xf:label model="data_model" ref="instance('localized_strings')/multiupload-title[@lang=instance('localized_strings')/current_language]"/>
 	        <xf:trigger>
@@ -691,9 +706,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<xf:label model="data_model" ref="instance('localized_strings')/text_output-label[@lang=instance('localized_strings')/current_language]"/>				
 		</xf:output>
 		
-		<xf:output bind="date" id="fbc_date">
+		<xf:output bind="current_date" id="fbc_current_date">
 			<xf:label model="data_model" ref="instance('localized_strings')/date-label[@lang=instance('localized_strings')/current_language]"/>				
 		</xf:output>
+		
+		<xf:input bind="date" id="fbc_date">
+          			<xf:label model="data_model" ref="instance('localized_strings')/date-label[@lang=instance('localized_strings')/current_language]"/>				
+        </xf:input>
 			
 		<div id="fbc_button_area" type="fbc_button_area" class="fbc_button_area"></div>
 		

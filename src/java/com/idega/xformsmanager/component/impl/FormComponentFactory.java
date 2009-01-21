@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/22 09:48:04 $ by $Author: arunas $
+ * Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
  */
 @Service
 @Scope("singleton")
@@ -62,6 +62,7 @@ public class FormComponentFactory {
 		types.add("fbc_identifier_number");
 		types.add("fbc_text");
 		types.add("fbc_date");
+		types.add("fbc_current_date");
 		types.add("fbc_text_output");
 		types.add("fbc_textarea");
 		types.add("fbc_secret");

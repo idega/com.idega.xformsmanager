@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesMultiUpload;
 import com.idega.xformsmanager.component.FormComponent;
@@ -17,31 +16,18 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.manager.XFormsManagerMultiUpload;
 import com.idega.xformsmanager.util.FormManagerUtil;
-import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
- *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
  */
 @FormComponentType(FormComponentType.multiupload)
 @Service
 @Scope("singleton")
 public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 		XFormsManagerMultiUpload {
-
-	private static final String INSTANCE = "instance('data-instance')/Multi_file_upload_with_description_";
-	private static final String REPEAT = "upload_entries_";
-	private static final String ENTRY = "/entry";
-	private static final String AT_START = "index('";
-	private static final String AT_END = "')";
-
-	private static final String APPEND_TITLE = ".title";
-	private static final String APPEND_REMOVE = ".remove";
-	private static final String APPEND_LABEL = ".label";
-	private static final String APPEND_DESCRIPTION = ".text";
-	private static final String APPEND_NAME = ".name";
 
 	private static final int TITLE_LABEL = 0;
 	private static final int INSERT_BUTTON_LABEL = 1;
@@ -50,34 +36,15 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 	private static final int REMOVE_BUTTON_LABEL = 4;
 
 	private final XPathUtil labelsXPathUT = new XPathUtil(".//xf:label");
-	final private XPathUtil insertXPUT = new XPathUtil(
-			".//xf:insert[@at='last()']");
-	final private XPathUtil repeatXPUT = new XPathUtil(".//xf:repeat");
-	final private XPathUtil deleteXPUT = new XPathUtil(".//xf:delete");
-	final private XPathUtil bindXPUT = new XPathUtil(
-			".//xf:bind[@id='multiupload']");
-	final private XPathUtil outputXPUT = new XPathUtil(".//xf:output[@value]");
+	
+	final private XPathUtil uploadErrorMsgElementXpath = new XPathUtil(".//xf:output[@value]");
+	final private XPathUtil uploadHeaderElementXpath = new XPathUtil(".//xf:output[@model='data_model']");
 
+	
 	@Override
 	protected ComponentDataBean newXFormsComponentDataBeanInstance() {
 		return new ComponentMultiUploadBean();
 	}
-
-	/*
-	 * @Override protected void loadXFormsComponentDataBean(FormComponent
-	 * component, Document xform, Element componentElement) {
-	 * super.loadXFormsComponentDataBean(component, xform, componentElement);
-	 * XPathUtil util = new
-	 * XPathUtil(".//xf:bind[@id='bind."+componentElement.getAttribute
-	 * (FormManagerUtil.id_att)+"']");
-	 * 
-	 * Element bindElement = (Element) util.getNode(xform.getFirstChild());
-	 * 
-	 * Bind bind = Bind.load(bindElement); if (bind != null){
-	 * ComponentMultiUploadBean xforms_component = (ComponentMultiUploadBean)
-	 * component.getXformsComponentDataBean(); xforms_component.setBind(bind); }
-	 * }
-	 */
 
 	@Override
 	public void removeComponentFromXFormsDocument(FormComponent component) {
@@ -92,33 +59,7 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 		super.removeComponentFromXFormsDocument(component);
 	}
 
-	// @Override
-	// public void loadComponentFromTemplate(FormComponent component) {
-	// super.loadComponentFromTemplate(component);
-	// }
-
-	public static final XPathUtil uploadRepeatElementXPath = new XPathUtil(
-			".//xf:repeat");
-
-//	@Override
-//	protected void loadBindsAndNodesets(FormComponent component) {
-//		ComponentDataBean xformsComponentDataBean = component
-//				.getComponentDataBean();
-//
-//		Element repeatElement = uploadRepeatElementXPath
-//				.getNode(xformsComponentDataBean.getElement());
-//
-//		String bindId = repeatElement.getAttribute(FormManagerUtil.bind_att);
-//
-//		Bind bind = Bind.locate(component, bindId);
-//
-//		if (bind == null)
-//			throw new NullPointerException("Binding not found by bind id: "
-//					+ bindId + " in the form "
-//					+ component.getFormDocument().getId());
-//
-//		xformsComponentDataBean.setBind(bind);
-//	}
+	public static final XPathUtil uploadRepeatElementXPath = new XPathUtil(".//xf:repeat");
 
 	@Override
 	public void addComponentToDocument(FormComponent component) {
@@ -152,48 +93,6 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 		updateNodesetReferencingAttributes(component);
 	}
 
-	// private String constructInsertNodeset(FormComponent component) {
-	//
-	// StringBuffer buf = new StringBuffer();
-	//
-	// buf.append(INSTANCE).append(component.getId()).append(ENTRY);
-	// return buf.toString();
-	//
-	// }
-	//
-	// private String constructBindValue(String component_id) {
-	//
-	// StringBuffer buf = new StringBuffer();
-	// buf.append("upload_").append(component_id);
-	// return buf.toString();
-	//
-	// }
-	//
-	// private String constructRepeatId(String component_id) {
-	// StringBuffer buf = new StringBuffer();
-	// buf.append(REPEAT).append(component_id);
-	// return buf.toString();
-	// }
-	//
-	// private String constructDeleteAt(String component_id) {
-	// StringBuffer buf = new StringBuffer();
-	// buf.append(AT_START).append(REPEAT).append(component_id).append(AT_END);
-	// return buf.toString();
-	// }
-	//
-	// private String constructOutputValueAt(String component_id) {
-	//
-	// StringBuffer buf = new StringBuffer();
-	// buf
-	// .append(
-	// "if(. !='' and ./description ='', instance('localized_strings')/")
-	// .append(component_id)
-	// .append(
-	// ".info[@lang=instance('localized_strings')/current_language], '')");
-	// return buf.toString();
-	//
-	// }
-
 	@Override
 	public void update(FormComponent component, ConstUpdateType what,
 			Object prop) {
@@ -215,6 +114,9 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 		case UPLOADING_FILE_DESC:
 			updateUploadingFileDescription(component);
 			break;
+		case UPLOADER_HEADER_TEXT:
+			updateUploaderHeaderText(component);
+			break;
 		default:
 			break;
 		}
@@ -234,17 +136,10 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 
 		Element addButtonlabel = (Element) labels.item(INSERT_BUTTON_LABEL);
 
-		// String ref = addButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
-
 		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null,
 				addButtonlabel,
 				component.getFormDocument().getXformsDocument(), localizedText);
 
-		// FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att,
-		// !StringUtil
-		// .isEmpty(ref) ? null : new StringBuilder(component.getId())
-		// .append(APPEND_LABEL).toString(), null, addButtonlabel,
-		// component.getFormDocument().getXformsDocument(), localizedText);
 	}
 
 	protected void updateRemoveButtonLabel(FormComponent component) {
@@ -255,23 +150,19 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 		NodeList labels = getLabelNodeList(component);
 
 		Element removeButtonlabel = (Element) labels.item(REMOVE_BUTTON_LABEL);
-//		String ref = removeButtonlabel.getAttribute(FormManagerUtil.ref_s_att);
 		
 		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null,
 				removeButtonlabel,
 				component.getFormDocument().getXformsDocument(), localizedText);
 
-//		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil
-//				.isEmpty(ref) ? null : new StringBuilder(component.getId())
-//				.append(APPEND_REMOVE).toString(), null, removeButtonlabel,
-//				component.getFormDocument().getXformsDocument(), localizedText);
+
 	}
 
 	protected void updateUploadingFileDescription(FormComponent component) {
-		PropertiesMultiUpload properties = (PropertiesMultiUpload) component
-				.getProperties();
-		LocalizedStringBean localizedText = properties
-				.getUploadingFileDescription();
+		
+		PropertiesMultiUpload properties = (PropertiesMultiUpload) component.getProperties();
+		LocalizedStringBean localizedText = properties.getUploadingFileDescription();
+		
 		NodeList labels = getLabelNodeList(component);
 
 		Element label = (Element) labels.item(UPLOADING_FILE_DESC);
@@ -280,12 +171,33 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 				label,
 				component.getFormDocument().getXformsDocument(), localizedText);
 		
-//		String ref = label.getAttribute(FormManagerUtil.ref_s_att);
-//
-//		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil
-//				.isEmpty(ref) ? null : new StringBuilder(component.getId())
-//				.append(APPEND_NAME).toString(), null, label, component
-//				.getFormDocument().getXformsDocument(), localizedText);
+	}
+	
+	protected void updateUploaderHeaderText(FormComponent component) {
+		
+		PropertiesMultiUpload properties = (PropertiesMultiUpload) component.getProperties();
+		LocalizedStringBean localizedText = properties.getUploaderHeaderText();
+		
+		Element headerElem = getUploadersHeaderElement(component);
+		
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, null, null,	headerElem,
+				component.getFormDocument().getXformsDocument(), localizedText);
+		
+	}
+
+	public LocalizedStringBean getUploaderHeaderText(FormComponent component) {
+		
+		return FormManagerUtil.getElementLocalizedStrings(getUploadersHeaderElement(component),
+				component.getFormDocument().getXformsDocument());
+	}
+	
+	private Element getUploadersHeaderElement(FormComponent component) {
+		
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
+		
+		Element headerTextElem = (Element) uploadHeaderElementXpath.getNode(xformsComponentDataBean.getElement());
+		
+		return headerTextElem;
 	}
 
 	protected void updateDescriptionButtonLabel(FormComponent component) {
@@ -302,14 +214,6 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 				descriptionButtonlabel,
 				component.getFormDocument().getXformsDocument(), localizedText);
 		
-//		String ref = descriptionButtonlabel
-//				.getAttribute(FormManagerUtil.ref_s_att);
-//
-//		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil
-//				.isEmpty(ref) ? null : new StringBuilder(component.getId())
-//				.append(APPEND_DESCRIPTION).toString(), null,
-//				descriptionButtonlabel, component.getFormDocument()
-//						.getXformsDocument(), localizedText);
 	}
 
 	// @Override
@@ -336,17 +240,12 @@ public class XFormsManagerMultiUploadImpl extends XFormsManagerImpl implements
 		ComponentDataBean xformsComponentDataBean = component
 				.getComponentDataBean();
 
-		PropertiesMultiUpload properties = (PropertiesMultiUpload) component
-				.getProperties();
+//		PropertiesMultiUpload properties = (PropertiesMultiUpload) component
+//				.getProperties();
 
-		Element output = (Element) outputXPUT.getNode(xformsComponentDataBean
+		Element output = (Element) uploadErrorMsgElementXpath.getNode(xformsComponentDataBean
 				.getElement());
 
-		// TODO: FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, new
-		// StringBuilder(component.getId()).append(".info").toString(),
-		// FormManagerUtil.localized_entries, output,
-		// component.getFormDocument().getXformsDocument(),
-		// properties.getErrorMsg());
 		output.removeAttribute(FormManagerUtil.ref_s_att);
 
 	}

@@ -2,10 +2,10 @@ package com.idega.xformsmanager.component.properties.impl;
 
 /**
  * 
- *  Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ *  Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public enum ConstUpdateType {
 	
@@ -28,6 +28,7 @@ public enum ConstUpdateType {
 	ADD_BUTTON_LABEL,
 	REMOVE_BUTTON_LABEL,
 	DESCRIPTION_BUTTON_LABEL,
-	UPLOADING_FILE_DESC;
+	UPLOADING_FILE_DESC,
+	UPLOADER_HEADER_TEXT;
 //	VALIDATION;
 }
