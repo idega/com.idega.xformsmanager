@@ -6,9 +6,9 @@ import org.w3c.dom.Document;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- *          Last modified: $Date: 2008/10/31 18:30:43 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/01/26 11:08:39 $ by $Author: valdas $
  */
 public interface Submission {
 
@@ -27,4 +27,6 @@ public interface Submission {
 	public abstract Boolean getIsFinalSubmission();
 
 	public abstract Document getSubmissionDocument();
+	
+	public abstract String getSubmissionUUID();
 }
