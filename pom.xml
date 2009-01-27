@@ -3,12 +3,12 @@
   <parent>
   	<groupId>com.idega.block.addon</groupId>
   	<artifactId>com.idega.block.addon</artifactId>
-  	<version>4.1.0</version>
+  	<version>4.1.1-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
   <groupId>com.idega.block.addon</groupId>
   <artifactId>com.idega.xformsmanager</artifactId>
-  <version>4.1.0</version>
+  <version>4.1.1-SNAPSHOT</version>
   <name>idegaWeb XForms Manager</name>
   <inceptionYear>2006</inceptionYear>
   <description>idegaWeb XForms Manager is responsible for managing xforms document</description>
@@ -17,9 +17,8 @@
     <connection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</connection>
     <developerConnection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</developerConnection> 
      -->
-    <connection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</connection>
-    <developerConnection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</developerConnection>
-    <tag>com_idega_block_addon-4_1_0</tag>
+    <connection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.addon/com.idega.xformsmanager/</connection>
+    <developerConnection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.addon/com.idega.xformsmanager/</developerConnection>
   </scm>
 
   <developers>
