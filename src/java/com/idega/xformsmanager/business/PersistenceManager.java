@@ -11,7 +11,7 @@ import com.idega.xformsmanager.component.FormDocument;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $ Last modified: $Date: 2009/01/20 17:36:20 $ by $Author: civilis $
+ * @version $Revision: 1.7 $ Last modified: $Date: 2009/02/09 15:02:06 $ by $Author: valdas $
  */
 public interface PersistenceManager {
 	
@@ -53,7 +53,7 @@ public interface PersistenceManager {
 	 * @throws IOException
 	 */
 	public abstract String saveSubmittedData(Long formId, InputStream is,
-	        String identifier, boolean finalSubmission) throws IOException;
+	        String identifier, boolean finalSubmission, Integer formSubmitter) throws IOException;
 	
 	/**
 	 * @param submissionUUID
@@ -68,7 +68,7 @@ public interface PersistenceManager {
 	 */
 	public abstract String saveSubmittedDataByExistingSubmission(
 	        String submissionUUID, Long formId, InputStream is,
-	        String identifier) throws IOException;
+	        String identifier, Integer formSubmitter) throws IOException;
 	
 	/**
 	 * set submission to invalid, this is used for saved forms, and this means, that the saved form
