@@ -13,7 +13,7 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $ Last modified: $Date: 2009/01/14 14:23:15 $ by $Author: civilis $
+ * @version $Revision: 1.4 $ Last modified: $Date: 2009/02/12 16:53:50 $ by $Author: donatas $
  */
 public interface Document extends Container {
 	
@@ -39,6 +39,10 @@ public interface Document extends Container {
 	public abstract LocalizedStringBean getFormErrorMsg();
 	
 	public abstract Long getFormId();
+	
+	public abstract Integer getFormVersion();
+	
+	public abstract String getFormType();
 	
 	public abstract void setFormTitle(LocalizedStringBean form_name)
 	        throws Exception;

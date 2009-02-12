@@ -42,9 +42,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * annotations too
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
- *          Last modified: $Date: 2009/01/14 14:23:15 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/02/12 16:53:50 $ by $Author: donatas $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -54,6 +54,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 	private LocalizedStringBean formTitle;
 	private LocalizedStringBean formErrorMsg;
 	private Long formId;
+	private Integer formVersion;
 	private PropertiesDocument properties;
 	private List<String> registeredForLastPageIdPages;
 	private ParametersManager parametersManager;
@@ -282,6 +283,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		if (persistedForm != null) {
 			setFormId(persistedForm.getFormId());
 			setFormType(persistedForm.getFormType());
+			setFormVersion(persistedForm.getVersion());
 		}
 
 		setContainerElement(FormManagerUtil
@@ -317,6 +319,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		if (persistedForm != null) {
 			setFormId(persistedForm.getFormId());
 			setFormType(persistedForm.getFormType());
+			setFormVersion(persistedForm.getVersion());
 		}
 
 		setContainerElement(FormManagerUtil
@@ -673,6 +676,14 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 
 	public void setFormType(String formType) {
 		this.formType = formType;
+	}
+	
+	public Integer getFormVersion() {
+		return formVersion;
+	}
+
+	public void setFormVersion(Integer formVersion) {
+		this.formVersion = formVersion;
 	}
 
 	public Map<Locale, Document> getLocalizedComponentsDocuments() {
