@@ -34,9 +34,9 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- *          Last modified: $Date: 2009/01/10 12:30:56 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/02/12 15:59:54 $ by $Author: valdas $
  */
 @Scope("singleton")
 @Service
@@ -130,6 +130,16 @@ public class FormManager implements DocumentManager {
 		formDocument.setXformsDocument(persistedFormDocument
 				.getXformsDocument());
 		formDocument.lazyLoadDocument(persistedFormDocument);
+
+		return formDocument;
+	}
+	
+	public com.idega.xformsmanager.business.Document openFormLazy(Document xformsDoc) {
+
+		FormDocumentImpl formDocument = createFormDocument();
+		formDocument.setContext(getDMContext());
+		formDocument.setXformsDocument(xformsDoc);
+		formDocument.lazyLoadDocument();
 
 		return formDocument;
 	}

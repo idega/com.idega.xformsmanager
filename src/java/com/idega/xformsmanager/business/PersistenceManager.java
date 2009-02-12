@@ -11,7 +11,7 @@ import com.idega.xformsmanager.component.FormDocument;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $ Last modified: $Date: 2009/02/09 15:02:06 $ by $Author: valdas $
+ * @version $Revision: 1.8 $ Last modified: $Date: 2009/02/12 15:59:54 $ by $Author: valdas $
  */
 public interface PersistenceManager {
 	
@@ -19,6 +19,9 @@ public interface PersistenceManager {
 	
 	public abstract PersistedFormDocument loadPopulatedForm(
 	        String submissionUUID) throws InvalidSubmissionException;
+	
+	public abstract PersistedFormDocument loadPopulatedForm(
+	        String submissionUUID, boolean pdfView) throws InvalidSubmissionException;
 	
 	public abstract PersistedFormDocument saveForm(FormDocument document)
 	        throws IllegalAccessException;

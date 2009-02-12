@@ -15,9 +15,9 @@ import com.idega.xformsmanager.util.InitializationException;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2009/01/10 12:33:27 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/02/12 15:59:54 $ by $Author: valdas $
  */
 public interface DocumentManager {
 
@@ -57,6 +57,8 @@ public interface DocumentManager {
 	 */
 	public abstract com.idega.xformsmanager.business.Document openFormLazy(
 			Long formId);
+	
+	public abstract com.idega.xformsmanager.business.Document openFormLazy(Document xformsDoc);
 
 	/**
 	 * opens form by xforms xml, and loads all the structure. @see openFormLazy
