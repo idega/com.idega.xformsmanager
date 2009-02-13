@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import com.idega.xformsmanager.business.Form;
-import com.idega.xformsmanager.business.PersistedFormDocument;
-import com.idega.xformsmanager.business.Submission;
 import com.idega.xformsmanager.component.FormDocument;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $ Last modified: $Date: 2009/02/12 15:59:54 $ by $Author: valdas $
+ * @version $Revision: 1.9 $ Last modified: $Date: 2009/02/13 17:19:06 $ by $Author: donatas $
  */
 public interface PersistenceManager {
 	
@@ -25,6 +22,9 @@ public interface PersistenceManager {
 	
 	public abstract PersistedFormDocument saveForm(FormDocument document)
 	        throws IllegalAccessException;
+	
+	public abstract PersistedFormDocument saveAllVersions(FormDocument document, Long formId)
+    	throws IllegalAccessException;
 	
 	/**
 	 * stores document under the storeBasePath specified. This should be the relative path to the

@@ -13,7 +13,7 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $ Last modified: $Date: 2009/02/12 16:53:50 $ by $Author: donatas $
+ * @version $Revision: 1.5 $ Last modified: $Date: 2009/02/13 17:19:06 $ by $Author: donatas $
  */
 public interface Document extends Container {
 	
@@ -69,6 +69,8 @@ public interface Document extends Container {
 	public abstract List<String> getContainedPagesIdList();
 	
 	public abstract void save() throws Exception;
+	
+	public abstract void saveAllVersions(Long parentId) throws Exception;
 	
 	/**
 	 * stores document under the storeBasePath specified. This should be the relative path to the

@@ -42,9 +42,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * annotations too
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
- *          Last modified: $Date: 2009/02/12 16:53:50 $ by $Author: donatas $
+ *          Last modified: $Date: 2009/02/13 17:19:06 $ by $Author: donatas $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -494,6 +494,19 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 			throw new NullPointerException("Persistence manager not set");
 
 		PersistedFormDocument formDocument = persistenceManager.saveForm(this);
+		setFormType(formDocument.getFormType());
+		setFormId(formDocument.getFormId());
+	}
+	
+	public void saveAllVersions(Long parentId) throws Exception {
+
+		PersistenceManager persistenceManager = getContext()
+				.getPersistenceManager();
+
+		if (persistenceManager == null)
+			throw new NullPointerException("Persistence manager not set");
+
+		PersistedFormDocument formDocument = persistenceManager.saveAllVersions(this, parentId);
 		setFormType(formDocument.getFormType());
 		setFormId(formDocument.getFormId());
 	}
