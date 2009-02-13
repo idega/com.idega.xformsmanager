@@ -3,6 +3,8 @@ package com.idega.xformsmanager.business;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -23,9 +25,9 @@ import com.idega.xformsmanager.manager.impl.FormManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/31 18:30:42 $ by $Author: civilis $
+ * Last modified: $Date: 2009/02/13 15:32:35 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -41,6 +43,9 @@ public class DocumentManagerFactory {
 	
 	@Autowired private CacheManager cacheManager;
 
+//	just any object will do here. could be "this", but what about volatile?`
+	private volatile Lock lock = new ReentrantLock();
+
 	public CacheManager getCacheManager() {
 		return cacheManager;
 	}
@@ -49,43 +54,49 @@ public class DocumentManagerFactory {
 	}
 	public DocumentManagerFactory() { }
 	
-	public synchronized DocumentManager newDocumentManager(IWMainApplication iwma) {
+	public DocumentManager newDocumentManager(IWMainApplication iwma) {
 		
 		DocumentManager documentManager = getDocumentManager();
 		
 		if(!documentManager.isInited()) {
 			
-			if(iwma == null) {
+			synchronized (lock) {
+				
+				if(!documentManager.isInited()) {
+					
+					if(iwma == null) {
 
-				IWContext iwc = IWContext.getCurrentInstance();
-				
-				if(iwc != null)
-					iwma = iwc.getIWMainApplication();
-				else
-					iwma = IWMainApplication.getDefaultIWMainApplication();
-			}
-			
-			TransformerService transformerService = (TransformerService)iwma.getAttribute(TransformerService.class.getName());
-			
-			CacheManager cacheManager = getCacheManager();
-			cacheManager.initAppContext(iwma);
-			
-			IWBundle bundle = iwma.getBundle(FormManager.IW_BUNDLE_IDENTIFIER);
-			
-			try {
-				Document componentsXforms = getDocumentFromBundle(iwma, bundle, COMPONENTS_XFORMS_CONTEXT_PATH);
-				Document componentsXsd = getDocumentFromBundle(iwma, bundle, COMPONENTS_XSD_CONTEXT_PATH);
-				Document formXformsTemplate = getDocumentFromBundle(iwma, bundle, FORM_XFORMS_TEMPLATE_RESOURCES_PATH);
-				
-				documentManager.setComponentsXforms(componentsXforms);
-				documentManager.setComponentsXsd(componentsXsd);
-				documentManager.setFormXformsTemplate(formXformsTemplate);
-				documentManager.setCacheManager(cacheManager);
-				documentManager.setTransformerService(transformerService);
-				documentManager.init(iwma);
-				
-			} catch (Exception e) {
-				throw new RuntimeException("Failed to initialize document manager", e);
+						IWContext iwc = IWContext.getCurrentInstance();
+						
+						if(iwc != null)
+							iwma = iwc.getIWMainApplication();
+						else
+							iwma = IWMainApplication.getDefaultIWMainApplication();
+					}
+					
+					TransformerService transformerService = (TransformerService)iwma.getAttribute(TransformerService.class.getName());
+					
+					CacheManager cacheManager = getCacheManager();
+					cacheManager.initAppContext(iwma);
+					
+					IWBundle bundle = iwma.getBundle(FormManager.IW_BUNDLE_IDENTIFIER);
+					
+					try {
+						Document componentsXforms = getDocumentFromBundle(iwma, bundle, COMPONENTS_XFORMS_CONTEXT_PATH);
+						Document componentsXsd = getDocumentFromBundle(iwma, bundle, COMPONENTS_XSD_CONTEXT_PATH);
+						Document formXformsTemplate = getDocumentFromBundle(iwma, bundle, FORM_XFORMS_TEMPLATE_RESOURCES_PATH);
+						
+						documentManager.setComponentsXforms(componentsXforms);
+						documentManager.setComponentsXsd(componentsXsd);
+						documentManager.setFormXformsTemplate(formXformsTemplate);
+						documentManager.setCacheManager(cacheManager);
+						documentManager.setTransformerService(transformerService);
+						documentManager.init(iwma);
+						
+					} catch (Exception e) {
+						throw new RuntimeException("Failed to initialize document manager", e);
+					}
+				}
 			}
 		}
 		
