@@ -42,9 +42,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * annotations too
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
- *          Last modified: $Date: 2009/02/13 17:19:06 $ by $Author: donatas $
+ *          Last modified: $Date: 2009/02/16 22:02:38 $ by $Author: donatas $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
 		com.idega.xformsmanager.business.Document,
@@ -602,6 +602,7 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		parametersManager = null;
 		getContainedComponentsIds().clear();
 		getContainedComponents().clear();
+		formVariablesHandler = null;
 	}
 
 	@Override
