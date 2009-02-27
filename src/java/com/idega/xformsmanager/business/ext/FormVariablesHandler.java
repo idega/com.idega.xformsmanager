@@ -1,5 +1,8 @@
 package com.idega.xformsmanager.business.ext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
- * Last modified: $Date: 2008/10/27 20:23:47 $ by $Author: civilis $
+ * Last modified: $Date: 2009/02/27 12:17:44 $ by $Author: donatas $
  */
 public class FormVariablesHandler {
 
@@ -23,6 +26,7 @@ public class FormVariablesHandler {
 	private Node variablesContainer;
 	private static XPathUtil mappingsXPath = new XPathUtil(".//@mapping[contains(., concat('_', $variableName))]");
 	private static XPathUtil mappingElementXPath = new XPathUtil(".//node()[@mapping = $variableMapping]");
+	private static XPathUtil allmappingElementsXPath = new XPathUtil(".//@mapping");
 	private final String variableNameParameter = "variableName";
 	private final String variableMappingParameter = "variableMapping";
 	
@@ -82,6 +86,36 @@ public class FormVariablesHandler {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Get all mapped variables.
+	 * 
+	 * 
+	 * @return List of Variable objects.
+	 */
+	public List<Variable> getAllVariables() {
+		
+		Node instance = xform != null ? FormManagerUtil.getFormSubmissionInstanceDataElement(xform)
+				: variablesContainer;
+
+		NodeList mappings = allmappingElementsXPath.getNodeset(instance);
+
+		if (mappings == null || mappings.getLength() == 0) {
+			return null;
+		}
+		List<Variable> variables = new ArrayList<Variable>(mappings.getLength());
+
+		for (int i = 0; i < mappings.getLength(); i++) {
+
+			Node mapping = mappings.item(i);
+
+			String mappingValue = mapping.getNodeValue();
+
+			Variable variable = Variable.parseDefaultStringRepresentation(mappingValue);
+			variables.add(variable);
+		}
+		return variables;
 	}
 	
 	/***
