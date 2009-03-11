@@ -18,6 +18,7 @@ import com.idega.idegaweb.DefaultIWBundle;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
+import com.idega.servlet.filter.IWBundleResourceFilter;
 import com.idega.util.CoreConstants;
 import com.idega.util.xml.XmlUtil;
 import com.idega.xformsmanager.manager.impl.CacheManager;
@@ -25,9 +26,9 @@ import com.idega.xformsmanager.manager.impl.FormManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2009/02/13 15:32:35 $ by $Author: civilis $
+ * Last modified: $Date: 2009/03/11 10:09:40 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -124,14 +125,24 @@ public class DocumentManagerFactory {
 	}
 	
 	private InputStream getResourceInputStream(IWMainApplication iwma, IWBundle bundle, String pathWithinBundle) throws IOException {
-
-		String workspaceDir = System.getProperty(DefaultIWBundle.SYSTEM_BUNDLES_RESOURCE_DIR);
 		
-		if(workspaceDir != null) {
-			
-			String bundleInWorkspace = new StringBuilder(workspaceDir).append(CoreConstants.SLASH).append(FormManager.IW_BUNDLE_IDENTIFIER).append(CoreConstants.SLASH).toString();
-			return new FileInputStream(bundleInWorkspace + pathWithinBundle);
-		}
+//		
+//		NOT SOMETHING 	we used
+		InputStream stream = null;
+//		IWMainApplication app = bundle.getApplication();
+//		try {
+//			stream = new FileInputStream(IWBundleResourceFilter.copyResourceFromJarToWebapp(app, bundle.getResourcesPath() + pathWithinBundle));
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
+
+//		String workspaceDir = System.getProperty(DefaultIWBundle.SYSTEM_BUNDLES_RESOURCE_DIR);
+//		
+//		if(workspaceDir != null) {
+//			
+//			String bundleInWorkspace = new StringBuilder(workspaceDir).append(CoreConstants.SLASH).append(FormManager.IW_BUNDLE_IDENTIFIER).append(CoreConstants.SLASH).toString();
+//			return new FileInputStream(bundleInWorkspace + pathWithinBundle);
+//		}
 						
 		return bundle.getResourceInputStream(pathWithinBundle);
 	}
