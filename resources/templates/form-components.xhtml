@@ -13,7 +13,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<xf:instance id="components_instance" xmlns="">
 		<data> 
-			<date />
+			<date xsi:nil="true"/>
 			<current_date />
 			<output_text />
 			<text />
@@ -93,8 +93,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xf:bind id="single_select_minimal" nodeset="single_select_minimal" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
 	<xf:bind id="multiple_select" nodeset="multiple_select" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
 	<xf:bind id="single_select" nodeset="single_select" type="xs:string" readonly="instance('control-instance')/readonly = 'true'" />
-	<xf:bind id="current_date" nodeset="current_date" type="xs:date" calculate="substring(now(), 1, 10)" />
-	<xf:bind id="date" nodeset="date" type="dateTime" />
+	<xf:bind id="current_date" nodeset="current_date" type="xs:string" calculate="concat(substring(now(), 9, 2),'.',substring(now(),6, 2),'.',substring(now(), 1, 4))" />
+	<xf:bind id="date" nodeset="date" type="date" />
 	
 	<xf:bind id="email" nodeset="email" type="fb_email" readonly="instance('control-instance')/readonly = 'true'"/>
 	
@@ -144,7 +144,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <upload-label lang="en">File upload</upload-label>
 			
 			<multiupload-title lang="is_IS">Viðhengi</multiupload-title>
-            <multiupload-title lang="en">Attachements</multiupload-title>
+            <multiupload-title lang="en">Attachments</multiupload-title>
             <multiupload-insert_trigger-label lang="is_IS">Bæta við viðhengi</multiupload-insert_trigger-label>
             <multiupload-insert_trigger-label lang="en">Add attachement</multiupload-insert_trigger-label> 
             <multiupload-remove_trigger-label lang="is_IS">Fjarlægja viðhengi</multiupload-remove_trigger-label>
