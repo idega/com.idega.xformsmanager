@@ -26,9 +26,9 @@ import com.idega.xformsmanager.manager.impl.FormManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
- * Last modified: $Date: 2009/03/11 10:09:40 $ by $Author: civilis $
+ * Last modified: $Date: 2009/03/30 13:19:45 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -128,7 +128,7 @@ public class DocumentManagerFactory {
 		
 //		
 //		NOT SOMETHING 	we used
-		InputStream stream = null;
+//		InputStream stream = null;
 //		IWMainApplication app = bundle.getApplication();
 //		try {
 //			stream = new FileInputStream(IWBundleResourceFilter.copyResourceFromJarToWebapp(app, bundle.getResourcesPath() + pathWithinBundle));
