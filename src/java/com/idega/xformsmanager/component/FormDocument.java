@@ -11,43 +11,48 @@ import com.idega.xformsmanager.context.DMContext;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
- * 
- *          Last modified: $Date: 2008/11/20 16:31:27 $ by $Author: civilis $
+ * @version $Revision: 1.4 $ Last modified: $Date: 2009/04/23 14:13:10 $ by $Author: civilis $
  */
 public interface FormDocument extends FormComponentContainer {
-
+	
 	public abstract void setFormDocumentModified(boolean changed);
-
+	
 	public abstract boolean isFormDocumentModified();
-
+	
 	public abstract Document getComponentsXml(Locale locale);
-
+	
 	public abstract Long getFormId();
-
+	
 	public abstract Locale getDefaultLocale();
-
+	
 	public abstract FormComponentPage getFormConfirmationPage();
-
+	
 	public abstract String generateNewComponentId();
-
+	
 	public abstract Element getAutofillModelElement();
-
+	
 	public abstract Element getFormDataModelElement();
-
+	
 	public abstract Element getFormMainDataInstanceElement();
-
+	
 	public abstract Element getSubmissionElement();
-
+	
 	public abstract Element getSectionsVisualizationInstanceElement();
-
+	
 	public abstract PropertiesDocument getProperties();
-
+	
 	public abstract String getFormType();
-
+	
 	public abstract LocalizedStringBean getFormTitle();
-
+	
 	public abstract Document getXformsDocument();
-
+	
 	public abstract DMContext getContext();
+	
+	/**
+	 * @param tagExpression
+	 *            xf: prefixed tag expression. E.g. xf:instance
+	 * @return created element. This element is not appended anywhere
+	 */
+	public abstract Element createXFormsElement(String tagExpression);
 }
