@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.chiba.xml.dom.DOMUtil;
+import org.chiba.xml.events.XFormsEventNames;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,9 +42,7 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.18 $
- *
- * Last modified: $Date: 2008/11/17 18:03:58 $ by $Author: civilis $
+ * @version $Revision: 1.19 $ Last modified: $Date: 2009/04/23 14:16:35 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -78,8 +77,8 @@ public class FormManagerUtil {
 	public static final String title_tag = "title";
 	public static final String nodeset_att = "nodeset";
 	public static final String group_tag = "xf:group";
-//	public static final String switch_tag = "xf:switch";
-//	public static final String case_tag = "xf:case";
+	// public static final String switch_tag = "xf:switch";
+	// public static final String case_tag = "xf:case";
 	public static final String idegans_switch_tag = "idega:switch";
 	public static final String idegans_case_tag = "idega:case";
 	public static final String submit_tag = "xf:submit";
@@ -149,139 +148,144 @@ public class FormManagerUtil {
 	private static final String utf_8_encoding = "UTF-8";
 	
 	private static OutputFormat output_format;
-	private static Pattern non_xml_pattern = Pattern.compile("[a-zA-Z0-9{-}{_}]");
+	private static Pattern non_xml_pattern = Pattern
+	        .compile("[a-zA-Z0-9{-}{_}]");
 	
-	
-	private static final XPathUtil formInstanceModelElementXPath = new XPathUtil(".//xf:model[xf:instance/@id='data-instance']");
-	private static final XPathUtil defaultFormModelElementXPath = new XPathUtil(".//xf:model");
-	private static final XPathUtil formModelElementXPath = new XPathUtil(".//xf:model[@id=$modelId]");
-	private static final XPathUtil formSubmissionInstanceElementXPath = new XPathUtil(".//xf:instance[@id='data-instance']");
-	private static final XPathUtil instanceElementXPath = new XPathUtil(".//xf:instance");
-	private static final XPathUtil submissionElementXPath = new XPathUtil(".//xf:submission[@id='submit_data_submission']");
-	private static final XPathUtil formTitleOutputElementXPath = new XPathUtil(".//h:title/xf:output");
-	private static final XPathUtil instanceElementByIdXPath = new XPathUtil(".//xf:instance[@id=$instanceId]");
-	private static final XPathUtil formSubmissionInstanceDataElementXPath = new XPathUtil(".//xf:instance[@id='data-instance']/data");
-	private static final XPathUtil localizedStringElementXPath = new XPathUtil(".//xf:instance[@id='localized_strings']/localized_strings");
-	private static final XPathUtil elementByIdXPath = new XPathUtil(".//*[@id=$id]");
-	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
-	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(".//attribute::*[contains(., $expression)]");
-	private static final XPathUtil localizaionSetValueElement = new XPathUtil(".//xf:setvalue[@model='data_model']");
-	private static final XPathUtil formErrorMessageXPath = new XPathUtil(".//xf:action[@id='idega-submission-error']/xf:message");
-	private static final XPathUtil formParamsXPath = new XPathUtil(".//*[@nodeType='formParams']");
-	private static final XPathUtil labelElementXPath = new XPathUtil(".//xf:label");
-	
+	private static final XPathUtil formInstanceModelElementXPath = new XPathUtil(
+	        ".//xf:model[xf:instance/@id='data-instance']");
+	private static final XPathUtil defaultFormModelElementXPath = new XPathUtil(
+	        ".//xf:model");
+	private static final XPathUtil formModelElementXPath = new XPathUtil(
+	        ".//xf:model[@id=$modelId]");
+	private static final XPathUtil formSubmissionInstanceElementXPath = new XPathUtil(
+	        ".//xf:instance[@id='data-instance']");
+	private static final XPathUtil instanceElementXPath = new XPathUtil(
+	        ".//xf:instance");
+	private static final XPathUtil submissionElementXPath = new XPathUtil(
+	        ".//xf:submission[@id='submit_data_submission']");
+	private static final XPathUtil formTitleOutputElementXPath = new XPathUtil(
+	        ".//h:title/xf:output");
+	private static final XPathUtil instanceElementByIdXPath = new XPathUtil(
+	        ".//xf:instance[@id=$instanceId]");
+	private static final XPathUtil formSubmissionInstanceDataElementXPath = new XPathUtil(
+	        ".//xf:instance[@id='data-instance']/data");
+	private static final XPathUtil localizedStringElementXPath = new XPathUtil(
+	        ".//xf:instance[@id='localized_strings']/localized_strings");
+	private static final XPathUtil elementByIdXPath = new XPathUtil(
+	        ".//*[@id=$id]");
+	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(
+	        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
+	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(
+	        ".//attribute::*[contains(., $expression)]");
+	private static final XPathUtil localizaionSetValueElement = new XPathUtil(
+	        ".//xf:setvalue[@model='data_model']");
+	private static final XPathUtil formErrorMessageXPath = new XPathUtil(
+	        ".//xf:action[@id='idega-submission-error']/xf:message");
+	private static final XPathUtil formParamsXPath = new XPathUtil(
+	        ".//*[@nodeType='formParams']");
+	private static final XPathUtil labelElementXPath = new XPathUtil(
+	        ".//xf:label");
+	private static final XPathUtil bindsByNodesetXPath = new XPathUtil(
+	        ".//xf:bind[@nodeset=$nodeset]");
+	private static final String nodesetVariable = "nodeset";
 	
 	private final static String expressionVariable = "expression";
 	private final static String elementNameVariable = "elementName";
 	private final static String attributeNameVariable = "attributeName";
 	
-	private FormManagerUtil() { }
-	
-	/**
-	 * 
-	 * @param doc - document, to search for an element
-	 * @param start_tag - where to start. Could be just null, then document root element is taken.
-	 * @param id_value
-	 * @return - <b>reference</b> to element in document
-	 */
-//	public static Element getElementByIdFromDocument(Document doc, String start_tag, String id_value) {
-//		
-//		return getElementByAttributeFromDocument(doc, start_tag, id_att, id_value);
-//	}
-	
-	/**
-	 * 
-	 * @param doc - document, to search for an element
-	 * @param start_tag - where to start. Could be just null, then document root element is taken.
-	 * @param attribute_name - what name attribute should be searched for
-	 * @param attribute_value
-	 * @return - Reference to element in document
-	 */
-//	public static Element getElementByAttributeFromDocument(Document doc, String start_tag, String attribute_name, String attribute_value) {
-//		
-//		Element start_element;
-//		
-//		if(start_tag != null)
-//			start_element = (Element)doc.getElementsByTagName(start_tag).item(0);
-//		else
-//			start_element = doc.getDocumentElement();
-//		
-//		return DOMUtil.getElementByAttributeValue(start_element, CoreConstants.STAR, attribute_name, attribute_value);
-//	}
-	
-	public static void insertNodesetElement(Document form_xforms, Element new_nodeset_element) {
+	public static final class XFormEvent implements XFormsEventNames {
 		
-		Element container = 
-			(Element)((Element)form_xforms
-					.getElementsByTagName(instance_tag).item(0))
-					.getElementsByTagName("data").item(0);
+		public static final String XFORMS_VALUE_CHANGED = VALUE_CHANGED;
+	}
+	
+	private FormManagerUtil() {
+	}
+	
+	public static void insertNodesetElement(Document form_xforms,
+	        Element new_nodeset_element) {
+		
+		Element container = (Element) ((Element) form_xforms
+		        .getElementsByTagName(instance_tag).item(0))
+		        .getElementsByTagName("data").item(0);
 		container.appendChild(new_nodeset_element);
 	}
 	
 	/**
 	 * Puts localized text on element. Localization is saved on the xforms document.
 	 * 
-	 * @param key - new localization message key
-	 * @param oldKey - old key, if provided, is used for replacing with new_key
-	 * @param element - element, to change or put localization message
-	 * @param xform - xforms document
-	 * @param localizedStr - localized message
-	 * @throws NullPointerException - something necessary not provided
+	 * @param key
+	 *            - new localization message key
+	 * @param oldKey
+	 *            - old key, if provided, is used for replacing with new_key
+	 * @param element
+	 *            - element, to change or put localization message
+	 * @param xform
+	 *            - xforms document
+	 * @param localizedStr
+	 *            - localized message
+	 * @throws NullPointerException
+	 *             - something necessary not provided
 	 */
-	public static void putLocalizedText(String attributeName, String key, String oldKey, Element element, Document xform, LocalizedStringBean localizedStr) throws NullPointerException {
-	
+	public static void putLocalizedText(String attributeName, String key,
+	        String oldKey, Element element, Document xform,
+	        LocalizedStringBean localizedStr) throws NullPointerException {
+		
 		String ref = element.getAttribute(attributeName);
 		
-		if(StringUtil.isEmpty(ref) && StringUtil.isEmpty(key))
-			throw new NullPointerException("Localization to element not initialized and key for new localization string not presented.");
+		if (StringUtil.isEmpty(ref) && StringUtil.isEmpty(key))
+			throw new NullPointerException(
+			        "Localization to element not initialized and key for new localization string not presented.");
 		
-		if(key != null) {
-//			creating new key
+		if (key != null) {
+			// creating new key
 			
-			ref = new StringBuffer(loc_ref_part1)
-			.append(key)
-			.append(loc_ref_part2)
-			.toString();
+			ref = new StringBuffer(loc_ref_part1).append(key).append(
+			    loc_ref_part2).toString();
 			
 			element.setAttribute(attributeName, ref);
 			
-		} else if(isLocalizableExpressionCorrect(ref)) {
-//			get key from ref
+		} else if (isLocalizableExpressionCorrect(ref)) {
+			// get key from ref
 			key = getKeyFromRef(ref);
 			
 		} else
-			throw new NullPointerException("Ref and key not specified or ref has incorrect format. Ref: "+ref);
+			throw new NullPointerException(
+			        "Ref and key not specified or ref has incorrect format. Ref: "
+			                + ref);
 		
-		Element localizationStringsElement = FormManagerUtil.getLocalizedStringElement(xform);
+		Element localizationStringsElement = FormManagerUtil
+		        .getLocalizedStringElement(xform);
 		
-		if(oldKey != null) {
+		if (oldKey != null) {
 			
-			NodeList oldLocalizationTags = localizationStringsElement.getElementsByTagName(oldKey);
+			NodeList oldLocalizationTags = localizationStringsElement
+			        .getElementsByTagName(oldKey);
 			
-//			find and rename those elements
+			// find and rename those elements
 			for (int i = 0; i < oldLocalizationTags.getLength(); i++) {
 				
-				Element localizationTag = (Element)oldLocalizationTags.item(i);
-				xform.renameNode(localizationTag, localizationTag.getNamespaceURI(), key);
+				Element localizationTag = (Element) oldLocalizationTags.item(i);
+				xform.renameNode(localizationTag, localizationTag
+				        .getNamespaceURI(), key);
 			}
 		}
 		
-		NodeList localizationTags = localizationStringsElement.getElementsByTagName(key);
+		NodeList localizationTags = localizationStringsElement
+		        .getElementsByTagName(key);
 		
 		List<String> locales = new ArrayList<String>();
 		
 		for (Locale locale : localizedStr.getLanguagesKeySet())
 			locales.add(locale.toString());
 		
-		
-//		removing elements that correspond to locale, which we don't need (anymore)
+		// removing elements that correspond to locale, which we don't need (anymore)
 		List<Node> nodesToRemove = new ArrayList<Node>();
 		
 		for (int i = 0; i < localizationTags.getLength(); i++) {
 			
-			Element localizationTag = (Element)localizationTags.item(i);
+			Element localizationTag = (Element) localizationTags.item(i);
 			
-			if(!locales.contains(localizationTag.getAttribute(lang_att)))
+			if (!locales.contains(localizationTag.getAttribute(lang_att)))
 				nodesToRemove.add(localizationTag);
 		}
 		
@@ -294,16 +298,19 @@ public class FormManagerUtil {
 			
 			boolean valueSet = false;
 			
-			if(localizationTags != null) {
+			if (localizationTags != null) {
 				
 				for (int i = 0; i < localizationTags.getLength(); i++) {
 					
-					Element localizationTag = (Element)localizationTags.item(i);
+					Element localizationTag = (Element) localizationTags
+					        .item(i);
 					
-					if(localizationTag.getAttribute(lang_att).equals(locale.toString())) {
+					if (localizationTag.getAttribute(lang_att).equals(
+					    locale.toString())) {
 						
-						if(localizedStr.getString(locale) != null)
-							setElementsTextNodeValue(localizationTag, localizedStr.getString(locale));
+						if (localizedStr.getString(locale) != null)
+							setElementsTextNodeValue(localizationTag,
+							    localizedStr.getString(locale));
 						
 						valueSet = true;
 						break;
@@ -311,81 +318,95 @@ public class FormManagerUtil {
 				}
 			}
 			
-			if(localizationTags == null || !valueSet) {
+			if (localizationTags == null || !valueSet) {
 				
-//				create new localization element
+				// create new localization element
 				Element localizationElement = xform.createElement(key);
 				localizationElement.setAttribute(lang_att, locale.toString());
-				localizationElement.setTextContent(localizedStr.getString(locale) == null ? CoreConstants.EMPTY : localizedStr.getString(locale));
+				localizationElement.setTextContent(localizedStr
+				        .getString(locale) == null ? CoreConstants.EMPTY
+				        : localizedStr.getString(locale));
 				localizationStringsElement.appendChild(localizationElement);
 			}
 		}
 	}
 	
-	public static String getComponentLocalizationKey(String componentId, String localizationKey) {
+	public static String getComponentLocalizationKey(String componentId,
+	        String localizationKey) {
 		
-		if(!isLocalizationKeyCorrect(localizationKey))
+		if (!isLocalizationKeyCorrect(localizationKey))
 			return null;
 		
 		String componentLocalizationKey = new StringBuilder(componentId)
-			.append(localizationKey.contains(CoreConstants.MINUS) ? localizationKey.substring(localizationKey.indexOf(CoreConstants.MINUS)) : CoreConstants.EMPTY)
-			.toString();
+		        .append(
+		            localizationKey.contains(CoreConstants.MINUS) ? localizationKey
+		                    .substring(localizationKey
+		                            .indexOf(CoreConstants.MINUS))
+		                    : CoreConstants.EMPTY).toString();
 		
 		return componentLocalizationKey;
 	}
 	
 	public static String getKeyFromRef(String ref) {
-		return ref.substring(ref.indexOf(slash)+1, ref.indexOf("["));
+		return ref.substring(ref.indexOf(slash) + 1, ref.indexOf("["));
 	}
 	
 	public static boolean isLocalizableExpressionCorrect(String ref) {
-
-		return ref != null && ref.length() != 0 && ref.startsWith(loc_ref_part1) && ref.endsWith(loc_ref_part2) && !ref.contains(CoreConstants.SPACE); 
+		
+		return ref != null && ref.length() != 0
+		        && ref.startsWith(loc_ref_part1) && ref.endsWith(loc_ref_part2)
+		        && !ref.contains(CoreConstants.SPACE);
 	}
 	
-	public static LocalizedStringBean getLocalizedStrings(String key, Document xformsDoc) {
-
+	public static LocalizedStringBean getLocalizedStrings(String key,
+	        Document xformsDoc) {
+		
 		Element locModel = getElementById(xformsDoc, data_mod);
-		Element locStrings = (Element)locModel.getElementsByTagName(loc_tag).item(0);
+		Element locStrings = (Element) locModel.getElementsByTagName(loc_tag)
+		        .item(0);
 		
 		NodeList keyElements = locStrings.getElementsByTagName(key);
 		LocalizedStringBean locStrBean = new LocalizedStringBean();
 		
 		for (int i = 0; i < keyElements.getLength(); i++) {
 			
-			Element keyElement = (Element)keyElements.item(i);
+			Element keyElement = (Element) keyElements.item(i);
 			
 			String langCode = keyElement.getAttribute(lang_att);
 			
-			if(langCode != null) {
+			if (langCode != null) {
 				
-				String content = getElementsTextNodeValue(keyElement);	
-				locStrBean.setString(LocaleUtil.getLocale(langCode), content == null ? CoreConstants.EMPTY : content);
+				String content = getElementsTextNodeValue(keyElement);
+				locStrBean.setString(LocaleUtil.getLocale(langCode),
+				    content == null ? CoreConstants.EMPTY : content);
 			}
 		}
 		
 		return locStrBean;
 	}
 	
-	public static LocalizedStringBean getLabelLocalizedStrings(Element component, Document xforms_doc) {
+	public static LocalizedStringBean getLabelLocalizedStrings(
+	        Element component, Document xforms_doc) {
 		
-		NodeList labels = component.getElementsByTagName(FormManagerUtil.label_tag);
+		NodeList labels = component
+		        .getElementsByTagName(FormManagerUtil.label_tag);
 		
-		if(labels == null || labels.getLength() == 0)
+		if (labels == null || labels.getLength() == 0)
 			return new LocalizedStringBean();
 		
-		Element label = (Element)labels.item(0);
+		Element label = (Element) labels.item(0);
 		
 		return getElementLocalizedStrings(label, xforms_doc);
 	}
 	
-	public static LocalizedStringBean getElementLocalizedStrings(Element element, Document xforms_doc) {
+	public static LocalizedStringBean getElementLocalizedStrings(
+	        Element element, Document xforms_doc) {
 		
-		//DOMUtil.prettyPrintDOM(xforms_doc);
+		// DOMUtil.prettyPrintDOM(xforms_doc);
 		
 		String ref = element.getAttribute(FormManagerUtil.ref_s_att);
 		
-		if(!isLocalizableExpressionCorrect(ref))
+		if (!isLocalizableExpressionCorrect(ref))
 			return new LocalizedStringBean();
 		
 		String key = getKeyFromRef(ref);
@@ -396,7 +417,8 @@ public class FormManagerUtil {
 	public static void clearLocalizedMessagesFromDocument(Document doc) {
 		
 		Element loc_model = getElementById(doc, data_mod);
-		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
+		Element loc_strings = (Element) loc_model.getElementsByTagName(loc_tag)
+		        .item(0);
 		@SuppressWarnings("unchecked")
 		List<Element> loc_elements = DOMUtil.getChildElements(loc_strings);
 		
@@ -407,77 +429,101 @@ public class FormManagerUtil {
 	public static Locale getDefaultFormLocale(Document xformsDoc) {
 		
 		Element locModel = getElementById(xformsDoc, data_mod);
-		Element locStrings = (Element)locModel.getElementsByTagName(loc_tag).item(0);
-		NodeList defaultLanguages = locStrings.getElementsByTagName(default_language_tag);
+		Element locStrings = (Element) locModel.getElementsByTagName(loc_tag)
+		        .item(0);
+		NodeList defaultLanguages = locStrings
+		        .getElementsByTagName(default_language_tag);
 		
 		String langCode = null;
 		
-		if(defaultLanguages != null && defaultLanguages.getLength() != 0) {
+		if (defaultLanguages != null && defaultLanguages.getLength() != 0) {
 			langCode = getElementsTextNodeValue(defaultLanguages.item(0));
-		}		
-		if(langCode == null)
-			langCode = "en";			
+		}
+		if (langCode == null)
+			langCode = "en";
 		
 		return LocaleUtil.getLocale(langCode);
 	}
 	
 	public static void setCurrentFormLocale(Document form_xforms, Locale locale) {
 		Element loc_model = getElementById(form_xforms, data_mod);
-		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
-		NodeList current_language_node_list = loc_strings.getElementsByTagName(current_language_tag);
+		Element loc_strings = (Element) loc_model.getElementsByTagName(loc_tag)
+		        .item(0);
+		NodeList current_language_node_list = loc_strings
+		        .getElementsByTagName(current_language_tag);
 		
-		if(current_language_node_list != null && current_language_node_list.getLength() != 0) {
-			//String localeStr = locale.toString().toLowerCase();
+		if (current_language_node_list != null
+		        && current_language_node_list.getLength() != 0) {
+			// String localeStr = locale.toString().toLowerCase();
 			String localeStr = locale.toString();
-			setElementsTextNodeValue(current_language_node_list.item(0), localeStr);
-		}		
+			setElementsTextNodeValue(current_language_node_list.item(0),
+			    localeStr);
+		}
 	}
 	
 	public static void setDefaultFormLocale(Document xform, Locale locale) {
 		
 		Element loc_model = getElementById(xform, data_mod);
-		Element loc_strings = (Element)loc_model.getElementsByTagName(loc_tag).item(0);
-		NodeList current_language_node_list = loc_strings.getElementsByTagName(default_language_tag);
+		Element loc_strings = (Element) loc_model.getElementsByTagName(loc_tag)
+		        .item(0);
+		NodeList current_language_node_list = loc_strings
+		        .getElementsByTagName(default_language_tag);
 		
-		if(current_language_node_list != null && current_language_node_list.getLength() != 0) {
-			//String localeStr = locale.toString().toLowerCase();
+		if (current_language_node_list != null
+		        && current_language_node_list.getLength() != 0) {
+			// String localeStr = locale.toString().toLowerCase();
 			String localeStr = locale.toString();
-			setElementsTextNodeValue(current_language_node_list.item(0), localeStr);
-		}		
+			setElementsTextNodeValue(current_language_node_list.item(0),
+			    localeStr);
+		}
 	}
 	
-	private static final XPathUtil validatorMessagesElementsXPath 
-	= new XPathUtil(".//idega:validator/idega:message", new Prefix("idega", idega_namespace));
+	private static final XPathUtil validatorMessagesElementsXPath = new XPathUtil(
+	        ".//idega:validator/idega:message", new Prefix("idega",
+	                idega_namespace));
 	
-	private static final XPathUtil validatorBlockElementsXPath 
-	= new XPathUtil(".//idega:validator", new Prefix("idega", idega_namespace));
+	private static final XPathUtil validatorBlockElementsXPath = new XPathUtil(
+	        ".//idega:validator", new Prefix("idega", idega_namespace));
 	
-	public static Map<ErrorType, LocalizedStringBean> getErrorLabelLocalizedStrings(Node context) {
+	public static Map<ErrorType, LocalizedStringBean> getErrorLabelLocalizedStrings(
+	        Node context) {
 		
-//		<idega:validator ev:event="idega-validate">
-//        <idega:message errorType="required" model="data_model" value="instance('localized_strings')/email-required[@lang=instance('localized_strings')/current_language]"/>
+		// <idega:validator ev:event="idega-validate">
+		// <idega:message errorType="required" model="data_model"
+		// value="instance('localized_strings')/email-required[@lang=instance('localized_strings')/current_language]"/>
 		
-		NodeList validatorMessagesElements = validatorMessagesElementsXPath.getNodeset(context);
-		HashMap<ErrorType, LocalizedStringBean> errors = new HashMap<ErrorType, LocalizedStringBean>(validatorMessagesElements.getLength());
+		NodeList validatorMessagesElements = validatorMessagesElementsXPath
+		        .getNodeset(context);
+		HashMap<ErrorType, LocalizedStringBean> errors = new HashMap<ErrorType, LocalizedStringBean>(
+		        validatorMessagesElements.getLength());
 		
 		for (int i = 0; i < validatorMessagesElements.getLength(); i++) {
 			
-			Element el = (Element)validatorMessagesElements.item(i);
+			Element el = (Element) validatorMessagesElements.item(i);
 			String errorTypeAtt = el.getAttribute("errorType");
 			
-			ErrorType errorType = ErrorType.getByStringRepresentation(errorTypeAtt);
+			ErrorType errorType = ErrorType
+			        .getByStringRepresentation(errorTypeAtt);
 			String value = el.getAttribute(value_att);
 			
 			LocalizedStringBean err;
 			
-			if(value == null || value.length() == 0) {
+			if (value == null || value.length() == 0) {
 				
-				Logger.getLogger(FormManagerUtil.class.getName()).log(Level.WARNING, "Error message element present in document, but no value specified");
+				Logger
+				        .getLogger(FormManagerUtil.class.getName())
+				        .log(Level.WARNING,
+				            "Error message element present in document, but no value specified");
 				err = new LocalizedStringBean();
 				
-			} else if(!isLocalizableExpressionCorrect(value)) {
+			} else if (!isLocalizableExpressionCorrect(value)) {
 				
-				Logger.getLogger(FormManagerUtil.class.getName()).log(Level.WARNING, "Error message element present in document, but no value expression incorrect. Provided="+value);
+				Logger
+				        .getLogger(FormManagerUtil.class.getName())
+				        .log(
+				            Level.WARNING,
+				            "Error message element present in document, but no value expression incorrect. Provided="
+				                    + value);
 				err = new LocalizedStringBean();
 				
 			} else {
@@ -492,72 +538,90 @@ public class FormManagerUtil {
 		return errors;
 	}
 	
-	public static void setErrorLabelLocalizedStrings(Element componentElement, String componentId, String componentKey, ErrorStringBean errString, Document componentsTemplate) {
+	public static void setErrorLabelLocalizedStrings(Element componentElement,
+	        String componentId, String componentKey, ErrorStringBean errString,
+	        Document componentsTemplate) {
 		
-		NodeList validatorMessagesElements = validatorMessagesElementsXPath.getNodeset(componentElement);
+		NodeList validatorMessagesElements = validatorMessagesElementsXPath
+		        .getNodeset(componentElement);
 		
-		if(validatorMessagesElements.getLength() != 0) {
-		
+		if (validatorMessagesElements.getLength() != 0) {
+			
 			for (int i = 0; i < validatorMessagesElements.getLength(); i++) {
 				
-				Element el = (Element)validatorMessagesElements.item(i);
+				Element el = (Element) validatorMessagesElements.item(i);
 				String errorTypeAtt = el.getAttribute("errorType");
 				
-				ErrorType errorType = ErrorType.getByStringRepresentation(errorTypeAtt);
+				ErrorType errorType = ErrorType
+				        .getByStringRepresentation(errorTypeAtt);
 				
-				if(errString.getErrorType() == errorType) {
+				if (errString.getErrorType() == errorType) {
 					
-					putLocalizedText(value_att, null, null, el, el.getOwnerDocument(), errString.getLocalizedStringBean());
+					putLocalizedText(value_att, null, null, el, el
+					        .getOwnerDocument(), errString
+					        .getLocalizedStringBean());
 					return;
 				}
 			}
 		} else {
 			
-//			assuming there are no validation block
+			// assuming there are no validation block
 			
-			List<Element> validationBlockElements = FormManagerUtil.getItemElementsById(
-					componentsTemplate, "validationMessagesHandling");
+			List<Element> validationBlockElements = FormManagerUtil
+			        .getItemElementsById(componentsTemplate,
+			            "validationMessagesHandling");
 			
 			for (Element element : validationBlockElements) {
-			
-				Element validationBlock = (Element)componentElement.getOwnerDocument().importNode(element, true);
-				validationBlock = (Element)componentElement.appendChild(validationBlock);
+				
+				Element validationBlock = (Element) componentElement
+				        .getOwnerDocument().importNode(element, true);
+				validationBlock = (Element) componentElement
+				        .appendChild(validationBlock);
 			}
 			
-			replaceAttributesByExpression(componentElement, "componentId", componentId);
+			replaceAttributesByExpression(componentElement, "componentId",
+			    componentId);
 		}
 		
-//		create message element
+		// create message element
 		
-		Element validationBlock = validatorBlockElementsXPath.getNode(componentElement);
+		Element validationBlock = validatorBlockElementsXPath
+		        .getNode(componentElement);
 		
-//		<idega:message errorType="" model="data_model" value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
+		// <idega:message errorType="" model="data_model"
+		// value="instance('localized_strings')/#{messageKey}[@lang=instance('localized_strings')/current_language]"/>
 		
 		Element messageElement = FormManagerUtil.getItemElementById(
-				componentsTemplate, "validationMessage");
-		messageElement = (Element)validationBlock.getOwnerDocument().importNode(messageElement, true);
-		messageElement = (Element)validationBlock.appendChild(messageElement);
-		messageElement.setAttribute("errorType", errString.getErrorType().toString());
+		    componentsTemplate, "validationMessage");
+		messageElement = (Element) validationBlock.getOwnerDocument()
+		        .importNode(messageElement, true);
+		messageElement = (Element) validationBlock.appendChild(messageElement);
+		messageElement.setAttribute("errorType", errString.getErrorType()
+		        .toString());
 		
-		String messageKey = componentKey+CoreConstants.MINUS+errString.getErrorType();
+		String messageKey = componentKey + CoreConstants.MINUS
+		        + errString.getErrorType();
 		
 		replaceAttributesByExpression(validationBlock, "messageKey", messageKey);
-		putLocalizedText(value_att, null, null, messageElement, messageElement.getOwnerDocument(), errString.getLocalizedStringBean());
+		putLocalizedText(value_att, null, null, messageElement, messageElement
+		        .getOwnerDocument(), errString.getLocalizedStringBean());
 	}
 	
-	private static final XPathUtil helpOutputXPath = new XPathUtil(".//xf:help/xf:output");
+	private static final XPathUtil helpOutputXPath = new XPathUtil(
+	        ".//xf:help/xf:output");
 	
-	public static LocalizedStringBean getHelpTextLocalizedStrings(Element componentElement) {
+	public static LocalizedStringBean getHelpTextLocalizedStrings(
+	        Element componentElement) {
 		
 		Element helpOutput = helpOutputXPath.getNode(componentElement);
 		
 		LocalizedStringBean helpMsg;
 		
-		if(helpOutput == null) {
+		if (helpOutput == null) {
 			
 			helpMsg = new LocalizedStringBean();
 		} else {
-		
+			
 			String ref = helpOutput.getAttribute(ref_s_att);
 			String key = getKeyFromRef(ref);
 			
@@ -567,53 +631,33 @@ public class FormManagerUtil {
 		return helpMsg;
 	}
 	
-	public static void setHelpTextLocalizedStrings(Element componentElement, String componentKey, LocalizedStringBean helpMsg, Document componentsTemplate) {
+	public static void setHelpTextLocalizedStrings(Element componentElement,
+	        String componentKey, LocalizedStringBean helpMsg,
+	        Document componentsTemplate) {
 		
 		Element helpOutput = helpOutputXPath.getNode(componentElement);
 		
-		if(helpOutput == null) {
+		if (helpOutput == null) {
 			
-			Element help = FormManagerUtil.getItemElementById(componentsTemplate, "help");
+			Element help = FormManagerUtil.getItemElementById(
+			    componentsTemplate, "help");
 			
-			help = (Element)componentElement.getOwnerDocument().importNode(help, true);
+			help = (Element) componentElement.getOwnerDocument().importNode(
+			    help, true);
 			componentElement.appendChild(help);
 			helpOutput = helpOutputXPath.getNode(componentElement);
 			
-			replaceAttributesByExpression(helpOutput, "messageKey", componentKey+"-help");
+			replaceAttributesByExpression(helpOutput, "messageKey",
+			    componentKey + "-help");
 		}
 		
-		putLocalizedText(ref_s_att, null, null, helpOutput, helpOutput.getOwnerDocument(), helpMsg);
+		putLocalizedText(ref_s_att, null, null, helpOutput, helpOutput
+		        .getOwnerDocument(), helpMsg);
 	}
-
-	/*
-	public static LocalizedStringBean getValidationTextLocalizedStrings(Element component, Document xforms_doc) {
-
-	    	NodeList helps = component.getElementsByTagName(FormManagerUtil.help_tag);
-		
-		if(helps == null || helps.getLength() == 0)
-		    return new LocalizedStringBean();
-
-		Element help = (Element)helps.item(0);
-		
-		XPathUtil outputXPUT= new XPathUtil(".//xf:output[@helptype='validationtext']");
-		Element output = (Element) outputXPUT.getNode(help);
-		    
-		if (output == null || !output.hasAttribute(FormManagerUtil.ref_s_att))
-			return new LocalizedStringBean();
-			
-		String  ref = output.getAttribute(ref_s_att);
-		
-		if(!isLocalizableExpressionCorrect(ref))
-			return new LocalizedStringBean();
-		
-		String key = getKeyFromRef(ref);
-		
-		return getLocalizedStrings(key, xforms_doc);
-	}
-	*/
 	
 	public static boolean isLocalizationKeyCorrect(String loc_key) {
-		return !StringUtil.isEmpty(loc_key) && !loc_key.contains(CoreConstants.SPACE);
+		return !StringUtil.isEmpty(loc_key)
+		        && !loc_key.contains(CoreConstants.SPACE);
 	}
 	
 	public static String getElementsTextNodeValue(Node element) {
@@ -625,10 +669,10 @@ public class FormManagerUtil {
 			
 			Node child = children.item(i);
 			
-			if(child != null && child.getNodeType() == Node.TEXT_NODE) {
+			if (child != null && child.getNodeType() == Node.TEXT_NODE) {
 				String node_value = child.getNodeValue();
 				
-				if(node_value != null && node_value.length() > 0)
+				if (node_value != null && node_value.length() > 0)
 					text_value.append(node_value);
 			}
 		}
@@ -645,7 +689,7 @@ public class FormManagerUtil {
 			
 			Node child = children.item(i);
 			
-			if(child != null && child.getNodeType() == Node.TEXT_NODE)
+			if (child != null && child.getNodeType() == Node.TEXT_NODE)
 				childs_to_remove.add(child);
 		}
 		
@@ -658,39 +702,41 @@ public class FormManagerUtil {
 	
 	/**
 	 * <p>
-	 * @param components_xml - components xml document, which passes the structure described:
-	 * <p>
-	 * optional document root name - form_components
-	 * </p>
-	 * <p>
-	 * Component is encapsulated into div tag, which contains tag id as component type.
-	 * Every component div container is child of root.
-	 * </p>
-	 * <p>
-	 * Component type starts with "fbc_"
-	 * </p>
-	 * <p>
-	 * example:
-	 * </p>
-	 * <p>
-	 * &lt;form_components&gt;<br />
-		&lt;div class="input" id="fbc_text"&gt;<br />
-			&lt;label class="label" for="fbc_text-value" id="fbc_text-label"&gt;			Single Line Field		&lt;/label&gt;<br />
-			&lt;input class="value" id="fbc_text-value" name="d_fbc_text"	type="text" value="" /&gt;<br />
-		&lt;/div&gt;<br />
-	&lt;/form_components&gt;
-	 * </p>
-	 * </p>
 	 * 
-	 * IMPORTANT: types should be unique
-	 * 
+	 * @param components_xml
+	 *            - components xml document, which passes the structure described:
+	 *            <p>
+	 *            optional document root name - form_components
+	 *            </p>
+	 *            <p>
+	 *            Component is encapsulated into div tag, which contains tag id as component type.
+	 *            Every component div container is child of root.
+	 *            </p>
+	 *            <p>
+	 *            Component type starts with "fbc_"
+	 *            </p>
+	 *            <p>
+	 *            example:
+	 *            </p>
+	 *            <p>
+	 *            &lt;form_components&gt;<br />
+	 *            &lt;div class="input" id="fbc_text"&gt;<br />
+	 *            &lt;label class="label" for="fbc_text-value" id="fbc_text-label"&gt; Single Line
+	 *            Field &lt;/label&gt;<br />
+	 *            &lt;input class="value" id="fbc_text-value" name="d_fbc_text" type="text" value=""
+	 *            /&gt;<br />
+	 *            &lt;/div&gt;<br />
+	 *            &lt;/form_components&gt;
+	 *            </p>
+	 *            </p> IMPORTANT: types should be unique
 	 * @return List of components types (Strings)
 	 */
-	public static List<String> gatherAvailableComponentsTypes(Document components_xml) {
+	public static List<String> gatherAvailableComponentsTypes(
+	        Document components_xml) {
 		
 		Element root = components_xml.getDocumentElement();
 		
-		if(!root.hasChildNodes())
+		if (!root.hasChildNodes())
 			return null;
 		
 		NodeList children = root.getChildNodes();
@@ -700,14 +746,14 @@ public class FormManagerUtil {
 			
 			Node child = children.item(i);
 			
-			if(child.getNodeType() == Node.ELEMENT_NODE) {
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
 				
-				String element_id = ((Element)child).getAttribute(FormManagerUtil.id_att);
+				String element_id = ((Element) child)
+				        .getAttribute(FormManagerUtil.id_att);
 				
-				if(element_id != null && 
-						element_id.startsWith(FormManagerUtil.CTID) &&
-						!components_types.contains(element_id)
-				)
+				if (element_id != null
+				        && element_id.startsWith(FormManagerUtil.CTID)
+				        && !components_types.contains(element_id))
 					components_types.add(element_id);
 			}
 		}
@@ -718,16 +764,17 @@ public class FormManagerUtil {
 	public static Element getItemElementById(Document item_doc, String item_id) {
 		
 		Element item = FormManagerUtil.getElementById(item_doc, item_id);
-		if(item == null)
+		if (item == null)
 			return null;
 		
 		return DOMUtil.getFirstChildElement(item);
 	}
 	
-	public static List<Element> getItemElementsById(Document item_doc, String item_id) {
+	public static List<Element> getItemElementsById(Document item_doc,
+	        String item_id) {
 		
 		Element item = FormManagerUtil.getElementById(item_doc, item_id);
-		if(item == null)
+		if (item == null)
 			return null;
 		
 		@SuppressWarnings("unchecked")
@@ -744,13 +791,13 @@ public class FormManagerUtil {
 			
 			Node child = children.item(i);
 			
-			if(child.getNodeType() == Node.TEXT_NODE) {
+			if (child.getNodeType() == Node.TEXT_NODE) {
 				
 				childs_to_remove.add(child);
 				
 			} else {
 				
-				if(child.hasChildNodes())
+				if (child.hasChildNodes())
 					removeTextNodes(child);
 			}
 		}
@@ -760,33 +807,9 @@ public class FormManagerUtil {
 		}
 	}
 	
-	/*
-	public static List<String[]> getComponentsTagNamesAndIds(Document xforms_doc) {
-		
-		Element body_element = (Element)xforms_doc.getElementsByTagName(body_tag).item(0);
-		Element switch_element = (Element)body_element.getElementsByTagName(switch_tag).item(0);
-		
-		@SuppressWarnings("unchecked")
-		List<Element> components_elements = DOMUtil.getChildElements(switch_element);
-		List<String[]> components_tag_names_and_ids = new ArrayList<String[]>();
-		
-		for (Iterator<Element> iter = components_elements.iterator(); iter.hasNext();) {
-			
-			Element component_element = iter.next();
-			String[] tag_name_and_id = new String[2];
-			tag_name_and_id[0] = component_element.getTagName();
-			tag_name_and_id[1] = component_element.getAttribute(id_att);
-			
-			components_tag_names_and_ids.add(tag_name_and_id);
-		}
-		
-		return components_tag_names_and_ids;
-	}
-	*/
-	
 	private static OutputFormat getOutputFormat() {
 		
-		if(output_format == null) {
+		if (output_format == null) {
 			
 			OutputFormat output_format = new OutputFormat();
 			output_format.setOmitXMLDeclaration(true);
@@ -801,7 +824,8 @@ public class FormManagerUtil {
 		return output_format;
 	}
 	
-	public static String serializeDocument(Document document) throws IOException {
+	public static String serializeDocument(Document document)
+	        throws IOException {
 		
 		StringWriter writer = new StringWriter();
 		XMLSerializer serializer = new XMLSerializer(writer, getOutputFormat());
@@ -814,60 +838,51 @@ public class FormManagerUtil {
 	public static String escapeNonXmlTagSymbols(String string) {
 		
 		StringBuffer result = new StringBuffer();
-
-	    StringCharacterIterator iterator = new StringCharacterIterator(string);
-	    
-	    Character character =  iterator.current();
-	    
-	    while (character != CharacterIterator.DONE ) {
-	    	
-	    	if(non_xml_pattern.matcher(character.toString()).matches())
-	    		result.append(character);
-	        
-	        character = iterator.next();
-	    }
-	    
-	    return result.toString();
-	}
 		
+		StringCharacterIterator iterator = new StringCharacterIterator(string);
+		
+		Character character = iterator.current();
+		
+		while (character != CharacterIterator.DONE) {
+			
+			if (non_xml_pattern.matcher(character.toString()).matches())
+				result.append(character);
+			
+			character = iterator.next();
+		}
+		
+		return result.toString();
+	}
+	
 	public static int parseIdNumber(String id) {
 		
-		if(id == null)
+		if (id == null)
 			return 0;
 		
 		return Integer.parseInt(id.substring(CTID.length()));
 	}
 	
-	private static final XPathUtil componentsContainerElementXPath 
-		= new XPathUtil(".//h:body//idega:switch", new Prefix("idega", idega_namespace));
+	private static final XPathUtil componentsContainerElementXPath = new XPathUtil(
+	        ".//h:body//idega:switch", new Prefix("idega", idega_namespace));
 	
 	public static Element getComponentsContainerElement(Document xform) {
-
+		
 		Element container = componentsContainerElementXPath.getNode(xform);
 		
-		if(container == null) {
+		if (container == null) {
 			XPathUtil xu = new XPathUtil(".//h:body//xf:switch");
 			container = xu.getNode(xform);
 		}
 		
 		return container;
-		/*
-		Element bodyElement = (Element)xform.getElementsByTagName(body_tag).item(0);
-		Element compElement = (Element)bodyElement.getElementsByTagName(switch_tag).item(0);
-		if (compElement == null) {
-			compElement = (Element)bodyElement.getElementsByTagName("idega:switch").item(0);
-		}
-		
-		return compElement;
-		*/
 	}
 	
 	private static Pattern componentIdPattern = Pattern.compile("fbc_[\\d]*");
-	private static final XPathUtil allComponentsIdsXPath 
-	= new XPathUtil(".//@id[starts-with(., 'fbc_')]");
-
-	public static Set<String> getAllComponentsIds(Document xform) {
+	private static final XPathUtil allComponentsIdsXPath = new XPathUtil(
+	        ".//@id[starts-with(., 'fbc_')]");
 	
+	public static Set<String> getAllComponentsIds(Document xform) {
+		
 		NodeList idsAttributes = allComponentsIdsXPath.getNodeset(xform);
 		
 		HashSet<String> ids = new HashSet<String>(idsAttributes.getLength());
@@ -876,8 +891,8 @@ public class FormManagerUtil {
 			
 			String idValue = idsAttributes.item(i).getNodeValue();
 			
-			if(componentIdPattern.matcher(idValue).matches()) {
-			
+			if (componentIdPattern.matcher(idValue).matches()) {
+				
 				ids.add(idValue);
 			}
 		}
@@ -885,35 +900,39 @@ public class FormManagerUtil {
 		return ids;
 	}
 	
-	public static void replaceAttributesByExpression(Node context, String expressionValue, String replaceWith) {
+	public static void replaceAttributesByExpression(Node context,
+	        String expressionValue, String replaceWith) {
 		
-		String expressionValueForXPath = "#{"+expressionValue+"}";
+		String expressionValueForXPath = "#{" + expressionValue + "}";
 		
 		NodeList attributes;
 		
 		synchronized (replaceAttributesByExpressionXPath) {
-		
+			
 			replaceAttributesByExpressionXPath.clearVariables();
-			replaceAttributesByExpressionXPath.setVariable(expressionVariable, expressionValueForXPath);
+			replaceAttributesByExpressionXPath.setVariable(expressionVariable,
+			    expressionValueForXPath);
 			
 			attributes = replaceAttributesByExpressionXPath.getNodeset(context);
 		}
 		
-		if(attributes != null) {
+		if (attributes != null) {
 			
-			String expressionValueForRegex = "#\\{"+expressionValue+"\\}";
-		
+			String expressionValueForRegex = "#\\{" + expressionValue + "\\}";
+			
 			for (int i = 0; i < attributes.getLength(); i++) {
 				
 				Node attNode = attributes.item(i);
 				String attValue = attNode.getNodeValue();
-				attValue = attValue.replaceAll(expressionValueForRegex, replaceWith);
+				attValue = attValue.replaceAll(expressionValueForRegex,
+				    replaceWith);
 				attNode.setNodeValue(attValue);
 			}
 		}
 	}
 	
-	private static final XPathUtil getLocalizableElementsXPath = new XPathUtil(".//*[attribute::*[(name(.) = 'ref' or name(.) = 'value') and starts-with(., \"instance('localized_strings')/\")] ]");
+	private static final XPathUtil getLocalizableElementsXPath = new XPathUtil(
+	        ".//*[attribute::*[(name(.) = 'ref' or name(.) = 'value') and starts-with(., \"instance('localized_strings')/\")] ]");
 	
 	public static NodeList getLocalizableElements(Node context) {
 		
@@ -921,11 +940,13 @@ public class FormManagerUtil {
 	}
 	
 	public static void main(String[] args) {
-
+		
 		try {
 			DocumentBuilder db = XmlUtil.getDocumentBuilder();
-			Document d = db.parse(new File("/Users/civilis/dev/workspace/eplatform-4-bpm/com.idega.xformsmanager/resources/templates/form-components.xhtml"));
-
+			Document d = db
+			        .parse(new File(
+			                "/Users/civilis/dev/workspace/eplatform-4-bpm/com.idega.xformsmanager/resources/templates/form-components.xhtml"));
+			
 			Element emailElement = getElementById(d, "fbc_email");
 			
 			Map<ErrorType, LocalizedStringBean> errStrs = getErrorLabelLocalizedStrings(emailElement);
@@ -935,18 +956,22 @@ public class FormManagerUtil {
 			LocalizedStringBean sb = errStrs.get(ErrorType.validation);
 			ErrorStringBean errstr = new ErrorStringBean(ErrorType.custom, sb);
 			
-			errstr.getLocalizedStringBean().setString(new Locale("en"), "uhuauaha");
+			errstr.getLocalizedStringBean().setString(new Locale("en"),
+			    "uhuauaha");
 			
-			setErrorLabelLocalizedStrings(emailElement, "dfdf", "asdfdsf", errstr, d);
+			setErrorLabelLocalizedStrings(emailElement, "dfdf", "asdfdsf",
+			    errstr, d);
 			
-			setHelpTextLocalizedStrings(textElement, "asdfads", errstr.getLocalizedStringBean(), d);
+			setHelpTextLocalizedStrings(textElement, "asdfads", errstr
+			        .getLocalizedStringBean(), d);
 			
 			DOMUtil.prettyPrintDOM(textElement.getOwnerDocument());
 			
-			if(true)
+			if (true)
 				return;
 			
-			XPathUtil xu = new XPathUtil(".//*/attribute::*[contains(., '#{componentId}')]");
+			XPathUtil xu = new XPathUtil(
+			        ".//*/attribute::*[contains(., '#{componentId}')]");
 			
 			NodeList nodes = xu.getNodeset(emailElement);
 			
@@ -967,29 +992,29 @@ public class FormManagerUtil {
 		
 	}
 	
-//	public static boolean isEmpty(String str) {
-//		return str == null || CoreConstants.EMPTY.equals(str);
-//	}
-	
-	public static void modifyFormForLocalisationInFormbuilder(Document xforms_doc) {
+	public static void modifyFormForLocalisationInFormbuilder(
+	        Document xforms_doc) {
 		Element setvalue_element = getDataModelSetValueElement(xforms_doc);
-
+		
 		setvalue_element.getParentNode().removeChild(setvalue_element);
 	}
-		
+	
 	public static void modifyXFormsDocumentForViewing(Document xforms_doc) {
 		
-//		TODO: use better way. probably just xforms property, as it is done when viewing form in pdf mode
-//		the idea here seems that all pages need to be visible (as with pdf)
+		// TODO: use better way. probably just xforms property, as it is done when viewing form in
+		// pdf mode
+		// the idea here seems that all pages need to be visible (as with pdf)
 		
 		NodeList tags = xforms_doc.getElementsByTagName(idegans_case_tag);
-		Element switch_element = (Element)xforms_doc.getElementsByTagName(idegans_switch_tag).item(0);
+		Element switch_element = (Element) xforms_doc.getElementsByTagName(
+		    idegans_switch_tag).item(0);
 		
-		Element switch_parent = (Element)switch_element.getParentNode();
+		Element switch_parent = (Element) switch_element.getParentNode();
 		
 		for (int i = 0; i < tags.getLength(); i++) {
 			@SuppressWarnings("unchecked")
-			List<Element> case_children = DOMUtil.getChildElements(tags.item(i));
+			List<Element> case_children = DOMUtil
+			        .getChildElements(tags.item(i));
 			for (Element case_child : case_children) {
 				switch_parent.appendChild(case_child);
 			}
@@ -998,21 +1023,23 @@ public class FormManagerUtil {
 		switch_element.getParentNode().removeChild(switch_element);
 	}
 	
-	public static Map<String, List<String>> getCategorizedComponentsTypes(Document form_components_doc) {
+	public static Map<String, List<String>> getCategorizedComponentsTypes(
+	        Document form_components_doc) {
 		
-		Element instance_element = getElementById(form_components_doc, "component_categories");
+		Element instance_element = getElementById(form_components_doc,
+		    "component_categories");
 		NodeList categories = instance_element.getElementsByTagName("category");
 		Map<String, List<String>> categorized_types = new HashMap<String, List<String>>();
 		
 		for (int i = 0; i < categories.getLength(); i++) {
 			
-			Element category = (Element)categories.item(i);
+			Element category = (Element) categories.item(i);
 			NodeList components = category.getElementsByTagName(component_tag);
 			List<String> component_types = new ArrayList<String>();
-
+			
 			for (int j = 0; j < components.getLength(); j++) {
 				
-				Element component = (Element)components.item(j);
+				Element component = (Element) components.item(j);
 				component_types.add(component.getAttribute(component_id_att));
 			}
 			
@@ -1032,8 +1059,9 @@ public class FormManagerUtil {
 		return inst_el;
 	}
 	
-	public static void setFormTitle(Document xformsXmlDoc, LocalizedStringBean formTitle) {
-	    
+	public static void setFormTitle(Document xformsXmlDoc,
+	        LocalizedStringBean formTitle) {
+		
 		Element output = getFormTitleOutputElement(xformsXmlDoc);
 		putLocalizedText(ref_s_att, null, null, output, xformsXmlDoc, formTitle);
 	}
@@ -1043,16 +1071,18 @@ public class FormManagerUtil {
 		Element output = getFormTitleOutputElement(xformsDoc);
 		return getElementLocalizedStrings(output, xformsDoc);
 	}
-
-	public static void setFormErrorMsg(Document xformsXmlDoc, LocalizedStringBean formError) {
+	
+	public static void setFormErrorMsg(Document xformsXmlDoc,
+	        LocalizedStringBean formError) {
 		
 		Element message = getFormErrorMessageElement(xformsXmlDoc);
 		
 		message.removeAttribute(FormManagerUtil.model_att);
 		
-		putLocalizedText(ref_s_att, null, null, message, xformsXmlDoc, formError);
+		putLocalizedText(ref_s_att, null, null, message, xformsXmlDoc,
+		    formError);
 	}
-
+	
 	public static LocalizedStringBean getFormErrorMsg(Document xformsDoc) {
 		
 		Element message = getFormErrorMessageElement(xformsDoc);
@@ -1105,7 +1135,7 @@ public class FormManagerUtil {
 	}
 	
 	private static Element getFormErrorMessageElement(Node context) {
-	    
+		
 		return formErrorMessageXPath.getNode(context);
 	}
 	
@@ -1125,7 +1155,7 @@ public class FormManagerUtil {
 	public static Element getElementById(Node context, String id) {
 		
 		synchronized (elementByIdXPath) {
-		
+			
 			elementByIdXPath.clearVariables();
 			elementByIdXPath.setVariable(id_att, id);
 			return elementByIdXPath.getNode(context);
@@ -1137,31 +1167,85 @@ public class FormManagerUtil {
 		return formParamsXPath.getNode(context);
 	}
 	
-	public static Element createFormParamsElement(Element context, boolean appendToContext) {
-
+	public static Element createFormParamsElement(Element context,
+	        boolean appendToContext) {
+		
 		Element el = context.getOwnerDocument().createElement("params");
 		el.setAttribute(nodeTypeAtt, "formParams");
 		
-		if(appendToContext) {
-			el = (Element)context.appendChild(el);
+		if (appendToContext) {
+			el = (Element) context.appendChild(el);
 		}
 		
 		return el;
 	}
 	
-	public static NodeList getElementsContainingAttribute(Node context, String elementName, String attributeName) {
+	/**
+	 * 
+	 * @param context node to start looking from
+	 * @param elementName optional
+	 * @param attributeName optional
+	 * @return
+	 */
+	public static NodeList getElementsContainingAttribute(Node context,
+	        String elementName, String attributeName) {
 		
-		if(StringUtil.isEmpty(elementName))
+		if (StringUtil.isEmpty(elementName))
 			elementName = CoreConstants.STAR;
 		
-		if(StringUtil.isEmpty(attributeName))
+		if (StringUtil.isEmpty(attributeName))
 			attributeName = CoreConstants.STAR;
 		
-		synchronized (elementsContainingAttributeXPath) {
+		XPathUtil elementsContainingAttributeXPath = new XPathUtil(
+        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
 		
+		synchronized (elementsContainingAttributeXPath) {
+			
 			elementsContainingAttributeXPath.clearVariables();
-			elementsContainingAttributeXPath.setVariable(elementNameVariable, elementName);
-			elementsContainingAttributeXPath.setVariable(attributeNameVariable, attributeName);
+			elementsContainingAttributeXPath.setVariable(elementNameVariable,
+			    elementName);
+			elementsContainingAttributeXPath.setVariable(attributeNameVariable,
+			    attributeName);
+			
+			return elementsContainingAttributeXPath.getNodeset(context);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param context node to start looking from
+	 * @param elementName optional
+	 * @param attributeName optional
+	 * @param attributeValue optional
+	 * @return
+	 */
+	public static NodeList getElementsContainingAttribute(Node context,
+	        String elementName, String attributeName, String attributeValue) {
+		
+		if (StringUtil.isEmpty(elementName))
+			elementName = CoreConstants.STAR;
+		
+		if (StringUtil.isEmpty(attributeName))
+			attributeName = CoreConstants.STAR;
+		
+		if (attributeValue == null)
+			attributeValue = CoreConstants.STAR;
+		
+		XPathUtil elementsContainingAttributeXPath = new XPathUtil(
+        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName]) " +
+        "and (attributeValue = '*' or attribute::*[. = $attributeValue])]");
+		
+		String attributeValueVariable = "attributeValue";
+		
+		synchronized (elementsContainingAttributeXPath) {
+			
+			elementsContainingAttributeXPath.clearVariables();
+			elementsContainingAttributeXPath.setVariable(elementNameVariable,
+			    elementName);
+			elementsContainingAttributeXPath.setVariable(attributeNameVariable,
+			    attributeName);
+			elementsContainingAttributeXPath.setVariable(attributeValueVariable,
+				attributeValue);
 			
 			return elementsContainingAttributeXPath.getNodeset(context);
 		}
@@ -1172,9 +1256,11 @@ public class FormManagerUtil {
 		return localizaionSetValueElement.getNode(context);
 	}
 	
-	public static Map<String, List<ComponentType>> getComponentsTypesByDatatype(Document form_components_doc) {
+	public static Map<String, List<ComponentType>> getComponentsTypesByDatatype(
+	        Document form_components_doc) {
 		
-		Element instance_element = getElementById(form_components_doc, "components-datatypes-mappings");
+		Element instance_element = getElementById(form_components_doc,
+		    "components-datatypes-mappings");
 		NodeList list = instance_element.getElementsByTagName("component");
 		
 		Map<String, List<ComponentType>> types = new HashMap<String, List<ComponentType>>();
@@ -1190,10 +1276,10 @@ public class FormManagerUtil {
 			
 			for (int j = 0; j < datatypes.getLength(); j++) {
 				
-				Element datatype = (Element)datatypes.item(j);
+				Element datatype = (Element) datatypes.item(j);
 				String value = datatype.getTextContent();
 				
-				if(types.containsKey(value)) {
+				if (types.containsKey(value)) {
 					types.get(value).add(type);
 				} else {
 					List<ComponentType> newList = new ArrayList<ComponentType>();
@@ -1211,74 +1297,95 @@ public class FormManagerUtil {
 	 * Copies schema type from one schema document to another by provided type name.
 	 * </p>
 	 * <p>
-	 * <b><i>WARNING: </i></b>currently doesn't support cascading types copying,
-	 * i.e., when one type depends on another
+	 * <b><i>WARNING: </i></b>currently doesn't support cascading types copying, i.e., when one type
+	 * depends on another
 	 * </p>
 	 * 
-	 * @param src - schema document to copy from
-	 * @param dest - schema document to copy to
-	 * @param src_type_name - name of type to copy
-	 * @throws NullPointerException - some params were null or such type was not found in src document
+	 * @param src
+	 *            - schema document to copy from
+	 * @param dest
+	 *            - schema document to copy to
+	 * @param src_type_name
+	 *            - name of type to copy
+	 * @throws NullPointerException
+	 *             - some params were null or such type was not found in src document
 	 */
-	public static void copySchemaType(Document src, Document dest, String src_type_name, String dest_type_name) throws NullPointerException {
+	public static void copySchemaType(Document src, Document dest,
+	        String src_type_name, String dest_type_name)
+	        throws NullPointerException {
 		
-		if(src == null || dest == null || src_type_name == null) {
+		if (src == null || dest == null || src_type_name == null) {
 			
-			String err_msg = 
-			new StringBuilder("\nEither parameter is not provided:")
-			.append("\nsrc: ")
-			.append(String.valueOf(src))
-			.append("\ndest: ")
-			.append(String.valueOf(dest))
-			.append("\ntype_name: ")
-			.append(src_type_name)
-			.toString();
+			String err_msg = new StringBuilder(
+			        "\nEither parameter is not provided:").append("\nsrc: ")
+			        .append(String.valueOf(src)).append("\ndest: ").append(
+			            String.valueOf(dest)).append("\ntype_name: ").append(
+			            src_type_name).toString();
 			
 			throw new NullPointerException(err_msg);
 		}
 		
 		Element root = src.getDocumentElement();
 		
-//		check among simple types
+		// check among simple types
 		
-		Element type_to_copy = getSchemaTypeToCopy(root.getElementsByTagName(simple_type), src_type_name);
+		Element type_to_copy = getSchemaTypeToCopy(root
+		        .getElementsByTagName(simple_type), src_type_name);
 		
-		if(type_to_copy == null) {
-//			check among complex types
+		if (type_to_copy == null) {
+			// check among complex types
 			
-			type_to_copy = getSchemaTypeToCopy(root.getElementsByTagName(complex_type), src_type_name);
+			type_to_copy = getSchemaTypeToCopy(root
+			        .getElementsByTagName(complex_type), src_type_name);
 		}
 		
-		if(type_to_copy == null)
-			throw new NullPointerException("Schema type was not found by provided name: "+src_type_name);
+		if (type_to_copy == null)
+			throw new NullPointerException(
+			        "Schema type was not found by provided name: "
+			                + src_type_name);
 		
-		type_to_copy = (Element)dest.importNode(type_to_copy, true);
+		type_to_copy = (Element) dest.importNode(type_to_copy, true);
 		type_to_copy.setAttribute(FormManagerUtil.name_att, dest_type_name);
 		
-		((Element)dest.getElementsByTagName(FormManagerUtil.schema_tag).item(0)).appendChild(type_to_copy);
+		((Element) dest.getElementsByTagName(FormManagerUtil.schema_tag)
+		        .item(0)).appendChild(type_to_copy);
 	}
 	
-	private static Element getSchemaTypeToCopy(NodeList types, String type_name_required) {
+	private static Element getSchemaTypeToCopy(NodeList types,
+	        String type_name_required) {
 		
 		for (int i = 0; i < types.getLength(); i++) {
 			
-			Element simple_type = (Element)types.item(i); 
-			String name_att = simple_type.getAttribute(FormManagerUtil.name_att);
+			Element simple_type = (Element) types.item(i);
+			String name_att = simple_type
+			        .getAttribute(FormManagerUtil.name_att);
 			
-			if(name_att != null && name_att.equals(type_name_required))
+			if (name_att != null && name_att.equals(type_name_required))
 				return simple_type;
 		}
 		
 		return null;
 	}
 	
-	public static LocalizedStringBean getDefaultErrorMessage(ErrorType errType, Document templateDocument) {
+	public static LocalizedStringBean getDefaultErrorMessage(ErrorType errType,
+	        Document templateDocument) {
 		
-		String key = "default_validation-"+errType;
+		String key = "default_validation-" + errType;
 		return getLocalizedStrings(key, templateDocument);
 	}
-
+	
 	public static XPathUtil getLabelElementXPath() {
 		return labelElementXPath;
+	}
+	
+	public static NodeList getBindsByNodeset(Node context, String nodeset) {
+		
+		synchronized (bindsByNodesetXPath) {
+			
+			bindsByNodesetXPath.clearVariables();
+			bindsByNodesetXPath.setVariable(nodesetVariable, nodeset);
+			
+			return bindsByNodesetXPath.getNodeset(context);
+		}
 	}
 }
