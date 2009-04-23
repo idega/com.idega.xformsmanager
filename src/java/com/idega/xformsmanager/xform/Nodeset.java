@@ -1,334 +1,191 @@
 package com.idega.xformsmanager.xform;
 
-import org.chiba.xml.dom.DOMUtil;
-import org.w3c.dom.Document;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.w3c.dom.Element;
 
-import com.idega.util.CoreConstants;
 import com.idega.util.StringUtil;
-import com.idega.util.xml.XPathUtil;
+import com.idega.xformsmanager.component.FormComponent;
+import com.idega.xformsmanager.component.FormDocument;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * represents bind nodeset attribute
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $
- * 
- *          Last modified: $Date: 2008/11/07 12:04:15 $ by $Author: civilis $
+ * @version $Revision: 1.5 $ Last modified: $Date: 2009/04/23 14:17:41 $ by $Author: civilis $
  */
 public class Nodeset implements Cloneable {
-
+	
 	/**
-	 *	this path should be the same as the value of the bind nodeset attribute 
+	 * this path should be the same as the value of the bind nodeset attribute
 	 */
 	private String path;
 	private Element nodesetElement;
 	private Nodeset parentBindNodeset;
-
-	protected Nodeset() {
+	private FormDocument formDocument;
+	
+	public Nodeset(FormDocument formDocument) {
+		
+		this.formDocument = formDocument;
 	}
-
+	
 	public String getContent() {
 		return nodesetElement.getTextContent();
 	}
-
+	
 	public void setContent(String content) {
 		nodesetElement.setTextContent(content);
 	}
-
+	
 	public String getMapping() {
-
+		
 		return getNodesetElement().getAttribute(FormManagerUtil.mapping_att);
 	}
-
+	
 	public void setMapping(String mapping) {
-
+		
 		if (mapping == null)
 			getNodesetElement().removeAttribute(FormManagerUtil.mapping_att);
 		else
 			getNodesetElement().setAttribute(FormManagerUtil.mapping_att,
-					mapping);
+			    mapping);
 	}
-
+	
 	public String getPath() {
 		return path;
 	}
-
+	
 	protected void setPath(String path) {
 		this.path = path;
 	}
-
-	private static final String instanceIdVariable = "instanceId";
-
+	
 	/**
-	 * locates nodeset element in xf:instance/data. only simple path (i.e. the
-	 * element name that's the child of data element) is being supported
-	 * 
-	 * @param model
-	 *            - current
-	 * @param nodesetPath
-	 *            - only simple path (i.e. the element name that's the child of
-	 *            data element) is being supported
-	 * @return Nodeset object with nodeset relevant data
+	 * @return xpath usable path to the model item. e.g. instance('data-instance')/mymodelitem
 	 */
-	public static Nodeset locate(Element model, String nodesetPath) {
-
-		return locate(model, nodesetPath, null);
-	}
-
-	/**
-	 * 
-	 * @param model
-	 * @param nodesetPath
-	 * @param parentBindNodeset
-	 *            - if not provided @see javadoc of locate(Element model, String
-	 *            nodesetPath), else parent bind nodeset element is used as context for the current nodeset path
-	 * @return
-	 */
-	public static Nodeset locate(Element model, String nodesetPath,
-			Nodeset parentBindNodeset) {
-
-		final Element nodesetElement;
-
-		if (parentBindNodeset == null) {
-
-			Element instanceElement = findInstance(model, nodesetPath);
-			String pathToLookWith = nodesetPath;
-
-			// TODO: use chiba to locate those nodesets (modelitem)
-			if (pathToLookWith.startsWith("instance")) {
-				pathToLookWith = pathToLookWith.substring(pathToLookWith
-						.indexOf(CoreConstants.SLASH) + 1);
-			}
-
-			pathToLookWith = pathToLookWith.contains(CoreConstants.SLASH) ? pathToLookWith
-					.substring(0, pathToLookWith.indexOf(CoreConstants.SLASH))
-					: pathToLookWith;
-
-			synchronized (nodesetElementXPath) {
-
-				nodesetElementXPath.clearVariables();
-
-				nodesetElementXPath.setVariable(nodesetPathVariable,
-						pathToLookWith);
-				nodesetElement = (Element) nodesetElementXPath
-						.getNode(instanceElement);
-			}
-		} else {
-			// when parent bind nodeset is provided, considering that this
-			// nodeset path will be relative to the parent one
-
-			XPathUtil nodesetXPath = new XPathUtil(nodesetPath);
-			nodesetElement = nodesetXPath.getNode(parentBindNodeset
-					.getNodesetElement());
-		}
-
-		if (nodesetElement == null)
-			return null;
-
-		Nodeset nodeset = new Nodeset();
-		nodeset.setPath(nodesetPath);
-		nodeset.setNodesetElement(nodesetElement);
-		nodeset.setParentBindNodeset(parentBindNodeset);
-
-		return nodeset;
-	}
-
-	public static Nodeset locateByMapping(Element model, String mapping) {
-
-		Element instance = FormManagerUtil.getInstanceElement(model);
-		XPathUtil nodesetElementByMappingXPath = getNodesetElementByMappingXPath();
-
-		Element nodesetElement;
-
-		synchronized (nodesetElementByMappingXPath) {
-
-			nodesetElementByMappingXPath.clearVariables();
-			nodesetElementByMappingXPath.setVariable(mappingVariable, mapping);
-			nodesetElement = (Element) nodesetElementByMappingXPath
-					.getNode(instance);
-		}
-
-		if (nodesetElement == null)
-			return null;
-
-		Nodeset nodeset = new Nodeset();
-		nodeset.setPath(nodesetElement.getNodeName());
-		nodeset.setNodesetElement(nodesetElement);
-
-		return nodeset;
-	}
-
-	private static Element findInstance(Element model, String nodesetPath) {
-
-		String instanceId = nodesetPath.contains(FormManagerUtil.inst_start) ?
-
-		nodesetPath.substring(nodesetPath.indexOf(FormManagerUtil.inst_start)
-				+ FormManagerUtil.inst_start.length(), nodesetPath
-				.indexOf(FormManagerUtil.inst_end)) : null;
-
-		if (nodesetPath.contains(FormManagerUtil.slash))
-			nodesetPath = nodesetPath.substring(0, nodesetPath
-					.indexOf(FormManagerUtil.slash));
-
-		Element instance;
-
-		if (StringUtil.isEmpty(instanceId)) {
-			instance = FormManagerUtil.getInstanceElement(model);
-
-		} else {
-
-			XPathUtil xpath = FormManagerUtil.getInstanceElementByIdXPath();
-
-			synchronized (xpath) {
-
-				xpath.clearVariables();
-				xpath.setVariable(instanceIdVariable, instanceId);
-				instance = (Element) xpath.getNode(model);
-			}
-		}
-
-		return instance;
-	}
-
-	/**
-	 * Creates nodeset element and places it under xf:instance/data element
-	 * under model provided
-	 * 
-	 * 
-	 * @param model
-	 *            - instance to place nodeset in
-	 * @param nodesetPath
-	 *            - path of nodeset. currently supported simple nodeset element
-	 *            name only
-	 * @return created nodeset object
-	 */
-	public static Nodeset create(Element model, String nodesetPath) {
-
-		Nodeset nodeset = locate(model, nodesetPath);
-
-		if (nodeset == null) {
-
-			Element instance = findInstance(model, nodesetPath);
-			Document xform = model.getOwnerDocument();
-			// create
-			Element nodesetElement = xform.createElement(nodesetPath);
-			Element parent = (Element) getNodesetElementParentXPath().getNode(
-					instance);
-			parent.appendChild(nodesetElement);
-
-			nodeset = new Nodeset();
-			nodeset.setNodesetElement(nodesetElement);
-			nodeset.setPath(nodesetPath);
-		}
-
-		return nodeset;
-	}
-
-	public static Nodeset importNodeset(Element model, Nodeset nodesetToImport,
-			String newNodesetName) {
+	public String getXPathPath() {
 		
-//		TODO: check if nodeset by such name already exist
-
-		Element nodesetElement = nodesetToImport.getNodesetElement();
-		String path = nodesetToImport.getPath();
-		path = path.replaceFirst(nodesetElement.getNodeName(), newNodesetName);
-
-		nodesetElement = (Element) model.getOwnerDocument().importNode(
-				nodesetElement, true);
-		nodesetElement = (Element) model.getOwnerDocument().renameNode(
-				nodesetElement, nodesetElement.getNamespaceURI(),
-				newNodesetName);
-
-		Element instance = findInstance(model, path);
-//		Element instance = FormManagerUtil.getInstanceElement(model);
-		Element parent = DOMUtil.getFirstChildElement(instance);
-//		(Element) getNodesetElementParentXPath().getNode(
-//				instance);
-		parent.appendChild(nodesetElement);
-
-		Nodeset nodeset = new Nodeset();
-		nodeset.setNodesetElement(nodesetElement);
-		nodeset.setPath(path);
-		
-		return nodeset;
+		return "instance('data-instance')/" + getPath();
 	}
-
-	private static XPathUtil nodesetElementParentXPath;
-	private static XPathUtil nodesetElementByMappingXPath;
-
-	private static final String nodesetPathVariable = "nodesetPath";
-	private static final String mappingVariable = "mapping";
-
-	private static final XPathUtil nodesetElementXPath = new XPathUtil(
-			".//*[name(.) = $nodesetPath]");
-
-	private static synchronized XPathUtil getNodesetElementByMappingXPath() {
-
-		if (nodesetElementByMappingXPath == null)
-			nodesetElementByMappingXPath = new XPathUtil(
-					".//*[@mapping = $mapping]");
-
-		return nodesetElementByMappingXPath;
-	}
-
-	private static synchronized XPathUtil getNodesetElementParentXPath() {
-
-		if (nodesetElementParentXPath == null)
-			nodesetElementParentXPath = new XPathUtil("./data");
-
-		return nodesetElementParentXPath;
-	}
-
+	
 	public Element getNodesetElement() {
 		return nodesetElement;
 	}
-
+	
 	protected void setNodesetElement(Element nodesetElement) {
 		this.nodesetElement = nodesetElement;
 	}
-
+	
 	public void remove() {
-
+		
 		getNodesetElement().getParentNode().removeChild(getNodesetElement());
 		path = null;
+		
+		if (!StringUtil.isEmpty(getMapping())) {
+			
+			mappingSiblingChanged(getMapping());
+		}
 	}
-
-	/**
-	 * clones only nodeset object, but not the elements, that
-	 * are referenced
-	 */
-	@Override
-	public Nodeset clone() {
-
-		Nodeset nodeset = new Nodeset();
-//		nodeset.setNodesetElement((Element) (getNodesetElement() == null ? null
-//				: getNodesetElement().cloneNode(true)));
-		nodeset.setNodesetElement(getNodesetElement());
-		nodeset.setPath(getPath());
-
-		return nodeset;
-	}
-
+	
 	public void rename(String newName) {
-
+		
 		String path = getPath();
 		Element nodesetElement = getNodesetElement();
-
+		
 		path = path.replaceFirst(nodesetElement.getNodeName(), newName);
 		nodesetElement = (Element) nodesetElement.getOwnerDocument()
-				.renameNode(nodesetElement, nodesetElement.getNamespaceURI(),
-						newName);
+		        .renameNode(nodesetElement, nodesetElement.getNamespaceURI(),
+		            newName);
 		setNodesetElement(nodesetElement);
 		setPath(path);
 	}
-
+	
+	/**
+	 * sets mapping for the nodeset, and also, might add the mapping updater for the component
+	 * element in case there are more than one component in the form with the same mapping
+	 * 
+	 * @param formComponent
+	 * @param mappingExpression
+	 */
+	public void setMapping(FormComponent formComponent, String mappingExpression) {
+		
+		if (StringUtil.isEmpty(mappingExpression)) {
+			
+			Logger.getLogger(getClass().getName()).log(
+			    Level.WARNING,
+			    "Passed empty mapping expression, removing mapping. Component = "
+			            + formComponent.getId() + ", form id="
+			            + formComponent.getFormDocument().getId());
+			removeMapping(formComponent);
+			
+		} else if (!mappingExpression.equals(getMapping())) {
+			
+			String previousMapping = getMapping();
+			setMapping(mappingExpression);
+			FormComponentMapping mapping = new FormComponentMapping(
+			        formComponent, this);
+			mapping.setMapping(mappingExpression);
+			mappingSiblingChanged(previousMapping, mappingExpression);
+		}
+	}
+	
+	public void removeMapping(FormComponent formComponent) {
+		
+		FormComponentMapping mapping = new FormComponentMapping(formComponent,
+		        this);
+		
+		String previousMapping = getMapping();
+		setMapping(null);
+		mapping.removeMapping();
+		
+		if (!StringUtil.isEmpty(previousMapping)) {
+			
+			mappingSiblingChanged(previousMapping);
+		}
+	}
+	
+	private void mappingSiblingChanged(String... relevantMappings) {
+		
+		getFormDocument().mappingSiblingChanged(relevantMappings);
+	}
+	
 	public Nodeset getParentBindNodeset() {
 		return parentBindNodeset;
 	}
-
+	
 	public void setParentBindNodeset(Nodeset parentBindNodeset) {
 		this.parentBindNodeset = parentBindNodeset;
+	}
+	
+	FormDocument getFormDocument() {
+		return formDocument;
+	}
+	
+	public void reactToMappingSiblingChanged(FormComponent formComponent,
+	        String... relevantMappings) {
+		
+		if (isRelevantMapping(relevantMappings)) {
+			
+			FormComponentMapping mapping = new FormComponentMapping(
+			        formComponent, this);
+			mapping.setMapping(getMapping());
+		}
+	}
+	
+	private boolean isRelevantMapping(String... mappings) {
+		
+		String myMapping = getMapping();
+		
+		if (!StringUtil.isEmpty(myMapping)) {
+			
+			for (String mapping : mappings) {
+				
+				if (mapping.equals(myMapping))
+					return true;
+			}
+		}
+		
+		return false;
 	}
 }
