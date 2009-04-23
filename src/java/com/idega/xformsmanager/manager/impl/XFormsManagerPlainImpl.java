@@ -2,7 +2,6 @@ package com.idega.xformsmanager.manager.impl;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -21,80 +20,87 @@ import com.idega.xformsmanager.xform.Bind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
- *
- * Last modified: $Date: 2008/11/04 17:53:07 $ by $Author: civilis $
+ * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/23 14:16:06 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.plain)
 @Service
 @Scope("singleton")
-public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsManagerPlain {
-
+public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
+        XFormsManagerPlain {
+	
 	@Override
-	public void update(FormComponent component, ConstUpdateType what, Object prop) {
+	public void update(FormComponent component, ConstUpdateType what,
+	        Object prop) {
 		
 		switch (what) {
 			
-		case LABEL:
-			updateLabel(component);
-			break;
+			case LABEL:
+				updateLabel(component);
+				break;
 			
-		case VARIABLE_NAME:
-			updateVariableName(component);
-			break;
-		case TEXT:
-			updateText(component);
-			break;
-
-		default:
-			break;
+			case VARIABLE_NAME:
+				updateVariableName(component);
+				break;
+			case TEXT:
+				updateText(component);
+				break;
+			
+			default:
+				break;
 		}
 	}
 	
 	protected void updateText(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component
+		        .getComponentDataBean();
 		
-		PropertiesPlain properties = (PropertiesPlain)component.getProperties();
+		PropertiesPlain properties = (PropertiesPlain) component
+		        .getProperties();
 		LocalizedStringBean localizedText = properties.getText();
 		
-		NodeList outputs = FormManagerUtil.getElementsContainingAttribute(xformsComponentDataBean.getElement(), FormManagerUtil.output_tag, FormManagerUtil.ref_s_att);
+		NodeList outputs = FormManagerUtil.getElementsContainingAttribute(
+		    xformsComponentDataBean.getElement(), FormManagerUtil.output_tag,
+		    FormManagerUtil.ref_s_att);
 		Element output;
 		String localizationKey = null;
 		
-		if(outputs == null || outputs.getLength() == 0) {
+		if (outputs == null || outputs.getLength() == 0) {
 			
-			if(localizedText == null)
+			if (localizedText == null)
 				return;
-				
-			output = xformsComponentDataBean.getElement().getOwnerDocument().createElementNS(component.getFormDocument().getFormDataModelElement().getNamespaceURI(), FormManagerUtil.output_tag);
-			output = (Element)xformsComponentDataBean.getElement().appendChild(output);
-			localizationKey = component.getId()+".text";
+			
+			output = xformsComponentDataBean.getElement().getOwnerDocument()
+			        .createElementNS(
+			            component.getFormDocument().getFormDataModelElement()
+			                    .getNamespaceURI(), FormManagerUtil.output_tag);
+			output = (Element) xformsComponentDataBean.getElement()
+			        .appendChild(output);
+			localizationKey = component.getId() + ".text";
 			
 		} else
-			output = (Element)outputs.item(0);
+			output = (Element) outputs.item(0);
 		
-		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, localizationKey, null, 
-				output,
-				component.getFormDocument().getXformsDocument(),
-				localizedText
-		);
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att,
+		    localizationKey, null, output, component.getFormDocument()
+		            .getXformsDocument(), localizedText);
 	}
 	
 	public LocalizedStringBean getText(FormComponent component) {
-				
+		
 		Element output = component.getComponentDataBean().getElement();
 		
 		if (!output.hasAttribute(FormManagerUtil.ref_s_att)) {
-		    
-		    XPathUtil outputXPUT = new XPathUtil(".//xf:output");
-		    output = (Element) outputXPUT.getNode(output);
-			  
-		    if (output == null)
-			    return null;
+			
+			XPathUtil outputXPUT = new XPathUtil(".//xf:output");
+			output = (Element) outputXPUT.getNode(output);
+			
+			if (output == null)
+				return null;
 		}
 		
-		return FormManagerUtil.getElementLocalizedStrings((Element)output, component.getFormDocument().getXformsDocument());
+		return FormManagerUtil.getElementLocalizedStrings((Element) output,
+		    component.getFormDocument().getXformsDocument());
 	}
 	
 	@Override
@@ -102,80 +108,70 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements XFormsM
 		return true;
 	}
 	
-	/*
-	@Override
-	protected void loadBindsAndNodesets(FormComponent component, Document componentsXForm) {
-
-		ComponentDataBean xformsComponentDataBean = component.getXformsComponentDataBean();
-		
-		NodeList outputsWithBind = FormManagerUtil.getElementsContainingAttribute(xformsComponentDataBean.getElement(), FormManagerUtil.output_tag, FormManagerUtil.bind_att);
-		
-		if(outputsWithBind == null || outputsWithBind.getLength() == 0)
-			return;
-		
-		Element outputWithBind = (Element)outputsWithBind.item(0);
- 		
-		String bindId = outputWithBind.getAttribute(FormManagerUtil.bind_att);
-		String modelId = outputWithBind.getAttribute(FormManagerUtil.model_att);
-		
-		if(!StringUtil.isEmpty(bindId)) {
-			
-//			Bind bind = Bind.locate(componentsXForm, bindId, modelId);
-			Bind bind = Bind.locate(component, bindId);
-			
-			if(bind == null)
-				throw new NullPointerException("Binding not found by bind id: "+bindId+(StringUtil.isEmpty(modelId) ? "" : " and modelId: "+modelId));
-			
-			xformsComponentDataBean.setBind(bind);
-		}
-	}
-	*/
-	
 	@Override
 	protected void updateVariableName(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component
+		        .getComponentDataBean();
 		PropertiesComponent properties = component.getProperties();
 		
 		Bind bind = xformsComponentDataBean.getBind();
 		
-		if(bind == null && properties.getVariable() != null) {
-
-			Element output = xformsComponentDataBean.getElement().getOwnerDocument().createElementNS(component.getFormDocument().getFormDataModelElement().getNamespaceURI(), FormManagerUtil.output_tag);
-			output = (Element)xformsComponentDataBean.getElement().appendChild(output);
+		if (bind == null && properties.getVariable() != null) {
 			
-			Element label = xformsComponentDataBean.getElement().getOwnerDocument().createElementNS(component.getFormDocument().getFormDataModelElement().getNamespaceURI(), FormManagerUtil.label_tag);
-			output.appendChild(label);
-			
-			bind = Bind.create(component, "bind."+component.getId(), null, null);
-			output.setAttribute(FormManagerUtil.bind_att, bind.getId());
-			xformsComponentDataBean.setBind(bind);
+			bind = createBindForOutput(component);
 		}
 		
 		super.updateVariableName(component);
 	}
 	
+	private Bind createBindForOutput(FormComponent outputComponent) {
+		
+		ComponentDataBean xformsComponentDataBean = outputComponent
+		        .getComponentDataBean();
+		Element output = xformsComponentDataBean.getElement()
+		        .getOwnerDocument().createElementNS(
+		            outputComponent.getFormDocument().getFormDataModelElement()
+		                    .getNamespaceURI(), FormManagerUtil.output_tag);
+		output = (Element) xformsComponentDataBean.getElement().appendChild(
+		    output);
+		
+		Element label = xformsComponentDataBean.getElement().getOwnerDocument()
+		        .createElementNS(
+		            outputComponent.getFormDocument().getFormDataModelElement()
+		                    .getNamespaceURI(), FormManagerUtil.label_tag);
+		output.appendChild(label);
+		
+		Bind bind = getBindFactory(outputComponent.getFormDocument()).create(
+		    outputComponent, "bind." + outputComponent.getId(), null, null);
+		output.setAttribute(FormManagerUtil.bind_att, bind.getId());
+		xformsComponentDataBean.setBind(bind);
+		
+		return bind;
+	}
+	
 	@Override
 	protected void updateLabel(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component
+		        .getComponentDataBean();
 		
 		PropertiesComponent props = component.getProperties();
 		LocalizedStringBean locStr = props.getLabel();
 		
-		NodeList labels = xformsComponentDataBean.getElement().getElementsByTagName(FormManagerUtil.label_tag);
+		NodeList labels = xformsComponentDataBean.getElement()
+		        .getElementsByTagName(FormManagerUtil.label_tag);
 		
-		if(labels == null || labels.getLength() == 0)
+		if (labels == null || labels.getLength() == 0)
 			return;
 		
-		Element label = (Element)labels.item(0);
+		Element label = (Element) labels.item(0);
 		
 		String ref = label.getAttribute(FormManagerUtil.ref_s_att);
 		
-		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil.isEmpty(ref) ? null : new StringBuilder(component.getId()).append(".label").toString(), null, 
-				label,
-				component.getFormDocument().getXformsDocument(),
-				locStr
-		);
+		FormManagerUtil.putLocalizedText(FormManagerUtil.ref_s_att, !StringUtil
+		        .isEmpty(ref) ? null : new StringBuilder(component.getId())
+		        .append(".label").toString(), null, label, component
+		        .getFormDocument().getXformsDocument(), locStr);
 	}
 }
