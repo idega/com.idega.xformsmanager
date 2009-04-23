@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.idega.xformsmanager.business.component.properties.PropertiesDocument;
 import com.idega.xformsmanager.component.FormComponent;
@@ -20,288 +21,301 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
- * 
- *          Last modified: $Date: 2008/11/20 16:31:28 $ by $Author: civilis $
+ * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/23 14:14:56 $ by $Author: civilis $
  */
 public class FormDocumentTemplateImpl implements FormDocument {
-
+	
 	private Document xformsDocument;
 	private DMContext context;
-
+	
 	public Document getXformsDocument() {
 		return xformsDocument;
 	}
-
+	
 	public void setXformsDocument(Document xformsDocument) {
 		this.xformsDocument = xformsDocument;
 	}
-
+	
 	public DMContext getContext() {
 		return context;
 	}
-
+	
 	public void setContext(DMContext context) {
 		this.context = context;
 	}
-
+	
 	public String getId() {
 		return "Form Components Template";
 	}
-
+	
 	public String generateNewComponentId() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
+		        "Unsupported for template document");
 	}
-
+	
 	public Element getAutofillModelElement() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public Document getComponentsXml(Locale locale) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
+		        "Unsupported for template document");
 	}
-
+	
 	public Locale getDefaultLocale() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormComponentPage getFormConfirmationPage() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public Element getFormDataModelElement() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public Long getFormId() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public Element getFormMainDataInstanceElement() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public LocalizedStringBean getFormTitle() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public String getFormType() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public PropertiesDocument getProperties() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public Element getSectionsVisualizationInstanceElement() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public Element getSubmissionElement() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public boolean isFormDocumentModified() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
+		        "Unsupported for template document");
 	}
-
+	
 	public void registerForLastPage(String register_page_id) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setFormDocumentModified(boolean changed) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormComponent addFormComponent(String componentType,
-			String nextSiblingId) {
+	        String nextSiblingId) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void componentsOrderChanged() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormComponent getContainedComponent(String componentId) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public List<String> getContainedComponentsIds() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormComponentPage getParentPage() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public XFormsManagerContainer getXFormsManager() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void unregisterComponent(String componentId) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void addToConfirmationPage() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void create() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormDocument getFormDocument() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormComponent getNextSibling() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public FormComponentContainer getParent() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public String getType() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public ComponentDataBean getComponentDataBean() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void load() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void loadFromTemplate() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void remove() {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setFormDocument(FormDocument form_document) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setId(String id) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setNextSibling(FormComponent component) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setNextSiblingRerender(FormComponent nextSibling) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setParent(FormComponentContainer parent) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setType(String type) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void setComponentDataBean(ComponentDataBean xformsComponentDataBean) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void update(ConstUpdateType what) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
-
+		        "Unsupported for template document");
+		
 	}
-
+	
 	public void update(ConstUpdateType what, Object property) {
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
+		        "Unsupported for template document");
 	}
-
+	
 	public void dispatchEvent(Event event, Object eventContext,
-			FormComponent dispatcher) {
-
+	        FormComponent dispatcher) {
+		
 		throw new UnsupportedOperationException(
-				"Unsupported for template document");
+		        "Unsupported for template document");
+	}
+	
+	public Element createXFormsElement(String tagExpression) {
+		throw new UnsupportedOperationException(
+		        "Unsupported for template document");
+	}
+	
+	public Node appendChildNode(Node childNode) {
+		throw new UnsupportedOperationException(
+		        "Unsupported for template document");
+	}
+	
+	public void mappingSiblingChanged(String... relevantMappings) {
+		throw new UnsupportedOperationException(
+		        "Unsupported for template document");
 	}
 }
