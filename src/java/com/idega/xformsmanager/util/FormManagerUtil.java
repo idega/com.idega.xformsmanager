@@ -42,7 +42,7 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.19 $ Last modified: $Date: 2009/04/23 14:16:35 $ by $Author: civilis $
+ * @version $Revision: 1.20 $ Last modified: $Date: 2009/04/24 15:08:29 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -101,6 +101,7 @@ public class FormManagerUtil {
 	public static final String p3ptype_att = "p3ptype";
 	public static final String instance_tag = "xf:instance";
 	public static final String setvalue_tag = "xf:setvalue";
+	public static final String setvalue_tag_idega_ns = "idega:setvalue";
 	public static final String div_tag = "div";
 	public static final String trigger_tag = "xf:trigger";
 	public static final String preview = "preview";
