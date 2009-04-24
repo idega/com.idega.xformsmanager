@@ -11,9 +11,11 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * component is referencing nodesets with the same mapping
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $ Last modified: $Date: 2009/04/23 14:17:14 $ by $Author: civilis $
+ * @version $Revision: 1.2 $ Last modified: $Date: 2009/04/24 15:09:30 $ by $Author: civilis $
  */
 public class FormComponentMapping {
+	
+	private static final String mappingSiblingsUpdaterAttVal = "mappingSiblingsUpdater";
 	
 	private FormComponent formComponent;
 	private Nodeset nodeset;
@@ -57,8 +59,9 @@ public class FormComponentMapping {
 	private Element createUpdaterElement() {
 		
 		// create updater element
-		Element updaterElement = getFormComponent().getFormDocument()
-		        .createXFormsElement(FormManagerUtil.setvalue_tag);
+		Element updaterElement = getFormComponent()
+		        .getFormDocument()
+		        .createIdegaXFormsElement(FormManagerUtil.setvalue_tag_idega_ns);
 		
 		updaterElement.setAttribute(FormManagerUtil.event_att,
 		    FormManagerUtil.XFormEvent.XFORMS_VALUE_CHANGED);
@@ -66,6 +69,8 @@ public class FormComponentMapping {
 		String noodesetPath = getNodeset().getXPathPath();
 		
 		updaterElement.setAttribute(FormManagerUtil.value_att, noodesetPath);
+		updaterElement.setAttribute("multiple", "true()");
+		updaterElement.setAttribute("type", mappingSiblingsUpdaterAttVal);
 		
 		return updaterElement;
 	}
@@ -74,8 +79,6 @@ public class FormComponentMapping {
 		
 		Element dataInstanceElement = getFormComponent().getFormDocument()
 		        .getFormMainDataInstanceElement();
-		
-		org.chiba.xml.dom.DOMUtil.prettyPrintDOM(dataInstanceElement);
 		
 		NodeList nl = FormManagerUtil.getElementsContainingAttribute(
 		    dataInstanceElement, null, FormManagerUtil.mapping_att,
@@ -87,7 +90,8 @@ public class FormComponentMapping {
 	private Element getMappingSiblingsUpdaterElement() {
 		
 		NodeList nl = FormManagerUtil.getElementsContainingAttribute(
-		    getFormComponentElement(), "name", "mappingSiblingsUpdater");
+		    getFormComponentElement(), null, "type",
+		    mappingSiblingsUpdaterAttVal);
 		Element el;
 		
 		if (nl.getLength() != 0) {
