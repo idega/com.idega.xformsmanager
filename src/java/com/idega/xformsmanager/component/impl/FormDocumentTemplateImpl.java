@@ -21,7 +21,7 @@ import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/23 14:14:56 $ by $Author: civilis $
+ * @version $Revision: 1.8 $ Last modified: $Date: 2009/04/24 15:08:15 $ by $Author: civilis $
  */
 public class FormDocumentTemplateImpl implements FormDocument {
 	
@@ -315,6 +315,11 @@ public class FormDocumentTemplateImpl implements FormDocument {
 	}
 	
 	public void mappingSiblingChanged(String... relevantMappings) {
+		throw new UnsupportedOperationException(
+		        "Unsupported for template document");
+	}
+	
+	public Element createIdegaXFormsElement(String tagExpression) {
 		throw new UnsupportedOperationException(
 		        "Unsupported for template document");
 	}

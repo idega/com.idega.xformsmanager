@@ -11,7 +11,7 @@ import com.idega.xformsmanager.context.DMContext;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.4 $ Last modified: $Date: 2009/04/23 14:13:10 $ by $Author: civilis $
+ * @version $Revision: 1.5 $ Last modified: $Date: 2009/04/24 15:08:02 $ by $Author: civilis $
  */
 public interface FormDocument extends FormComponentContainer {
 	
@@ -55,4 +55,11 @@ public interface FormDocument extends FormComponentContainer {
 	 * @return created element. This element is not appended anywhere
 	 */
 	public abstract Element createXFormsElement(String tagExpression);
+	
+	/**
+	 * @param tagExpression
+	 *            xf: prefixed tag expression. E.g. idega:setvalue
+	 * @return created element. This element is not appended anywhere
+	 */
+	public abstract Element createIdegaXFormsElement(String tagExpression);
 }

@@ -41,7 +41,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * processing. This could be accomplished by using aspects and annotations too
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.20 $ Last modified: $Date: 2009/04/23 14:14:38 $ by $Author: civilis $
+ * @version $Revision: 1.21 $ Last modified: $Date: 2009/04/24 15:08:15 $ by $Author: civilis $
  */
 public class FormDocumentImpl extends FormComponentContainerImpl implements
         com.idega.xformsmanager.business.Document,
@@ -753,5 +753,12 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		Element model = getFormDataModelElement();
 		return model.getOwnerDocument().createElementNS(
 		    model.getNamespaceURI(), tagExpression);
+	}
+	
+	public Element createIdegaXFormsElement(String tagExpression) {
+		
+		Element model = getFormDataModelElement();
+		return model.getOwnerDocument().createElementNS(
+		    FormManagerUtil.idega_namespace, tagExpression);
 	}
 }
