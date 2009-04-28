@@ -40,7 +40,7 @@ import com.idega.xformsmanager.xform.NodesetFactory;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.22 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
+ * @version $Revision: 1.23 $ Last modified: $Date: 2009/04/28 13:54:48 $ by $Author: arunas $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -781,7 +781,13 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		Bind bind = componentBind.getBind();
 		
-		bind.setIsCalculate(props.isCalculate());
+		if (props.isCalculate())
+			
+			bind.setCalculate(props.getCalculateExp().equals(CoreConstants.EMPTY) ? FormManagerUtil.calculate_att : props.getCalculateExp());
+		
+		else 
+			bind.setCalculate(null);
+		
 	}
 	
 	public String getCaculateExpression(FormComponent component) {

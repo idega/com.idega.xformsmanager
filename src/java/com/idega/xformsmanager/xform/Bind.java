@@ -16,7 +16,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * instance) also, bind could have more than one form component
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.15 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
+ * @version $Revision: 1.16 $ Last modified: $Date: 2009/04/28 13:54:48 $ by $Author: arunas $
  */
 public class Bind {
 	
@@ -156,26 +156,13 @@ public class Bind {
 	public boolean isCalculate() {
 		
 		if (isCalculate == null) {
-			Element bind = getBindElement();
-			isCalculate = bind.hasAttribute(FormManagerUtil.calculate_att)
-			        && bind.getAttribute(FormManagerUtil.calculate_att).length() != 0;
+			Element bindElement = getBindElement();
+			isCalculate = bindElement.hasAttribute(FormManagerUtil.calculate_att)
+			        && bindElement.getAttribute(FormManagerUtil.calculate_att).length() != 0;
 		}
 		
 		return isCalculate;
 	}
-	
-	public void setIsCalculate(boolean isCalculate) {
-		
-		this.isCalculate = isCalculate;
-		
-		if (isCalculate)
-			getBindElement().setAttribute(FormManagerUtil.calculate_att,
-				FormManagerUtil.true_string);
-		else
-			getBindElement().removeAttribute(FormManagerUtil.calculate_att);
-	}
-    
-
 	
 	public String getConstraint() {
 		
