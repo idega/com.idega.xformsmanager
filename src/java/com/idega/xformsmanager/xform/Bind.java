@@ -8,20 +8,17 @@ import org.w3c.dom.Element;
 
 import com.idega.util.CoreConstants;
 import com.idega.util.StringUtil;
-import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormDocument;
-import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
- * TODO: move static bind methods to binds factory TODO: when bind is shared, all the components
- * should point to the same bind object (shared bind instance) also, bind could have more than one
- * form component
+ * TODO: when bind is shared, all the components should point to the same bind object (shared bind
+ * instance) also, bind could have more than one form component
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.13 $ Last modified: $Date: 2009/04/23 14:17:02 $ by $Author: civilis $
+ * @version $Revision: 1.14 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
-public class Bind implements Cloneable {
+public class Bind {
 	
 	private static final Logger logger = Logger.getLogger(Bind.class.getName());
 	
@@ -31,7 +28,7 @@ public class Bind implements Cloneable {
 	}
 	
 	private FormDocument formDocument;
-	private FormComponent formComponent;
+	// private FormComponent formComponent;
 	
 	private String id;
 	private Element bindElement;
@@ -159,24 +156,6 @@ public class Bind implements Cloneable {
 		
 		Element bindElement = getBindElement();
 		
-		// String schemaType =
-		// bindElement.getAttribute(FormManagerUtil.type_att);
-		
-		// FIXME: perhaps remove schema type here if that's the last used or
-		// smth
-		// if(schemaType != null && schemaType.startsWith(component.getId())) {
-		//			
-		// Element schema_element =
-		// (Element)xforms_doc.getElementsByTagName(FormManagerUtil.schema_tag).item(0);
-		//			
-		// Element type_element_to_remove =
-		// DOMUtil.getElementByAttributeValue(schema_element, "*",
-		// FormManagerUtil.name_att, schemaType);
-		//			
-		// if(type_element_to_remove != null)
-		// schema_element.removeChild(type_element_to_remove);
-		// }
-		
 		bindElement.getParentNode().removeChild(bindElement);
 		setBindElement(null);
 		id = null;
@@ -225,76 +204,63 @@ public class Bind implements Cloneable {
 			getBindElement().removeAttribute(FormManagerUtil.readonly_att);
 	}
 	
-	/*
-	 * public void rename(String renameTo) {`
-	 * 
-	 * // LocalizedStringBean localizedLabel = getProperties().getLabel(); //
-	 * String defaultLocaleLabel =
-	 * localizedLabel.getString(formDocument.getDefaultLocale());
-	 * 
-	 * newBindName =
-	 * FormManagerUtil.escapeNonXmlTagSymbols(newBindName.replace(' ', '_'));
-	 * bind.rename(newBindName);
-	 * 
-	 * if(xformsComponentDataBean.getPreviewElement() != null)
-	 * xformsComponentDataBean.getPreviewElement().setAttribute(
-	 * FormManagerUtil.ref_s_att,
-	 * bind.getBindElement().getAttribute(FormManagerUtil.nodeset_att) );
-	 * 
-	 * getXFormsManager().changeBindName(this, new
-	 * StringBuffer(defaultLocaleLabel) .append('_') .append(getId())
-	 * .toString() ); }
-	 */
-
 	public void rename(String renameTo) {
 		
-		if (getIsShared()) {
+		if (!canRename()) {
 			
-			logger.log(Level.WARNING,
-			    "Renaming bind, though it is shared. Is this expected? Component id="
-			            + getFormComponent().getId() + ", form id = "
-			            + getFormComponent().getFormDocument().getId());
-		}
-		
-		renameTo = FormManagerUtil.escapeNonXmlTagSymbols(renameTo.replace(' ',
-		    '_'));
-		
-		if (getParentBind() == null) {
-			
-			Nodeset nodeset = getNodeset();
-			
-			if (nodeset != null) {
-				nodeset.rename(renameTo);
-			}
-			
-			setNodeset(nodeset);
-			
-			ComponentDataBean xformsComponentDataBean = getFormComponent()
-			        .getComponentDataBean();
-			
-			if (xformsComponentDataBean.getPreviewElement() != null) {
-				
-				xformsComponentDataBean.getPreviewElement().setAttribute(
-				    FormManagerUtil.ref_s_att,
-				    getBindElement().getAttribute(FormManagerUtil.nodeset_att));
-			}
+			logger
+			        .log(
+			            Level.WARNING,
+			            "Tried to rename bind, though it cannot be renamed (canRename == false). Form id= "
+			                    + getFormDocument().getId()
+			                    + ", bind id="
+			                    + getId());
 		} else {
 			
-			// when parent bind present, renaming current with this logic:
-			// if the bind contains - symbol, rename only the string going
-			// before -
-			// e.g. multiupload-group, when renamed will be newname-group
+			renameTo = FormManagerUtil.escapeNonXmlTagSymbols(renameTo.replace(
+			    ' ', '_'));
 			
-			String currentId = getId();
-			
-			// currentId.substring(s)
-			String postfix = currentId.substring(currentId
-			        .indexOf(CoreConstants.MINUS));
-			
-			String newId = renameTo + postfix;
-			
-			setId(newId);
-			getBindElement().setAttribute(FormManagerUtil.id_att, newId);
+			if (getParentBind() == null) {
+				
+				Nodeset nodeset = getNodeset();
+				
+				if (nodeset != null) {
+					nodeset.rename(renameTo);
+				}
+				
+				setNodeset(nodeset);
+				
+				/*
+				TODO: inform all referencing ComponentBinds
+				ComponentDataBean xformsComponentDataBean = getFormComponent()
+				        .getComponentDataBean();
+				
+				if (xformsComponentDataBean.getPreviewElement() != null) {
+					
+					xformsComponentDataBean.getPreviewElement().setAttribute(
+					    FormManagerUtil.ref_s_att,
+					    getBindElement().getAttribute(
+					        FormManagerUtil.nodeset_att));
+				}
+				*/
+			} else {
+				
+				// when parent bind present, renaming current with this logic:
+				// if the bind contains - symbol, rename only the string going
+				// before -
+				// e.g. multiupload-group, when renamed will be newname-group
+				
+				String currentId = getId();
+				
+				// currentId.substring(s)
+				String postfix = currentId.substring(currentId
+				        .indexOf(CoreConstants.MINUS));
+				
+				String newId = renameTo + postfix;
+				
+				setId(newId);
+				getBindElement().setAttribute(FormManagerUtil.id_att, newId);
+			}
 		}
 	}
 	
@@ -379,18 +345,18 @@ public class Bind implements Cloneable {
 		this.isRelevant = isRelevant;
 	}
 	
-	public FormComponent getFormComponent() {
-		
-		if (formComponent == null && getParentBind() != null) {
-			formComponent = getParentBind().getFormComponent();
-		}
-		
-		return formComponent;
-	}
-	
-	public void setFormComponent(FormComponent formComponent) {
-		this.formComponent = formComponent;
-	}
+	// public FormComponent getFormComponent() {
+	//		
+	// if (formComponent == null && getParentBind() != null) {
+	// formComponent = getParentBind().getFormComponent();
+	// }
+	//		
+	// return formComponent;
+	// }
+	//	
+	// public void setFormComponent(FormComponent formComponent) {
+	// this.formComponent = formComponent;
+	// }
 	
 	public Boolean getIsShared() {
 		
@@ -440,5 +406,21 @@ public class Bind implements Cloneable {
 	
 	FormDocument getFormDocument() {
 		return formDocument;
+	}
+	
+	public boolean canRename() {
+		
+		return !getIsShared();
+	}
+	
+	public boolean canRemove() {
+		
+		return !getIsShared();
+	}
+	
+	public boolean hasValidationConstraints() {
+		
+		return !StringUtil.isEmpty(getType())
+		        || !StringUtil.isEmpty(getConstraint());
 	}
 }

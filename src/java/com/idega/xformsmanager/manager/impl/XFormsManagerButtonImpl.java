@@ -23,12 +23,13 @@ import com.idega.xformsmanager.manager.XFormsManagerButton;
 import com.idega.xformsmanager.util.FormManagerUtil;
 import com.idega.xformsmanager.xform.Bind;
 import com.idega.xformsmanager.xform.BindFactory;
+import com.idega.xformsmanager.xform.ComponentBind;
 import com.idega.xformsmanager.xform.Nodeset;
 import com.idega.xformsmanager.xform.NodesetFactory;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.14 $ Last modified: $Date: 2009/04/23 14:15:27 $ by $Author: civilis $
+ * @version $Revision: 1.15 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.button)
 @Service
@@ -190,7 +191,7 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 			
 			BindFactory bindFactory = getBindFactory(formComponent
 			        .getFormDocument());
-			Bind bind = bindFactory.locate(formComponent, actionTaken);
+			Bind bind = bindFactory.locate(actionTaken);
 			
 			if (bind == null) {
 				
@@ -210,11 +211,16 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 				nodeset.setMapping(var.getDefaultStringRepresentation());
 				
 				// create
-				bind = bindFactory.create(formComponent, actionTaken, null,
-				    nodeset);
+				bind = bindFactory.create(actionTaken, null, nodeset);
 				bind.setIsShared(true);
 			}
 			
+			// TODO: do we need to connect component with bind here?
+			System.out.println("button component bind connection exists="
+			        + formComponent.getComponentDataBean().getComponentBind()
+			                .exists());
+			formComponent.getComponentDataBean().setComponentBind(
+			    createComponentBind(formComponent, bind));
 			setValueEl.setAttribute(FormManagerUtil.bind_att, bind.getId());
 		}
 		
@@ -267,10 +273,12 @@ public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
 		// TODO: is this correct behavior?
 		ComponentDataBean xformsComponentDataBean = component
 		        .getComponentDataBean();
-		Bind bind = xformsComponentDataBean.getBind();
 		
-		return bind != null
-		        && bind.getNodeset().getContent().equals(
+		ComponentBind componentBind = xformsComponentDataBean
+		        .getComponentBind();
+		
+		return componentBind.exists()
+		        && componentBind.getBind().getNodeset().getContent().equals(
 		            FormManagerUtil.xpath_false);
 	}
 }

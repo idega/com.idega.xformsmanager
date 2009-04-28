@@ -6,21 +6,22 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-import com.idega.xformsmanager.util.FormManagerUtil;
 import com.idega.xformsmanager.xform.Bind;
+import com.idega.xformsmanager.xform.ComponentBind;
 import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $ Last modified: $Date: 2009/04/23 14:13:30 $ by $Author: civilis $
+ * @version $Revision: 1.6 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
-public class ComponentDataBean implements Cloneable {
+public class ComponentDataBean {
 	
 	private Element element;
-	private Bind bind;
+	// private Bind bind;
 	private Element previewElement;
 	private Element keyExtInstance;
 	private Element keySetvalue;
+	private ComponentBind componentBind;
 	
 	private Map<Locale, Element> localizedHtmlComponents;
 	
@@ -32,13 +33,10 @@ public class ComponentDataBean implements Cloneable {
 		this.previewElement = preview_element;
 	}
 	
-	public Bind getBind() {
-		return bind;
-	}
-	
 	public Nodeset getNodeset() {
 		
-		Bind bind = getBind();
+		// Bind bind = getBind();
+		Bind bind = getComponentBind().getBind();
 		return bind != null ? bind.getNodeset() : null;
 	}
 	
@@ -47,22 +45,20 @@ public class ComponentDataBean implements Cloneable {
 	 * 
 	 * @param bind
 	 */
-	public void setBind(Bind bind) {
-		this.bind = bind;
-	}
-	
+	// public void setBind(Bind bind) {
+	// this.bind = bind;
+	// }
 	/**
 	 * sets bind and updates component element to reference the bind
 	 * 
 	 * @param bind
 	 */
-	public void putBind(Bind bind) {
-		
-		bind.getFormComponent().getComponentDataBean().getElement()
-		        .setAttribute(FormManagerUtil.bind_att, bind.getId());
-		this.bind = bind;
-	}
-	
+	// public void putBind(Bind bind) {
+	//		
+	// bind.getFormComponent().getComponentDataBean().getElement()
+	// .setAttribute(FormManagerUtil.bind_att, bind.getId());
+	// this.bind = bind;
+	// }
 	public Element getElement() {
 		return element;
 	}
@@ -103,5 +99,13 @@ public class ComponentDataBean implements Cloneable {
 	public void setLocalizedHtmlComponents(
 	        Map<Locale, Element> localizedHtmlComponents) {
 		this.localizedHtmlComponents = localizedHtmlComponents;
+	}
+	
+	public ComponentBind getComponentBind() {
+		return componentBind;
+	}
+	
+	public void setComponentBind(ComponentBind componentBind) {
+		this.componentBind = componentBind;
 	}
 }

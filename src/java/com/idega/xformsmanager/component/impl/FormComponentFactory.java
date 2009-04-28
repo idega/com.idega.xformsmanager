@@ -16,9 +16,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $
- *
- * Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
+ * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @Service
 @Scope("singleton")
@@ -28,9 +26,10 @@ public class FormComponentFactory {
 	private static final String type_simple = "type_simple";
 	private static final String type_select = "type_select";
 	private static final String type_non_display = "type_non_display";
-	private static final String type_plain = "type_plain";
+	private static final String type_static = "type_static";
 	private static final String type_upload = "type_upload";
 	private static final String type_page = "type_page";
+	private static final String type_output = "type_output";
 	
 	public static final String page_type_tag = FormManagerUtil.idegans_case_tag;
 	public static final String page_type = "fbc_page";
@@ -41,7 +40,7 @@ public class FormComponentFactory {
 	
 	private FormManager formManager;
 	
-	private FormComponentFactory() { 
+	private FormComponentFactory() {
 		
 		components_tags_classified = new HashMap<String, List<String>>();
 		
@@ -53,7 +52,7 @@ public class FormComponentFactory {
 		types.add("fbc_autofill_personal_id");
 		types.add("fbc_autofill_address");
 		types.add("fbc_autofill_phones");
-		types.add("fbc_autofill_emails");		
+		types.add("fbc_autofill_emails");
 		types.add("fbc_autofill_country");
 		types.add("fbc_autofill_province");
 		types.add("fbc_autofill_city");
@@ -63,7 +62,6 @@ public class FormComponentFactory {
 		types.add("fbc_text");
 		types.add("fbc_date");
 		types.add("fbc_current_date");
-		types.add("fbc_text_output");
 		types.add("fbc_textarea");
 		types.add("fbc_secret");
 		types.add("fbc_email");
@@ -96,7 +94,7 @@ public class FormComponentFactory {
 		types.add("fbc_header_text");
 		types.add("fbc_separator");
 		
-		components_tags_classified.put(type_plain, types);
+		components_tags_classified.put(type_static, types);
 		
 		types = new ArrayList<String>();
 		types.add("fbc_multiupload");
@@ -109,64 +107,110 @@ public class FormComponentFactory {
 		types.add(page_type_thx);
 		types.add("save_page");
 		components_tags_classified.put(type_page, types);
+		
+		types = new ArrayList<String>();
+		types.add("fbc_text_output");
+		components_tags_classified.put(type_output, types);
 	}
 	
-	public FormComponent getFormComponentByType(String componentType, boolean loadFromTemplate) {
+	public FormComponent getFormComponentByType(String componentType) {
 		
 		FormComponent component = recognizeFormComponent(componentType);
 		component.setType(componentType);
-		
-		if(loadFromTemplate) {
-		
-			component.setFormDocument(getFormManager().getFormDocumentTemplate());
-			component.loadFromTemplate();
-		}
-		
 		return component;
 	}
 	
 	public FormComponent recognizeFormComponent(String componentType) {
 		
-		if(components_tags_classified.get(type_upload).contains(componentType))
+		if (isUploadType(componentType))
 			return new FormComponentMultiUploadImpl();
-		if(components_tags_classified.get(type_select).contains(componentType))
+		if (isSelectType(componentType))
 			return new FormComponentSelectImpl();
-		if(components_tags_classified.get(type_page).contains(componentType))
+		if (isPageType(componentType))
 			return new FormComponentPageImpl();
-		if(componentType.equals(fbc_button_area))
+		if (isButtonAreaType(componentType))
 			return new FormComponentButtonAreaImpl();
-		if(componentType.equals(button_type) || ConstButtonType.getAllTypesInStrings().contains(componentType))
+		if (isButtonType(componentType))
 			return new FormComponentButtonImpl();
-		if(components_tags_classified.get(type_plain).contains(componentType))
-			return new FormComponentPlainImpl();
-		
+		if (isStaticType(componentType))
+			return new FormComponentStaticImpl();
+		if (isOutputType(componentType))
+			return new FormComponentOutputImpl();
 		
 		return new FormComponentImpl();
 	}
 	
-	public boolean isNormalFormElement(FormComponent form_component) {
+	private boolean isUploadType(String componentType) {
 		
-		String type = form_component.getType();
-		return 
-			components_tags_classified.get(type_select).contains(type) ||
-			components_tags_classified.get(type_simple).contains(type);
+		return components_tags_classified.get(type_upload).contains(
+		    componentType);
+	}
+	
+	private boolean isSelectType(String componentType) {
+		
+		return components_tags_classified.get(type_select).contains(
+		    componentType);
+	}
+	
+	private boolean isPageType(String componentType) {
+		
+		return components_tags_classified.get(type_page)
+		        .contains(componentType);
+	}
+	
+	private boolean isButtonAreaType(String componentType) {
+		
+		return componentType.equals(fbc_button_area);
+	}
+	
+	private boolean isButtonType(String componentType) {
+		
+		return componentType.equals(button_type)
+		        || ConstButtonType.getAllTypesInStrings().contains(
+		            componentType);
+	}
+	
+	private boolean isStaticType(String componentType) {
+		
+		return components_tags_classified.get(type_static).contains(
+		    componentType);
+	}
+	
+	private boolean isOutputType(String componentType) {
+		
+		return components_tags_classified.get(type_output).contains(
+		    componentType);
+	}
+	
+	private boolean isSimpleType(String componentType) {
+		
+		return components_tags_classified.get(type_simple).contains(
+		    componentType);
+	}
+	
+	public boolean isInputComponent(FormComponent formComponent) {
+		
+		String type = formComponent.getType();
+		return isSelectType(type) || isSimpleType(type);
 	}
 	
 	public void filterNonDisplayComponents(List<String> all_components_types) {
 		
-		List<String> non_disp_types = components_tags_classified.get(type_non_display);
+		List<String> non_disp_types = components_tags_classified
+		        .get(type_non_display);
 		
-		for (Iterator<String> iter = all_components_types.iterator(); iter.hasNext();) {
+		for (Iterator<String> iter = all_components_types.iterator(); iter
+		        .hasNext();) {
 			
-			if(non_disp_types.contains(iter.next()))
+			if (non_disp_types.contains(iter.next()))
 				iter.remove();
 		}
 	}
-
+	
 	FormManager getFormManager() {
 		return formManager;
 	}
-
+	
 	public void setFormManager(FormManager formManager) {
 		this.formManager = formManager;
 	}

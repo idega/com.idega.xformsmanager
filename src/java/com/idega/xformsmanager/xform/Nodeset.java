@@ -14,9 +14,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * represents bind nodeset attribute
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $ Last modified: $Date: 2009/04/23 14:17:41 $ by $Author: civilis $
+ * @version $Revision: 1.6 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
-public class Nodeset implements Cloneable {
+public class Nodeset {
 	
 	/**
 	 * this path should be the same as the value of the bind nodeset attribute
@@ -123,7 +123,7 @@ public class Nodeset implements Cloneable {
 			
 			String previousMapping = getMapping();
 			setMapping(mappingExpression);
-			FormComponentMapping mapping = new FormComponentMapping(
+			FormComponentMapping mapping = new FormComponentMappingImpl(
 			        formComponent, this);
 			mapping.setMapping(mappingExpression);
 			mappingSiblingChanged(previousMapping, mappingExpression);
@@ -132,8 +132,8 @@ public class Nodeset implements Cloneable {
 	
 	public void removeMapping(FormComponent formComponent) {
 		
-		FormComponentMapping mapping = new FormComponentMapping(formComponent,
-		        this);
+		FormComponentMapping mapping = new FormComponentMappingImpl(
+		        formComponent, this);
 		
 		String previousMapping = getMapping();
 		setMapping(null);
@@ -167,7 +167,7 @@ public class Nodeset implements Cloneable {
 		
 		if (isRelevantMapping(relevantMappings)) {
 			
-			FormComponentMapping mapping = new FormComponentMapping(
+			FormComponentMapping mapping = new FormComponentMappingImpl(
 			        formComponent, this);
 			mapping.setMapping(getMapping());
 		}

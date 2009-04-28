@@ -24,9 +24,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  *
- * Last modified: $Date: 2008/11/06 15:41:51 $ by $Author: civilis $
+ * Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.document)
 @Service
@@ -57,7 +57,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 			Element autofillModel = FormManagerUtil.getElementById(xform, FormManagerUtil.autofill_model_id);
 			
 			if(autofillModel == null) {
-				autofillModel = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getComponentsTemplate(), "autofill-model");
+				autofillModel = FormManagerUtil.getItemElementById(component.getFormDocument().getContext().getComponentsTemplateDocument(), "autofill-model");
 				autofillModel = (Element)xform.importNode(autofillModel, true);
 				Element headElement = (Element)xform.getElementsByTagName(FormManagerUtil.head_tag).item(0);
 				autofillModel = (Element)headElement.appendChild(autofillModel);

@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 import com.idega.util.StringUtil;
 import com.idega.util.xml.XPathUtil;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
-import com.idega.xformsmanager.business.component.properties.PropertiesPlain;
+import com.idega.xformsmanager.business.component.properties.PropertiesStatic;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentType;
 import com.idega.xformsmanager.component.beans.ComponentDataBean;
@@ -17,10 +17,12 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.manager.XFormsManagerPlain;
 import com.idega.xformsmanager.util.FormManagerUtil;
 import com.idega.xformsmanager.xform.Bind;
+import com.idega.xformsmanager.xform.ComponentBind;
+import com.idega.xformsmanager.xform.ComponentBindImpl;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/23 14:16:06 $ by $Author: civilis $
+ * @version $Revision: 1.8 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.plain)
 @Service
@@ -55,7 +57,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
 		ComponentDataBean xformsComponentDataBean = component
 		        .getComponentDataBean();
 		
-		PropertiesPlain properties = (PropertiesPlain) component
+		PropertiesStatic properties = (PropertiesStatic) component
 		        .getProperties();
 		LocalizedStringBean localizedText = properties.getText();
 		
@@ -115,11 +117,14 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
 		        .getComponentDataBean();
 		PropertiesComponent properties = component.getProperties();
 		
-		Bind bind = xformsComponentDataBean.getBind();
+		ComponentBind componentBind = xformsComponentDataBean
+		        .getComponentBind();
 		
-		if (bind == null && properties.getVariable() != null) {
+		if (!componentBind.exists() && properties.getVariable() != null) {
 			
-			bind = createBindForOutput(component);
+			Bind bind = createBindForOutput(component);
+			xformsComponentDataBean.setComponentBind(new ComponentBindImpl(
+			        component, bind));
 		}
 		
 		super.updateVariableName(component);
@@ -143,9 +148,11 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
 		output.appendChild(label);
 		
 		Bind bind = getBindFactory(outputComponent.getFormDocument()).create(
-		    outputComponent, "bind." + outputComponent.getId(), null, null);
+		    "bind." + outputComponent.getId(), null, null);
 		output.setAttribute(FormManagerUtil.bind_att, bind.getId());
-		xformsComponentDataBean.setBind(bind);
+		
+		xformsComponentDataBean.setComponentBind(createComponentBind(
+		    outputComponent, bind));
 		
 		return bind;
 	}

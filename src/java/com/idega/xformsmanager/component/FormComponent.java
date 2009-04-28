@@ -13,7 +13,7 @@ import com.idega.xformsmanager.context.Event;
  * Shouldn't be used outside the xform document manager
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $ Last modified: $Date: 2009/04/23 14:12:39 $ by $Author: civilis $
+ * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 public interface FormComponent {
 	
@@ -100,4 +100,6 @@ public interface FormComponent {
 	public abstract Node appendChildNode(Node childNode);
 	
 	public abstract void mappingSiblingChanged(String... relevantMappings);
+	
+	public abstract boolean isInputComponent();
 }

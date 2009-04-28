@@ -17,12 +17,13 @@ import com.idega.xformsmanager.business.component.properties.PropertiesComponent
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormComponentContainer;
 import com.idega.xformsmanager.component.FormComponentPage;
+import com.idega.xformsmanager.context.DMContext;
 import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/23 14:13:59 $ by $Author: civilis $
+ * @version $Revision: 1.10 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 public class FormComponentContainerImpl extends FormComponentImpl implements
         FormComponentContainer, Container {
@@ -43,18 +44,15 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 			
 			String componentType = componentTypeAndId[0];
 			String componentId = componentTypeAndId[1];
-			FormComponent component = componentsFactory.getFormComponentByType(
-			    componentType, false);
+			FormComponent component = componentsFactory
+			        .getFormComponentByType(componentType);
 			component.setFormDocument(getFormDocument());
-			// component.setContext(getContext());
 			
 			component.setId(componentId);
 			component.setParent(this);
-			// component.setLoad(true);
 			componentsIds.add(componentId);
 			getContainedComponents().put(componentId, component);
 			
-			// component.render();
 			component.load();
 		}
 	}
@@ -107,18 +105,16 @@ public class FormComponentContainerImpl extends FormComponentImpl implements
 	public FormComponent addFormComponent(String componentType,
 	        String nextSiblingId) {
 		
-		FormComponent component = getFormDocument().getContext()
-		        .getFormComponentFactory().getFormComponentByType(
-		            componentType, true);
-		// component.setContext(getContext());
-		// component.setFormDocument(getFormDocument());
+		DMContext dmContext = getFormDocument().getContext();
+		FormComponent component = dmContext.getFormComponentFactory()
+		        .getFormComponentByType(componentType);
+		
+		dmContext.getComponentsTemplate().loadComponentFromTemplate(component);
 		
 		String generatedComponentId = getFormDocument()
 		        .generateNewComponentId();
 		component.setId(generatedComponentId);
 		component.setParent(this);
-		// component.setLoad(false);
-		// component.render();
 		component.setFormDocument(getFormDocument());
 		
 		if (nextSiblingId != null) {

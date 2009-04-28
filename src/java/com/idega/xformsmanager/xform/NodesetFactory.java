@@ -15,7 +15,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $ Last modified: $Date: 2009/04/23 14:17:14 $ by $Author: civilis $
+ * @version $Revision: 1.2 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @Service(NodesetFactory.beanIdentifier)
 @Scope("singleton")
@@ -250,6 +250,7 @@ public class NodesetFactory {
 		return nodesetElementParentXPath;
 	}
 	
+	/*
 	public Nodeset cloneNodeset(Nodeset cloneableNodeset) {
 		
 		Nodeset nodeset = new Nodeset(cloneableNodeset.getFormDocument());
@@ -258,7 +259,8 @@ public class NodesetFactory {
 		
 		return nodeset;
 	}
-	
+	*/
+
 	public FormDocument getFormDocument() {
 		return formDocumentLocal.get();
 	}

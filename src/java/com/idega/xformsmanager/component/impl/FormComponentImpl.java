@@ -19,11 +19,12 @@ import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.manager.HtmlManager;
 import com.idega.xformsmanager.manager.XFormsManager;
 import com.idega.xformsmanager.xform.Bind;
+import com.idega.xformsmanager.xform.ComponentBind;
 import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.16 $ Last modified: $Date: 2009/04/23 14:14:20 $ by $Author: civilis $
+ * @version $Revision: 1.17 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -52,10 +53,8 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		FormDocument formDocument = getFormDocument();
 		formDocument.setFormDocumentModified(true);
-		// tellAboutMe();
 		
-		if (formDocument.getContext().getFormComponentFactory()
-		        .isNormalFormElement(this)) {
+		if (isInputComponent()) {
 			
 			FormComponentPage confirmationPage = formDocument
 			        .getFormConfirmationPage();
@@ -79,8 +78,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		getFormDocument().setFormDocumentModified(true);
 		// tellAboutMe();
 		
-		if (getFormDocument().getContext().getFormComponentFactory()
-		        .isNormalFormElement(this)) {
+		if (isInputComponent()) {
 			
 			// TODO: perhaps just lazyload
 			getXFormsManager().loadConfirmationElement(this, null);
@@ -89,8 +87,7 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	public void addToConfirmationPage() {
 		
-		if (getFormDocument().getContext().getFormComponentFactory()
-		        .isNormalFormElement(this)) {
+		if (isInputComponent()) {
 			
 			FormComponentPage confirmationPage = getFormDocument()
 			        .getFormConfirmationPage();
@@ -120,21 +117,27 @@ public class FormComponentImpl implements FormComponent, Component {
 	
 	protected void changeBindNames() {
 		
-		Bind bind = getComponentDataBean().getBind();
+		ComponentBind componentBind = getComponentDataBean().getComponentBind();
 		
-		if (bind != null && !bind.getIsShared()) {
+		if (componentBind.exists()) {
 			
-			LocalizedStringBean localizedLabel = getProperties().getLabel();
+			Bind bind = componentBind.getBind();
 			
-			String defaultLocaleLabel = localizedLabel
-			        .getString(getFormDocument().getDefaultLocale());
-			
-			String newBindName = new StringBuffer(defaultLocaleLabel).append(
-			    '_').append(getId()).toString();
-			
-			bind.rename(newBindName);
+			if (bind.canRename()) {
+				
+				LocalizedStringBean localizedLabel = getProperties().getLabel();
+				
+				String defaultLocaleLabel = localizedLabel
+				        .getString(getFormDocument().getDefaultLocale());
+				
+				String newBindName = new StringBuffer(defaultLocaleLabel)
+				        .append('_').append(getId()).toString();
+				
+				bind.rename(newBindName);
+			}
 		}
 		
+		// TODO: shouldn't this be when the bind was actually renamed
 		getXFormsManager().bindsRenamed(this);
 	}
 	
@@ -316,5 +319,11 @@ public class FormComponentImpl implements FormComponent, Component {
 			
 			nodeset.reactToMappingSiblingChanged(this, relevantMappings);
 		}
+	}
+	
+	public boolean isInputComponent() {
+		
+		return getFormDocument().getContext().getFormComponentFactory()
+		        .isInputComponent(this);
 	}
 }

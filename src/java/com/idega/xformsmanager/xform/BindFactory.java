@@ -9,17 +9,15 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.idega.util.CoreConstants;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.xml.XPathUtil;
-import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.FormDocument;
 import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $ Last modified: $Date: 2009/04/23 14:17:14 $ by $Author: civilis $
+ * @version $Revision: 1.2 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @Service(BindFactory.beanIdentifier)
 @Scope("singleton")
@@ -33,6 +31,11 @@ public class BindFactory {
 	
 	private ThreadLocal<FormDocument> formDocumentLocal = new ThreadLocal<FormDocument>();
 	
+	/**
+	 * @param formDocument
+	 * @return bindFactory with the formDocument set for the current thread. i.e. you cannot pass
+	 *         the BindFactory instance amongst threads (get new factory for separate thread)
+	 */
 	public static BindFactory getBindFactory(FormDocument formDocument) {
 		
 		BindFactory bindFactory = ELUtil.getInstance().getBean(beanIdentifier);
@@ -49,18 +52,18 @@ public class BindFactory {
 	 *            - bind id
 	 * @return - Bind object, which contains bind relevant data
 	 */
-	public Bind locate(FormComponent formComponent, String bindId) {
-		// TODO: remove modelId param
+	public Bind locate(String bindId) {
 		
 		XPathUtil bindElementXPath = getBindElementXPath();
+		FormDocument formDocument = getFormDocument();
 		Element bindElement;
 		
 		synchronized (bindElementXPath) {
 			
 			bindElementXPath.clearVariables();
 			bindElementXPath.setVariable(bindIdVariable, bindId);
-			bindElement = (Element) bindElementXPath.getNode(formComponent
-			        .getFormDocument().getXformsDocument());
+			bindElement = (Element) bindElementXPath.getNode(formDocument
+			        .getXformsDocument());
 		}
 		
 		if (bindElement == null)
@@ -69,7 +72,7 @@ public class BindFactory {
 		Bind bind = createBind();
 		bind.setId(bindId);
 		bind.setBindElement(bindElement);
-		bind.setFormComponent(formComponent);
+		// bind.setFormComponent(formComponent);
 		
 		loadChildBinds(bind);
 		
@@ -146,15 +149,15 @@ public class BindFactory {
 	}
 	
 	// TODO: use not bindId, but component id. and create bindId here
-	public Bind create(FormComponent formComponent, String bindId,
-	        String modelId, Nodeset nodeset) {
+	public Bind create(String bindId, String modelId, Nodeset nodeset) {
 		
-		Bind bind = locate(formComponent, bindId);
+		Bind bind = locate(bindId);
 		
 		if (bind == null) {
 			
-			Document xform = formComponent.getFormDocument()
-			        .getXformsDocument();
+			FormDocument formDocument = getFormDocument();
+			
+			Document xform = formDocument.getXformsDocument();
 			Element model = getModel(xform, modelId);
 			
 			// create
@@ -174,61 +177,74 @@ public class BindFactory {
 		return bind;
 	}
 	
-	public Bind createFromTemplate(Bind templateBind, FormComponent component) {
+	private boolean sharedBindExists(Document xform, String bindId) {
 		
-		Document xform = component.getFormDocument().getXformsDocument();
+		return getSharedBindElement(xform, bindId) != null;
+	}
+	
+	private Element getSharedBindElement(Document xform, String bindId) {
+		
+		return FormManagerUtil.getElementById(xform, bindId);
+	}
+	
+	private Bind loadSharedBind(Document xform, String bindId) {
+		
+		Element sharedBindElement = getSharedBindElement(xform, bindId);
+		Bind bind = load(sharedBindElement);
+		
+		return bind;
+	}
+	
+	/**
+	 * creates bind using template bind.
+	 * 
+	 * @param templateBind
+	 * @param defaultBindId
+	 *            will be used as bind id, if the template bind is not shared. otherwise, the
+	 *            template bind id will be used
+	 * @return newly created bind
+	 */
+	public Bind createFromTemplate(Bind templateBind, String defaultBindId) {
+		
+		FormDocument formDocument = getFormDocument();
+		Document xform = formDocument.getXformsDocument();
+		String templateBindId = templateBind.getId();
 		
 		if (templateBind.getIsShared()) {
 			
-			// check, if bind already exist in the document and use that instead
-			Element sharedBindElement = FormManagerUtil.getElementById(xform,
-			    templateBind.getId());
-			
-			if (sharedBindElement != null) {
+			if (sharedBindExists(xform, templateBindId)) {
 				
-				Bind bind = load(sharedBindElement);
-				bind.setFormComponent(component);
-				
+				Bind bind = loadSharedBind(xform, templateBindId);
 				return bind;
 			}
 		}
 		
-		// insert bind element
-		String componentId = component.getId();
-		
-		// TODO: create bind id as nodeset (from label)
 		// if bind is shared, using the same id, as is in the template
-		String bindId = templateBind.getIsShared() ? templateBind.getId()
-		        : componentId + CoreConstants.UNDER + FormManagerUtil.bind_att;
+		String newBindId = templateBind.getIsShared() ? templateBind.getId()
+		        : defaultBindId;
 		
-		// Element bindElement =
-		// (Element)xform.importNode(xformsComponentDataBean.getBind().getBindElement(),
-		// true);
 		Element bindElement = (Element) xform.importNode(templateBind
 		        .getBindElement(), true);
-		bindElement.setAttribute(FormManagerUtil.id_att, bindId);
+		bindElement.setAttribute(FormManagerUtil.id_att, newBindId);
 		
-		// String newFormSchemaType = insertBindElement(component, bindElement,
-		// bindId);
-		
-		Element model = component.getFormDocument().getFormDataModelElement();
+		Element model = formDocument.getFormDataModelElement();
 		model.appendChild(bindElement);
 		
 		String typeAtt = bindElement.getAttribute(FormManagerUtil.type_att);
 		
 		if (typeAtt != null && typeAtt.startsWith(FormManagerUtil.fb_)) {
 			
-			String newTypeAtt = componentId + typeAtt;
+			String newTypeAtt = newBindId + typeAtt;
 			
 			bindElement.setAttribute(FormManagerUtil.type_att, newTypeAtt);
-			FormManagerUtil.copySchemaType(component.getFormDocument()
-			        .getContext().getCacheManager().getComponentsXsd(), xform,
-			    typeAtt, newTypeAtt);
+			FormManagerUtil.copySchemaType(formDocument.getContext()
+			        .getCacheManager().getComponentsXsd(), xform, typeAtt,
+			    newTypeAtt);
 		}
 		
 		Nodeset nodeset = templateBind.getNodeset();
 		String nodesetName = templateBind.getIsShared() ? nodeset
-		        .getNodesetElement().getNodeName() : bindId;
+		        .getNodesetElement().getNodeName() : newBindId;
 		
 		if (nodeset != null) {
 			
@@ -237,17 +253,14 @@ public class BindFactory {
 			    nodesetName);
 		}
 		
-		// Nodeset nodeset = insertNodesetElement(component, bindId);
 		Bind bind = load(bindElement);
 		bind.setNodeset(nodeset);
-		bind.setFormComponent(component);
-		// xformsComponentDataBean.setBind(bind);
-		
 		bind.renameChildren(bind.getId());
 		
 		return bind;
 	}
 	
+	/*
 	public Bind cloneBind(Bind cloneableBind) {
 		
 		Bind bind = createBind();
@@ -273,6 +286,7 @@ public class BindFactory {
 		
 		return bind;
 	}
+	*/
 	
 	private synchronized XPathUtil getBindElementXPath() {
 		
