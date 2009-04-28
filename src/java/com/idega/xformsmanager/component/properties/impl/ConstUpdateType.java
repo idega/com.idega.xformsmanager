@@ -2,15 +2,17 @@ package com.idega.xformsmanager.component.properties.impl;
 
 /**
  * 
- *  Last modified: $Date: 2009/01/21 14:15:12 $ by $Author: arunas $
+ *  Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public enum ConstUpdateType {
 	
 	LABEL,
 	CONSTRAINT_REQUIRED,
+	CALCULATE,
+	CALCULATE_EXP,
 	ERROR_MSG,
 	P3P_TYPE,
 	ITEMSET,

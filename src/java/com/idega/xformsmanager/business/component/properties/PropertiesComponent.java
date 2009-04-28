@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
  * for every property change
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- *          Last modified: $Date: 2008/11/05 13:43:46 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  */
 public interface PropertiesComponent {
 
@@ -43,7 +43,7 @@ public interface PropertiesComponent {
 	public abstract String getAutofillKey();
 
 	public abstract void setAutofillKey(String autofill_key);
-
+	
 	public abstract LocalizedStringBean getHelpText();
 
 	public abstract void setHelpText(LocalizedStringBean help_text);
@@ -63,4 +63,12 @@ public interface PropertiesComponent {
 	// public abstract void setReadonly(boolean readonly);
 
 	public abstract boolean isHasValidationConstraints();
+	
+	public abstract String getCalculateExp();
+
+	public abstract void setCalculateExp(String calculate_exp);
+
+	public abstract boolean isCalculate();
+	
+	public abstract void setIsCalculate(boolean isCalculate);
 }

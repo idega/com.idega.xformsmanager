@@ -42,7 +42,7 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.20 $ Last modified: $Date: 2009/04/24 15:08:29 $ by $Author: civilis $
+ * @version $Revision: 1.21 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  */
 public class FormManagerUtil {
 	
@@ -141,8 +141,10 @@ public class FormManagerUtil {
 	public static final String submission_model = "submission_model";
 	public static final String nodeTypeAtt = "nodeType";
 	public static final String controlInstanceID = "control-instance";
+	public static final String calculate_att = "calculate";
 	private static final String simple_type = "xs:simpleType";
 	private static final String complex_type = "xs:complexType";
+	
 	
 	private static final String line_sep = "line.separator";
 	private static final String xml_mediatype = "text/html";

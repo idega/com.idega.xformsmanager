@@ -16,7 +16,7 @@ import com.idega.xformsmanager.xform.ComponentBind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.8 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -29,6 +29,8 @@ public class ComponentProperties implements PropertiesComponent {
 	private String p3ptype;
 	private String autofillKey;
 	private Variable variable;
+	private String calculate;
+	private boolean isCalculate = false;
 	
 	protected FormComponent component;
 	
@@ -99,6 +101,10 @@ public class ComponentProperties implements PropertiesComponent {
 		        .append(p3ptype).append("\nautofill key: ").append(autofillKey)
 		        .append("\nhelp text: ").append(helpText).append("\nerrors: ")
 		        .append(getErrorsMessages())
+		        .append("\ncalc expression: ")
+		        .append(calculate)
+		        .append("\nisCalculate: ")
+		        .append(isCalculate)
 		        // .append("\nreadonly: ")
 		        // .append(readonly)
 		        // .append("\nvalidationText: ")
@@ -188,5 +194,35 @@ public class ComponentProperties implements PropertiesComponent {
 	public void setErrorsMessages(
 	        Map<ErrorType, LocalizedStringBean> errorsMessages) {
 		this.errorsMessages = errorsMessages;
+	}
+	
+	public String getCalculateExp() {
+		return calculate;
+	}
+	
+	public void setCalculateExp(String calculate_exp) {
+		
+		this.calculate = calculate_exp;
+		component.update(ConstUpdateType.CALCULATE_EXP);
+	}
+	
+	public void setPlainCalculateExp(String calculate_exp) {
+		this.calculate = calculate_exp;
+	}
+	
+	public boolean isCalculate() {
+	    return isCalculate;
+    }
+	
+	public void setIsCalculate(boolean isCalculate) {
+	
+		this.isCalculate = isCalculate;
+		component.update(ConstUpdateType.CALCULATE);
+	
+	}
+
+	public void setPlainIsCalculate(boolean isCalculate) {
+		
+		this.isCalculate = isCalculate;
 	}
 }

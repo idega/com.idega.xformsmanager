@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
- *          Last modified: $Date: 2008/11/06 17:29:32 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  */
 public interface XFormsManager {
 
@@ -75,6 +75,10 @@ public interface XFormsManager {
 			FormComponentPage confirmationPage);
 
 	public abstract String getAutofillKey(FormComponent component);
+	
+	public abstract String getCaculateExpression(FormComponent component);
+	
+	public abstract boolean isCalculate(FormComponent component);
 
 	public abstract boolean isRequired(FormComponent component);
 

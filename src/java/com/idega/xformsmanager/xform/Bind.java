@@ -16,7 +16,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * instance) also, bind could have more than one form component
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.14 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.15 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  */
 public class Bind {
 	
@@ -43,6 +43,8 @@ public class Bind {
 	private Boolean isShared;
 	private List<Bind> childBinds;
 	private Bind parentBind;
+	private String calculate;
+	private Boolean isCalculate;
 	
 	public Element getBindElement() {
 		return bindElement;
@@ -131,6 +133,49 @@ public class Bind {
 		else
 			getBindElement().setAttribute(FormManagerUtil.type_att, type);
 	}
+	
+	public String getCalculate() {
+		
+		if (calculate == null)
+			calculate = getBindElement().getAttribute(
+					FormManagerUtil.calculate_att);
+		
+    	return calculate;
+    }
+
+	public void setCalculate(String calculateExp) {
+    	this.calculate = calculateExp;
+    	
+		if (calculateExp == null)
+			getBindElement().removeAttribute(FormManagerUtil.calculate_att);
+		else
+			getBindElement().setAttribute(FormManagerUtil.calculate_att,
+				calculateExp);
+    }
+	
+	public boolean isCalculate() {
+		
+		if (isCalculate == null) {
+			Element bind = getBindElement();
+			isCalculate = bind.hasAttribute(FormManagerUtil.calculate_att)
+			        && bind.getAttribute(FormManagerUtil.calculate_att).length() != 0;
+		}
+		
+		return isCalculate;
+	}
+	
+	public void setIsCalculate(boolean isCalculate) {
+		
+		this.isCalculate = isCalculate;
+		
+		if (isCalculate)
+			getBindElement().setAttribute(FormManagerUtil.calculate_att,
+				FormManagerUtil.true_string);
+		else
+			getBindElement().removeAttribute(FormManagerUtil.calculate_att);
+	}
+    
+
 	
 	public String getConstraint() {
 		

@@ -24,7 +24,7 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.17 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.18 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -113,6 +113,9 @@ public class FormComponentImpl implements FormComponent, Component {
 		properties.setPlainAutofillKey(getXFormsManager().getAutofillKey(this));
 		properties.setPlainHelpText(getXFormsManager().getHelpText(this));
 		properties.setPlainVariable(getXFormsManager().getVariable(this));
+		
+		properties.setPlainCalculateExp(getXFormsManager().getCaculateExpression(this));
+		properties.setPlainIsCalculate(getXFormsManager().isCalculate(this));
 	}
 	
 	protected void changeBindNames() {
@@ -277,8 +280,20 @@ public class FormComponentImpl implements FormComponent, Component {
 				break;
 			
 			case CONSTRAINT_REQUIRED:
+				getHtmlManager().clearHtmlComponents(this);
 				getFormDocument().setFormDocumentModified(true);
 				break;
+				
+			case CALCULATE_EXP:	
+				getHtmlManager().clearHtmlComponents(this);
+				getFormDocument().setFormDocumentModified(true);
+				break;
+				
+	    	case CALCULATE:	
+				getHtmlManager().clearHtmlComponents(this);
+				getFormDocument().setFormDocumentModified(true);
+				break;		
+
 			
 			case P3P_TYPE:
 				break;
