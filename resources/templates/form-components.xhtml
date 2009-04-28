@@ -621,28 +621,28 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 model="data_model" /> 
         </xf:input>
     
-	    <xf:input bind="identifier_number" id="fbc_identifier_number">
+	    <xf:input bind="identifier_number" id="fbc_identifier_number" type="fbc_identifier_number">
 	       <xf:label
                 ref="instance('localized_strings')/identifier-label[@lang=instance('localized_strings')/current_language]"
                 model="data_model" />  
 	    </xf:input>
 	    
-		<xf:input bind="text" id="fbc_text">
+		<xf:input bind="text" id="fbc_text" type="fbc_text">
 			<xf:label
 				ref="instance('localized_strings')/input-label[@lang=instance('localized_strings')/current_language]"
 				model="data_model" />
 		</xf:input>
-		<xf:textarea bind="textarea" id="fbc_textarea">
+		<xf:textarea bind="textarea" id="fbc_textarea" type="fbc_textarea">
 			<xf:label
 				ref="instance('localized_strings')/textarea-label[@lang=instance('localized_strings')/current_language]"
 				model="data_model" />
 		</xf:textarea>
-		<xf:secret bind="secret" id="fbc_secret">
+		<xf:secret bind="secret" id="fbc_secret" type="fbc_secret">
 			<xf:label
 				ref="instance('localized_strings')/secret-label[@lang=instance('localized_strings')/current_language]"
 				model="data_model" />
 		</xf:secret>
-		<xf:select bind="multiple_select_minimal"
+		<xf:select bind="multiple_select_minimal" type="fbc_multiple_select_minimal"
 			id="fbc_multiple_select_minimal" appearance="minimal">
 			<xf:label
 				ref="instance('localized_strings')/select_minimal-label[@lang=instance('localized_strings')/current_language]"
@@ -652,7 +652,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <xf:value ref="itemValue" />
             </xf:itemset>
 		</xf:select>
-		<xf:select1 bind="single_select_minimal"
+		<xf:select1 bind="single_select_minimal" type="fbc_single_select_minimal"
 			id="fbc_single_select_minimal" appearance="minimal">
 			<xf:label
 				ref="instance('localized_strings')/select1_minimal-label[@lang=instance('localized_strings')/current_language]"
@@ -662,7 +662,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <xf:value ref="itemValue" />
             </xf:itemset>	
 		</xf:select1>
-		<xf:select bind="multiple_select" id="fbc_multiple_select"
+		<xf:select bind="multiple_select" id="fbc_multiple_select" type="fbc_multiple_select"
 			appearance="full">
 			<xf:label
 				ref="instance('localized_strings')/select_full-label[@lang=instance('localized_strings')/current_language]"
@@ -672,7 +672,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <xf:value ref="itemValue" />
             </xf:itemset>
 		</xf:select>
-		<xf:select1 bind="single_select" id="fbc_single_select"
+		<xf:select1 bind="single_select" id="fbc_single_select" type="fbc_single_select"
 			appearance="full">
 			<xf:label
 				ref="instance('localized_strings')/select1_full-label[@lang=instance('localized_strings')/current_language]"
@@ -683,7 +683,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             </xf:itemset>
 		</xf:select1>
 		
-		<xf:input bind="email" id="fbc_email">
+		<xf:input bind="email" id="fbc_email" type="fbc_email">
             <xf:label model="data_model"
                 ref="instance('localized_strings')/email-label[@lang=instance('localized_strings')/current_language]"/>
                                
@@ -702,7 +702,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		</xf:output>
 		</div>
 		
-		<xf:output bind="output_text" id="fbc_text_output">
+		<xf:output bind="output_text" id="fbc_text_output" type="fbc_text_output">
 			<xf:label model="data_model" ref="instance('localized_strings')/text_output-label[@lang=instance('localized_strings')/current_language]"/>				
 		</xf:output>
 		
@@ -710,7 +710,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<xf:label model="data_model" ref="instance('localized_strings')/date-label[@lang=instance('localized_strings')/current_language]"/>				
 		</xf:output>
 		
-		<xf:input bind="date" id="fbc_date">
+		<xf:input bind="date" id="fbc_date" type="fbc_date">
           			<xf:label model="data_model" ref="instance('localized_strings')/date-label[@lang=instance('localized_strings')/current_language]"/>				
         </xf:input>
 			
@@ -749,18 +749,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 </xf:group>
             </idega:case>
         </idega:switch>
-        <!--  
-		<xf:group id="fbc_page" appearance="full">
-			<xf:label 
-				ref="instance('localized_strings')/page-label[@lang=instance('localized_strings')/current_language]"
-				model="data_model" />
-		</xf:group>
-		<xf:group id="fbc_confirmation_page" appearance="full" type="fbc_confirmation_page">
-			<xf:label 
-				ref="instance('localized_strings')/confirmation_page-label[@lang=instance('localized_strings')/current_language]"
-				model="data_model" />
-		</xf:group>
-		-->
 		<xf:trigger id="fbc_button_next" type="fbc_button_next" bind="bind-controlsButton">
 		  	<xf:label ref="instance('localized_strings')/next_button-label[@lang=instance('localized_strings')/current_language]" model="data_model" />
 	        <idega:toggle ev:event="DOMActivate" />
