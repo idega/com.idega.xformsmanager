@@ -22,7 +22,7 @@ import com.idega.xformsmanager.xform.ComponentBindImpl;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/29 10:48:33 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.plain)
 @Service
@@ -150,9 +150,6 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
 		Bind bind = getBindFactory(outputComponent.getFormDocument()).create(
 		    "bind." + outputComponent.getId(), null, null);
 		output.setAttribute(FormManagerUtil.bind_att, bind.getId());
-		
-		xformsComponentDataBean.setComponentBind(createComponentBind(
-		    outputComponent, bind));
 		
 		return bind;
 	}
