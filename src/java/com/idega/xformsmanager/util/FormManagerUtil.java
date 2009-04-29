@@ -42,7 +42,7 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.22 $ Last modified: $Date: 2009/04/29 13:05:57 $ by $Author: arunas $
+ * @version $Revision: 1.23 $ Last modified: $Date: 2009/04/29 15:14:55 $ by $Author: arunas $
  */
 public class FormManagerUtil {
 	
@@ -167,7 +167,7 @@ public class FormManagerUtil {
 	private static final XPathUtil submissionElementXPath = new XPathUtil(
 	        ".//xf:submission[@id='submit_data_submission']");
 	private static final XPathUtil formTitleOutputElementXPath = new XPathUtil(
-	        ".//title/xf:output");
+	        ".//h:title/xf:output");
 	private static final XPathUtil instanceElementByIdXPath = new XPathUtil(
 	        ".//xf:instance[@id=$instanceId]");
 	private static final XPathUtil formSubmissionInstanceDataElementXPath = new XPathUtil(
