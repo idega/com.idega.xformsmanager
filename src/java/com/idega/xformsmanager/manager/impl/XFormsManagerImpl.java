@@ -40,7 +40,7 @@ import com.idega.xformsmanager.xform.NodesetFactory;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.24 $ Last modified: $Date: 2009/04/29 10:47:54 $ by $Author: civilis $
+ * @version $Revision: 1.25 $ Last modified: $Date: 2009/04/29 12:23:32 $ by $Author: arunas $
  */
 @FormComponentType(FormComponentType.base)
 @Service
@@ -393,10 +393,7 @@ public class XFormsManagerImpl implements XFormsManager {
 				updateVariableName(component);
 				break;
 			case CALCULATE_EXP:
-				updateCalculateExpression(component);
-				break;
-			case CALCULATE:
-				updateCalculateAttribute(component);
+				updateCalculate(component);
 				break;
 			default:
 				break;
@@ -759,7 +756,7 @@ public class XFormsManagerImpl implements XFormsManager {
 		}
 	}
 	
-	public void updateCalculateExpression(FormComponent component) {
+	public void updateCalculate(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component
 		        .getComponentDataBean();
@@ -769,49 +766,24 @@ public class XFormsManagerImpl implements XFormsManager {
 		
 		PropertiesComponent props = component.getProperties();
 		
-		componentBind.getBind().setCalculate(props.getCalculateExp());
-		
-	}
-	
-	public void updateCalculateAttribute(FormComponent component) {
-		
-		ComponentDataBean xformsComponentDataBean = component
-		        .getComponentDataBean();
-		
-		ComponentBind componentBind = xformsComponentDataBean
-		        .getComponentBind();
-		
-		PropertiesComponent props = component.getProperties();
-		
-		Bind bind = componentBind.getBind();
-		
-		if (props.isCalculate())
-			
-			bind.setCalculate(props.getCalculateExp().equals(
-			    CoreConstants.EMPTY) ? FormManagerUtil.calculate_att : props
-			        .getCalculateExp());
-		
+		if (componentBind.exists() && props.isCalculate())
+			componentBind.getBind().setCalculate(props.getCalculateExp());
 		else
-			bind.setCalculate(null);
-		
+			componentBind.getBind().setCalculate(null);
 	}
 	
-	public String getCaculateExpression(FormComponent component) {
+	public String getCaculate(FormComponent component) {
 		
-		ComponentDataBean xformsComponentDataBean = component
-		        .getComponentDataBean();
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
 		
-		ComponentBind componentBind = xformsComponentDataBean
-		        .getComponentBind();
-		
-		Bind bind = componentBind.getBind();
-		if (bind == null) {
+		ComponentBind componentBind = xformsComponentDataBean.getComponentBind();
+
+		if (!componentBind.exists()) {
 			return CoreConstants.EMPTY;
 		}
-		return bind.getCalculate().equals(CoreConstants.EMPTY) ? CoreConstants.EMPTY
-		        : bind.getCalculate();
-	}
-	
+	    return componentBind.getBind().getCalculate().equals(CoreConstants.EMPTY) ? CoreConstants.EMPTY : componentBind.getBind().getCalculate();
+    }
+		
 	public boolean isCalculate(FormComponent component) {
 		
 		ComponentDataBean xformsComponentDataBean = component
