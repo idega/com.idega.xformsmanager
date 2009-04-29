@@ -14,7 +14,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * represents bind nodeset attribute
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/29 10:49:03 $ by $Author: civilis $
  */
 public class Nodeset {
 	
@@ -123,8 +123,8 @@ public class Nodeset {
 			
 			String previousMapping = getMapping();
 			setMapping(mappingExpression);
-			FormComponentMapping mapping = new FormComponentMappingImpl(
-			        formComponent, this);
+			FormComponentMapping mapping = formComponent
+			        .getFormComponentMapping(this);
 			mapping.setMapping(mappingExpression);
 			mappingSiblingChanged(previousMapping, mappingExpression);
 		}
@@ -132,8 +132,8 @@ public class Nodeset {
 	
 	public void removeMapping(FormComponent formComponent) {
 		
-		FormComponentMapping mapping = new FormComponentMappingImpl(
-		        formComponent, this);
+		FormComponentMapping mapping = formComponent
+		        .getFormComponentMapping(this);
 		
 		String previousMapping = getMapping();
 		setMapping(null);
@@ -167,8 +167,8 @@ public class Nodeset {
 		
 		if (isRelevantMapping(relevantMappings)) {
 			
-			FormComponentMapping mapping = new FormComponentMappingImpl(
-			        formComponent, this);
+			FormComponentMapping mapping = formComponent
+			        .getFormComponentMapping(this);
 			mapping.setMapping(getMapping());
 		}
 	}
