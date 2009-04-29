@@ -26,7 +26,7 @@ import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.20 $ Last modified: $Date: 2009/04/29 12:23:32 $ by $Author: arunas $
+ * @version $Revision: 1.21 $ Last modified: $Date: 2009/04/29 12:35:52 $ by $Author: arunas $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -116,7 +116,7 @@ public class FormComponentImpl implements FormComponent, Component {
 		properties.setPlainHelpText(getXFormsManager().getHelpText(this));
 		properties.setPlainVariable(getXFormsManager().getVariable(this));
 		
-		properties.setPlainCalculateExp(getXFormsManager()
+		properties.setPlainCalculate(getXFormsManager()
 		        .getCaculate(this));
 		properties.setPlainIsCalculate(getXFormsManager().isCalculate(this));
 	}

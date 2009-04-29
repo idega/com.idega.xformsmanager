@@ -11,9 +11,9 @@ import com.idega.xformsmanager.component.beans.LocalizedStringBean;
  * for every property change
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
- *          Last modified: $Date: 2009/04/28 15:06:47 $ by $Author: arunas $
+ *          Last modified: $Date: 2009/04/29 12:35:52 $ by $Author: arunas $
  */
 public interface PropertiesComponent {
 
@@ -66,7 +66,7 @@ public interface PropertiesComponent {
 	
 	public abstract String getCalculateExp();
 
-	public abstract void setCalculateExp(String calculate_exp);
+	public abstract void setCalculate(String calculate_exp);
 
 	public abstract boolean isCalculate();
 	

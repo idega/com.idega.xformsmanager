@@ -16,7 +16,7 @@ import com.idega.xformsmanager.xform.ComponentBind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/29 10:47:35 $ by $Author: civilis $
+ * @version $Revision: 1.10 $ Last modified: $Date: 2009/04/29 12:35:52 $ by $Author: arunas $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -193,13 +193,13 @@ public class ComponentProperties implements PropertiesComponent {
 		return calculate;
 	}
 	
-	public void setCalculateExp(String calculate_exp) {
+	public void setCalculate(String calculateExp) {
 		
-		this.calculate = calculate_exp;
+		this.calculate = calculateExp;
 		component.update(ConstUpdateType.CALCULATE_EXP);
 	}
 	
-	public void setPlainCalculateExp(String calculate_exp) {
+	public void setPlainCalculate(String calculate_exp) {
 		this.calculate = calculate_exp;
 	}
 	
