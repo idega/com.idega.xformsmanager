@@ -18,12 +18,11 @@ import com.idega.xformsmanager.manager.XFormsManagerMultiUpload;
 import com.idega.xformsmanager.util.FormManagerUtil;
 import com.idega.xformsmanager.xform.Bind;
 import com.idega.xformsmanager.xform.ComponentBind;
-import com.idega.xformsmanager.xform.ComponentBindImpl;
 import com.idega.xformsmanager.xform.ComponentBindMultiUploadImpl;
 
 /**
  * @author <a href="mailto:arunas@idega.com">Arūnas Vasmanas</a>
- * @version $Revision: 1.12 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.13 $ Last modified: $Date: 2009/04/29 10:48:07 $ by $Author: civilis $
  */
 @FormComponentType(FormComponentType.multiupload)
 @Service

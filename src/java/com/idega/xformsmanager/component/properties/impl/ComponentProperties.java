@@ -16,7 +16,7 @@ import com.idega.xformsmanager.xform.ComponentBind;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.8 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
+ * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/29 10:47:35 $ by $Author: civilis $
  */
 public class ComponentProperties implements PropertiesComponent {
 	
@@ -58,13 +58,6 @@ public class ComponentProperties implements PropertiesComponent {
 		return errors;
 	}
 	
-	// public LocalizedStringBean getErrorMsg() {
-	// return errorMsg;
-	// }
-	// public void setErrorMsg(LocalizedStringBean error_msg) {
-	// this.errorMsg = error_msg;
-	// component.update(ConstUpdateType.ERROR_MSG);
-	// }
 	public LocalizedStringBean getLabel() {
 		return label;
 	}
