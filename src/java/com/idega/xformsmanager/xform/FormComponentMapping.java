@@ -1,8 +1,11 @@
 package com.idega.xformsmanager.xform;
 
 /**
+ * represents component (not nodeset) mapping handling - i.e. handling situation, when more than one
+ * component is referencing nodesets with the same mapping
+ * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.4 $ Last modified: $Date: 2009/04/29 10:48:43 $ by $Author: civilis $
  */
 public interface FormComponentMapping {
 	
