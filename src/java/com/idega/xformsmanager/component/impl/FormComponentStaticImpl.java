@@ -8,9 +8,9 @@ import com.idega.xformsmanager.manager.XFormsManagerPlain;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.2 $ Last modified: $Date: 2009/04/29 10:47:09 $ by $Author: civilis $
  */
-public class FormComponentStaticImpl extends FormComponentImpl implements
+public class FormComponentStaticImpl extends FormComponentOutputImpl implements
         ComponentStatic {
 	
 	@Override
