@@ -7,13 +7,15 @@ import com.idega.xformsmanager.component.beans.ComponentDataBean;
 import com.idega.xformsmanager.component.impl.FormComponentContainerImpl;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.context.Event;
+import com.idega.xformsmanager.xform.FormComponentMapping;
+import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * this interface represents "internal to the xform document manager" form component representation.
  * Shouldn't be used outside the xform document manager
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.7 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.8 $ Last modified: $Date: 2009/04/29 10:46:13 $ by $Author: civilis $
  */
 public interface FormComponent {
 	
@@ -38,8 +40,6 @@ public interface FormComponent {
 	 * @see FormComponentContainerImpl loadContainerComponents method for example
 	 */
 	public abstract void load();
-	
-	// public abstract void render();
 	
 	/**
 	 * specifies the component, before which this component should go in the xforms document
@@ -69,8 +69,6 @@ public interface FormComponent {
 	public abstract PropertiesComponent getProperties();
 	
 	public abstract void remove();
-	
-	// public abstract void setLoad(boolean load);
 	
 	public abstract void setParent(FormComponentContainer parent);
 	
@@ -102,4 +100,6 @@ public interface FormComponent {
 	public abstract void mappingSiblingChanged(String... relevantMappings);
 	
 	public abstract boolean isInputComponent();
+	
+	public abstract FormComponentMapping getFormComponentMapping(Nodeset nodeset);
 }

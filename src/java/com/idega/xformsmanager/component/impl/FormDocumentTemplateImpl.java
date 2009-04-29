@@ -18,10 +18,12 @@ import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.context.DMContext;
 import com.idega.xformsmanager.context.Event;
 import com.idega.xformsmanager.manager.XFormsManagerContainer;
+import com.idega.xformsmanager.xform.FormComponentMapping;
+import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.10 $ Last modified: $Date: 2009/04/29 10:47:24 $ by $Author: civilis $
  */
 public class FormDocumentTemplateImpl implements FormDocument {
 	
@@ -328,4 +330,9 @@ public class FormDocumentTemplateImpl implements FormDocument {
 		throw new UnsupportedOperationException(
 		        "Unsupported for template document");
 	}
+
+	public FormComponentMapping getFormComponentMapping(Nodeset nodeset) {
+		throw new UnsupportedOperationException(
+        "Unsupported for template document");
+    }
 }

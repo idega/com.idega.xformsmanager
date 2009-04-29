@@ -20,11 +20,13 @@ import com.idega.xformsmanager.manager.HtmlManager;
 import com.idega.xformsmanager.manager.XFormsManager;
 import com.idega.xformsmanager.xform.Bind;
 import com.idega.xformsmanager.xform.ComponentBind;
+import com.idega.xformsmanager.xform.FormComponentMapping;
+import com.idega.xformsmanager.xform.FormComponentMappingImpl;
 import com.idega.xformsmanager.xform.Nodeset;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.18 $ Last modified: $Date: 2009/04/28 13:01:50 $ by $Author: arunas $
+ * @version $Revision: 1.19 $ Last modified: $Date: 2009/04/29 10:46:50 $ by $Author: civilis $
  */
 public class FormComponentImpl implements FormComponent, Component {
 	
@@ -114,7 +116,8 @@ public class FormComponentImpl implements FormComponent, Component {
 		properties.setPlainHelpText(getXFormsManager().getHelpText(this));
 		properties.setPlainVariable(getXFormsManager().getVariable(this));
 		
-		properties.setPlainCalculateExp(getXFormsManager().getCaculateExpression(this));
+		properties.setPlainCalculateExp(getXFormsManager()
+		        .getCaculateExpression(this));
 		properties.setPlainIsCalculate(getXFormsManager().isCalculate(this));
 	}
 	
@@ -283,17 +286,16 @@ public class FormComponentImpl implements FormComponent, Component {
 				getHtmlManager().clearHtmlComponents(this);
 				getFormDocument().setFormDocumentModified(true);
 				break;
-				
-			case CALCULATE_EXP:	
+			
+			case CALCULATE_EXP:
 				getHtmlManager().clearHtmlComponents(this);
 				getFormDocument().setFormDocumentModified(true);
 				break;
-				
-	    	case CALCULATE:	
+			
+			case CALCULATE:
 				getHtmlManager().clearHtmlComponents(this);
 				getFormDocument().setFormDocumentModified(true);
-				break;		
-
+				break;
 			
 			case P3P_TYPE:
 				break;
@@ -340,5 +342,10 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		return getFormDocument().getContext().getFormComponentFactory()
 		        .isInputComponent(this);
+	}
+	
+	public FormComponentMapping getFormComponentMapping(Nodeset nodeset) {
+		
+		return new FormComponentMappingImpl(this, nodeset);
 	}
 }
