@@ -11,7 +11,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  * component is referencing nodesets with the same mapping
  * 
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.1 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
+ * @version $Revision: 1.2 $ Last modified: $Date: 2009/05/05 08:14:22 $ by $Author: arunas $
  */
 public class FormComponentMappingImpl implements FormComponentMapping {
 	
@@ -62,7 +62,7 @@ public class FormComponentMappingImpl implements FormComponentMapping {
 		Element updaterElement = getFormComponent()
 		        .getFormDocument()
 		        .createIdegaXFormsElement(FormManagerUtil.setvalue_tag_idega_ns);
-		
+		updaterElement.setAttributeNS(FormManagerUtil.event_namespace_uri, FormManagerUtil.event_att, FormManagerUtil.XFormEvent.XFORMS_VALUE_CHANGED);
 		updaterElement.setAttribute(FormManagerUtil.event_att,
 		    FormManagerUtil.XFormEvent.XFORMS_VALUE_CHANGED);
 		
