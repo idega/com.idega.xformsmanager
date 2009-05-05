@@ -42,7 +42,7 @@ import com.idega.xformsmanager.component.datatypes.ComponentType;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.23 $ Last modified: $Date: 2009/04/29 15:14:55 $ by $Author: arunas $
+ * @version $Revision: 1.24 $ Last modified: $Date: 2009/05/05 14:06:24 $ by $Author: civilis $
  */
 public class FormManagerUtil {
 	
@@ -176,8 +176,8 @@ public class FormManagerUtil {
 	        ".//xf:instance[@id='localized_strings']/localized_strings");
 	private static final XPathUtil elementByIdXPath = new XPathUtil(
 	        ".//*[@id=$id]");
-	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(
-	        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
+//	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(
+//	        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
 	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(
 	        ".//attribute::*[contains(., $expression)]");
 	private static final XPathUtil localizaionSetValueElement = new XPathUtil(
