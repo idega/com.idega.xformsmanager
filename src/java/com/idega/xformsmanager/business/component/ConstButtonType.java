@@ -6,30 +6,40 @@ import java.util.Set;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
- *          Last modified: $Date: 2008/11/13 20:06:51 $ by $Author: civilis $
+ *          Last modified: $Date: 2009/06/05 10:13:25 $ by $Author: valdas $
  */
 public enum ConstButtonType {
 
 	PREVIOUS_PAGE_BUTTON {
+		@Override
 		public String toString() {
 			return "fbc_button_previous";
 		}
 	},
 	NEXT_PAGE_BUTTON {
+		@Override
 		public String toString() {
 			return "fbc_button_next";
 		}
 	},
 	SUBMIT_FORM_BUTTON {
+		@Override
 		public String toString() {
 			return "fbc_button_submit";
 		}
 	},
 	SAVE_FORM_BUTTON {
+		@Override
 		public String toString() {
 			return "fbc_button_save";
+		}
+	},
+	GET_FORM_AS_PDF_BUTTON {
+		@Override
+		public String toString() {
+			return "fbc_button_get_as_pdf";
 		}
 	};
 	// RESET_FORM_BUTTON {public String toString() { return "fbc_button_reset";
@@ -60,5 +70,6 @@ public enum ConstButtonType {
 		return getAllStringTypesEnumsMappings().get(type);
 	}
 
+	@Override
 	public abstract String toString();
 }

@@ -474,6 +474,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<component component_id="fbc_button_previous" />
 			<component component_id="fbc_button_submit" />
 			<component component_id="fbc_button_save" />
+			<component component_id="fbc_button_get_as_pdf" />
 		</category>
 		<category name="non-display">
 			<component component_id="fbc_button_area" />
@@ -786,6 +787,14 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <idega:toggle case="fbc_5"/>
             </xf:action>
         </xf:trigger>
+		
+		<xf:trigger id="fbc_button_get_as_pdf" type="fbc_button_get_as_pdf" bind="bind-submissionButton" class="fbc_button_submit">
+			<xf:label model="data_model" ref="instance('localized_strings')/save-pdf-label[@lang=instance('localized_strings')/current_language]"/>
+			<xf:action ev:event="DOMActivate">
+				<idega:saveFormAndGeneratePdf action="saveFormAndGeneratePdf" formId="instance('data-instance')/form_id" instanceId="data-instance" linkLocation="instance('downloadFormAsPDF-instance')/link" model="submission_model" submissionId="instance('data-instance')/saveFormData/submissionId" submissionIdentifier="instance('data-instance')/*[@nodeType='formIdentifier']"/>
+			</xf:action>
+			<xf:load ref="instance('downloadFormAsPDF-instance')/link" show="handlemanually"/>
+		</xf:trigger>
 	</xf:group>
 </xf:group>
 </body>

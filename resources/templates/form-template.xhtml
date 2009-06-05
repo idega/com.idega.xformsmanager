@@ -25,7 +25,8 @@
 	                <readonly>false</readonly>
 	                <submission>false</submission>
 	                <generatePdf>false</generatePdf>
-	                <submissionButton/>
+	                <sendLinkSubmission>false</sendLinkSubmission>
+                    <submissionButton/>
 				</control>
 			</xf:instance>
 		
@@ -40,6 +41,12 @@
 					<sendLinkEmail xsi:nil="true"/>
 					<link/>
 					<savePhase>false</savePhase>
+				</data>
+			</xf:instance>
+			
+			<xf:instance id="downloadFormAsPDF-instance">
+				<data xmlns="">
+					<link/>
 				</data>
 			</xf:instance>
 			
@@ -81,6 +88,8 @@
                     <save-success_message lang="is_IS">Umsóknin var vistuð og þú getur nálgast hana aftur með hlekknum hér að neðan</save-success_message>
                     <save-success_label lang="en">Saved</save-success_label>
                     <save-success_label lang="is_IS">Vistað</save-success_label>
+                    <save-pdf-label lang="is_IS">Sækja sem PDF</save-pdf-label>
+                    <save-pdf-label lang="en">Get as PDF</save-pdf-label>
 	         	</localized_strings>
 	        </xf:instance>
 	        
