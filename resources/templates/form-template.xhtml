@@ -12,6 +12,10 @@
             <xf:instance id="data-instance" xmlns="">
                 <data>
 	                <form_id></form_id>
+	                
+					<saveFormData>
+						<submissionId/>
+					</saveFormData>
                 </data>
             </xf:instance>
                      
@@ -30,6 +34,14 @@
 	                <error for=""/>
 	            </data>
 	        </xf:instance>
+	        
+	        <xf:instance id="saveForm-instance">
+				<data xmlns="">
+					<sendLinkEmail xsi:nil="true"/>
+					<link/>
+					<savePhase>false</savePhase>
+				</data>
+			</xf:instance>
 			
 			<xf:bind id="errorsGroup" idega:shared="true" nodeset="instance('error-instance')/error" relevant="instance('control-instance')/submission = 'true' and count-non-empty(instance('error-instance')/error)!=0"/>
 	        <xf:bind id="errors" idega:shared="true" nodeset="instance('error-instance')/error[. != '']"/>
@@ -65,6 +77,10 @@
 	         		<submission-error_message lang="is_IS">Villa varð við að senda formið vinsamlegast athugið hvort stjörnumerktir reitir hafi allir verið útfylltir og að engar villur séu í forminu.</submission-error_message>
 	         		<submission-success_message lang="en">Your form has been received. Thank you.</submission-success_message>
 	         		<submission-success_message lang="is_IS">Formið hefur verið móttekið. Takk fyrir.</submission-success_message>
+	         		<save-success_message lang="en">The form was saved</save-success_message>
+                    <save-success_message lang="is_IS">Umsóknin var vistuð og þú getur nálgast hana aftur með hlekknum hér að neðan</save-success_message>
+                    <save-success_label lang="en">Saved</save-success_label>
+                    <save-success_label lang="is_IS">Vistað</save-success_label>
 	         	</localized_strings>
 	        </xf:instance>
 	        
@@ -121,6 +137,12 @@
 			   	  	<xf:output ref="instance('localized_strings')/submission-success_message[@lang=instance('localized_strings')/current_language]" model="data_model" />
 			   	  </xf:group>
 		   	  </idega:case>
+		   	  <idega:case id="fbc_5" type="save_page">
+                    <xf:group appearance="full" class="save_page">
+                        <xf:label model="data_model" ref="instance('localized_strings')/save-success_label[@lang=instance('localized_strings')/current_language]"/>
+                        <xf:output model="data_model" ref="instance('localized_strings')/save-success_message[@lang=instance('localized_strings')/current_language]"/>
+                    </xf:group>
+                </idega:case>
 	   	  </idega:switch>
         </xf:group>
     </body>

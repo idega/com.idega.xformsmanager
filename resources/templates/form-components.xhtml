@@ -473,7 +473,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<component component_id="fbc_button_next" />
 			<component component_id="fbc_button_previous" />
 			<component component_id="fbc_button_submit" />
-		<!-- 	<component component_id="fbc_button_save" /> -->
+			<component component_id="fbc_button_save" />
 		</category>
 		<category name="non-display">
 			<component component_id="fbc_button_area" />
@@ -783,7 +783,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <xf:dispatch name="xforms-revalidate" target="data_model"/>
                 <xf:dispatch name="xforms-refresh" target="data_model"/>
                 <idega:saveForm action="save" formId="instance('data-instance')/form_id" instanceId="data-instance" linkLocation="instance('saveForm-instance')/link" model="submission_model" submissionId="instance('data-instance')/saveFormData/submissionId" submissionIdentifier="instance('data-instance')/*[@nodeType='formIdentifier']"/>
-                <idega:toggle />
+                <idega:toggle case="fbc_5"/>
             </xf:action>
         </xf:trigger>
 	</xf:group>
