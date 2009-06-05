@@ -16,9 +16,9 @@ import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
- * Last modified: $Date: 2008/11/03 12:57:37 $ by $Author: civilis $
+ * Last modified: $Date: 2009/06/05 08:11:03 $ by $Author: valdas $
  */
 @Service
 @Scope("singleton")
@@ -50,7 +50,7 @@ public class HtmlManagerImpl implements HtmlManager {
 		}
 		
 		if(localizedRepresentation == null)
-			throw new IllegalStateException("Component html representation couldn't be resolved");
+			throw new IllegalStateException("Component html representation couldn't be resolved for: " + component.getType());
 		
 		return localizedRepresentation;
 	}
