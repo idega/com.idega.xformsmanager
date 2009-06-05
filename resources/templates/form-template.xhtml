@@ -33,6 +33,7 @@
 			<xf:instance xmlns="" id="error-instance">
 	            <data>
 	                <error for=""/>
+	                <sendLinkError for=""/>
 	            </data>
 	        </xf:instance>
 	        
@@ -54,6 +55,8 @@
 	        <xf:bind id="errors" idega:shared="true" nodeset="instance('error-instance')/error[. != '']"/>
 	        
 	        <xf:bind id="bind-submissionButton" idega:shared="true" nodeset="instance('control-instance')/submissionButton" relevant="instance('control-instance')/readonly != 'true' and instance('control-instance')/generatePdf != 'true'" />
+		
+			<xf:bind id="fbc_48_bind" nodeset="instance('saveForm-instance')/sendLinkEmail" readonly="instance('control-instance')/readonly = 'true'" required="true() and instance('control-instance')/generatePdf != 'true'" type="fbc_47fb_email"/>
 		
 	        <xf:submission action="standalone:/nouri" id="submit_data_submission" method="post" ref="instance('data-instance')" replace="none">
 	        	<idega:toggle ev:event="xforms-submit-done" case="fbc_4"/>
@@ -90,6 +93,18 @@
                     <save-success_label lang="is_IS">Vistað</save-success_label>
                     <save-pdf-label lang="is_IS">Sækja sem PDF</save-pdf-label>
                     <save-pdf-label lang="en">Get as PDF</save-pdf-label>
+                    <save-form-link-label lang="is_IS">Geymdu þennan hlekk til að geta haldið síðar áfram með umsóknina. Þú getur einnig skráð inn netfangið þitt og smellt á "Senda" til að senda þér hlekkinn í tölvupósti.</save-form-link-label>
+	         		<save-form-link-label lang="en">Link</save-form-link-label>
+	         		<fbc_48-title lang="is_IS">Netfang</fbc_48-title>
+                    <fbc_48-title lang="en">Email</fbc_48-title>
+                    <fbc_48-required lang="is_IS">Netfang þarf að vera útfyllt</fbc_48-required>
+                    <fbc_48-required lang="en">Email address can not be empty</fbc_48-required>
+                    <fbc_48-validation lang="is_IS">Netfang stenst ekki prófun</fbc_48-validation>
+                    <fbc_48-validation lang="en">Invalid email</fbc_48-validation>
+                    <send-label lang="en">Send</send-label>
+                    <send-label lang="is_IS">Senda hlekk</send-label>
+                    <back-label lang="en">Back</back-label>
+                    <back-label lang="is_IS">Til baka</back-label>
 	         	</localized_strings>
 	        </xf:instance>
 	        
@@ -103,6 +118,11 @@
 			
 	      </xf:model>
         <xs:schema id="fb-schema">
+        	<xs:simpleType name="fbc_47fb_email">
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*@[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*"/>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:schema>
     </head>
     <body>
@@ -146,9 +166,58 @@
 			   	  	<xf:output ref="instance('localized_strings')/submission-success_message[@lang=instance('localized_strings')/current_language]" model="data_model" />
 			   	  </xf:group>
 		   	  </idega:case>
-		   	  <idega:case id="fbc_5" type="save_page">
-                    <xf:group appearance="full" class="save_page">
-                        <xf:label model="data_model" ref="instance('localized_strings')/save-success_label[@lang=instance('localized_strings')/current_language]"/>
+			  <idega:case id="fbc_5" type="save_page">
+					<xf:group appearance="full">
+						<idega:setError ev:event="idega-validation-error" id="sendLinkSetErrorHandler" if="idega:instance('submission_model', 'saveForm-instance')/savePhase = 'true'" ref="instance('error-instance')/sendLinkError"/>
+                        <xf:label model="data_model" ref="instance('localized_strings')/form-title[@lang=instance('localized_strings')/current_language]"/>
+                        <xf:output model="data_model" ref="instance('localized_strings')/save-form-link-label[@lang=instance('localized_strings')/current_language]"/>
+                        <xf:trigger appearance="minimal" class="link" id="fbc_7">
+                            <xf:label model="submission_model" ref="instance('saveForm-instance')/link"/>
+                            <xf:load ev:event="DOMActivate" ref="instance('saveForm-instance')/link" show="replace"/>
+                        </xf:trigger>
+                        <xf:input bind="fbc_48_bind" id="fbc_48">
+                        	<xf:label model="data_model" ref="instance('localized_strings')/fbc_48-title[@lang=instance('localized_strings')/current_language]"/>
+                            <xf:dispatch ev:event="xforms-value-changed" name="idega-validate" target="fbc_48"/>
+                            <idega:validator ev:event="idega-validate" if="instance('saveForm-instance')/savePhase = 'true'" seterror="sendLinkSetErrorHandler" submission="instance('control-instance')/sendLinkSubmission">
+                                <idega:message errorType="required"  model="data_model" value="instance('localized_strings')/fbc_48-required[@lang=instance('localized_strings')/current_language]"/>
+                                <idega:message errorType="validation" model="data_model" value="instance('localized_strings')/fbc_48-validation[@lang=instance('localized_strings')/current_language]"/>
+                            </idega:validator>
+                            <xf:alert ref="instance('error-instance')/sendLinkError[@for='fbc_48']"/>
+                        </xf:input>
+                        <div class="fbc_button_area" id="fbc_8" type="fbc_button_area">
+                            <xf:trigger class="fbc_button_submit" id="fbc_9">
+                                <xf:label model="data_model" ref="instance('localized_strings')/send-label[@lang=instance('localized_strings')/current_language]"/>
+                                <xf:action ev:event="DOMActivate">
+                                    <xf:setvalue ref="instance('control-instance')/sendLinkSubmission" value="'true'"/>
+                                    <xf:dispatch name="xforms-rebuild" target="data_model"/>
+                                    <xf:dispatch name="xforms-recalculate" target="data_model"/>
+                                    <xf:dispatch name="xforms-revalidate" target="data_model"/>
+                                    <xf:dispatch name="xforms-refresh" target="data_model"/>
+                                    <xf:dispatch name="idega-validate" target="fbc_48"/>
+                                    <xf:action if="count-non-empty(instance('error-instance')/sendLinkError)=0">
+                                    	<idega:saveForm action="sendLink" email="instance('saveForm-instance')/sendLinkEmail" link="instance('saveForm-instance')/link"/>
+                                    	<idega:toggle case="fbc_6"/>
+                                    </xf:action>
+                                    <xf:dispatch if="count-non-empty(instance('error-instance')/sendLinkError)!=0" name="idega-submit-error" target="idega-submission-error"/>
+                                </xf:action>
+                            </xf:trigger>
+                            <xf:trigger class="fbc_button_submit" id="fbc_10">
+                                <xf:label model="data_model" ref="instance('localized_strings')/back-label[@lang=instance('localized_strings')/current_language]"/>
+                                <xf:action ev:event="DOMActivate">
+                                    <xf:setvalue model="submission_model" ref="instance('saveForm-instance')/savePhase">false</xf:setvalue>
+                                    <xf:dispatch name="xforms-rebuild" target="data_model"/>
+                                    <xf:dispatch name="xforms-recalculate" target="data_model"/>
+                                    <xf:dispatch name="xforms-revalidate" target="data_model"/>
+                                    <xf:dispatch name="xforms-refresh" target="data_model"/>
+                                    <idega:toggle case="fbc_1"/>
+                                </xf:action>
+                            </xf:trigger>
+                        </div>
+                    </xf:group>
+                </idega:case>
+		   	    <idega:case id="fbc_6" type="save_page">
+					<xf:group appearance="full" class="save_page">
+						<xf:label model="data_model" ref="instance('localized_strings')/save-success_label[@lang=instance('localized_strings')/current_language]"/>
                         <xf:output model="data_model" ref="instance('localized_strings')/save-success_message[@lang=instance('localized_strings')/current_language]"/>
                     </xf:group>
                 </idega:case>
