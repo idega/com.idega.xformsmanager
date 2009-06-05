@@ -14,11 +14,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
+import com.idega.business.IBOLookup;
 import com.idega.idegaweb.DefaultIWBundle;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
 import com.idega.servlet.filter.IWBundleResourceFilter;
+import com.idega.slide.business.IWSlideService;
 import com.idega.util.CoreConstants;
 import com.idega.util.xml.XmlUtil;
 import com.idega.xformsmanager.manager.impl.CacheManager;
@@ -26,9 +28,9 @@ import com.idega.xformsmanager.manager.impl.FormManager;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
- * Last modified: $Date: 2009/03/30 13:19:45 $ by $Author: civilis $
+ * Last modified: $Date: 2009/06/05 15:06:19 $ by $Author: eiki $
  */
 @Service
 @Scope("singleton")
@@ -83,9 +85,41 @@ public class DocumentManagerFactory {
 					IWBundle bundle = iwma.getBundle(FormManager.IW_BUNDLE_IDENTIFIER);
 					
 					try {
+						IWSlideService service = (IWSlideService) IBOLookup.getServiceInstance(iwma.getIWApplicationContext(), IWSlideService.class);
+						
 						Document componentsXforms = getDocumentFromBundle(iwma, bundle, COMPONENTS_XFORMS_CONTEXT_PATH);
 						Document componentsXsd = getDocumentFromBundle(iwma, bundle, COMPONENTS_XSD_CONTEXT_PATH);
 						Document formXformsTemplate = getDocumentFromBundle(iwma, bundle, FORM_XFORMS_TEMPLATE_RESOURCES_PATH);
+						
+						//check for custom components, xsd, default form stuff
+						String componentsOverridePath = iwma.getSettings().getProperty("FB.components.def.path", "");
+						String componentsXSDOverridePath = iwma.getSettings().getProperty("FB.components.xsd.path", "");
+						String defaultFormTemplateOverridePath = iwma.getSettings().getProperty("FB.default.form.path", "");
+						
+						
+						if(componentsOverridePath.length()!=0 && service.getExistence(componentsOverridePath)){
+							componentsXforms = getDocumentFromSlide(service, componentsOverridePath);
+						}
+						else{
+							componentsXforms = getDocumentFromBundle(iwma, bundle, COMPONENTS_XFORMS_CONTEXT_PATH);
+						}
+						
+						if(componentsXSDOverridePath.length()!=0 && service.getExistence(componentsXSDOverridePath)){
+							componentsXforms = getDocumentFromSlide(service, componentsXSDOverridePath);
+							
+						}
+						else {
+							componentsXsd = getDocumentFromBundle(iwma, bundle, COMPONENTS_XSD_CONTEXT_PATH);
+						}
+						
+						if(defaultFormTemplateOverridePath.length()!=0 && service.getExistence(defaultFormTemplateOverridePath)){
+							formXformsTemplate = getDocumentFromSlide(service, defaultFormTemplateOverridePath);
+						}
+						else {
+							formXformsTemplate = getDocumentFromBundle(iwma, bundle, FORM_XFORMS_TEMPLATE_RESOURCES_PATH);
+						}
+						
+						
 						
 						documentManager.setComponentsXforms(componentsXforms);
 						documentManager.setComponentsXsd(componentsXsd);
@@ -121,6 +155,17 @@ public class DocumentManagerFactory {
 		doc = docBuilder.parse(stream);
 		stream.close();
 
+		return doc;
+	}
+	
+	private Document getDocumentFromSlide(IWSlideService service, String pathToFile) throws Exception {
+		Document doc = null;
+		InputStream stream = service.getInputStream(pathToFile);
+
+		DocumentBuilder docBuilder = XmlUtil.getDocumentBuilder();
+		doc = docBuilder.parse(stream);
+		stream.close();
+		
 		return doc;
 	}
 	
