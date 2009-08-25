@@ -89,4 +89,6 @@ public interface XFormsManager {
 	// public void setReadonly(FormComponent component, boolean readonly);
 	
 	public abstract void bindsRenamed(FormComponent component);
+	
+	public abstract boolean isUseHtmlEditor(FormComponent component);
 }

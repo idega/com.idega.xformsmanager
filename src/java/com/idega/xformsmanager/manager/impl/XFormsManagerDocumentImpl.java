@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -30,7 +31,7 @@ import com.idega.xformsmanager.util.FormManagerUtil;
  */
 @FormComponentType(FormComponentType.document)
 @Service
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implements XFormsManagerDocument {
 	
 	private XPathUtil readonlyXPath = new XPathUtil(".//readonly");
@@ -250,7 +251,7 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 		return submission.getAttribute(FormManagerUtil.action_att);
 	}
 	
-//	@Override
+	@Override
 	public boolean isReadonly(FormComponent component) {
 		
 		Document xformsDoc = component.getFormDocument().getXformsDocument();
@@ -270,7 +271,6 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 		return false;
 	}
 	
-//	@Override
 	public void setReadonly(FormComponent component, boolean readonly) {
 		
 		Document xformsDoc = component.getFormDocument().getXformsDocument();
@@ -296,7 +296,6 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 		}
 	}
 	
-//	@Override
 	public void setPdfForm(FormComponent component, boolean generatePdf) {
 		
 		Document xformsDoc = component.getFormDocument().getXformsDocument();
@@ -321,7 +320,6 @@ public class XFormsManagerDocumentImpl extends XFormsManagerContainerImpl implem
 		}
 	}
 	
-//	@Override
 	public boolean isPdfForm(FormComponent component) {
 		Document xformsDoc = component.getFormDocument().getXformsDocument();
 		

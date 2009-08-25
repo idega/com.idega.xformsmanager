@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.chiba.xml.dom.DOMUtil;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -44,10 +45,11 @@ import com.idega.xformsmanager.xform.NodesetFactory;
  */
 @FormComponentType(FormComponentType.base)
 @Service
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class XFormsManagerImpl implements XFormsManager {
 	
 	private static final String autofill_attr = "autofillkey";
+	public static final String HTML_EDITOR_SYLE_CLASS_NAME = "enableHTMLEditor";
 	
 	public void loadComponentFromTemplate(FormComponent templateFormComponent) {
 		
@@ -395,6 +397,9 @@ public class XFormsManagerImpl implements XFormsManager {
 			case CALCULATE_EXP:
 				updateCalculate(component);
 				break;
+			case HTML_EDITOR:
+				updateHtmlEditor(component);
+				break;
 			default:
 				break;
 		}
@@ -666,6 +671,32 @@ public class XFormsManagerImpl implements XFormsManager {
 				
 				nodeset.setMapping(component, variableStringRepresentation);
 			}
+		}
+	}
+	
+	protected void updateHtmlEditor(FormComponent component) {
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
+		
+		boolean htmlEditor = component.getProperties().isUseHtmlEditor();
+		String htmlEditorClassName = htmlEditor ? HTML_EDITOR_SYLE_CLASS_NAME : CoreConstants.EMPTY;
+		
+		Element element = xformsComponentDataBean.getElement();
+		
+		String currentClassValue = element.getAttribute("class");
+		String newClassValue = currentClassValue == null ? CoreConstants.EMPTY : new StringBuilder(currentClassValue).toString();
+		boolean needToUpdate = true;
+		if (htmlEditor) {
+			newClassValue = StringUtil.isEmpty(newClassValue) ?
+					htmlEditorClassName :
+					new StringBuilder(newClassValue).append(CoreConstants.SPACE).append(htmlEditorClassName).toString();
+		} else if (StringUtil.isEmpty(newClassValue)) {
+			needToUpdate = false;
+		} else {
+			newClassValue = newClassValue.replaceAll(HTML_EDITOR_SYLE_CLASS_NAME, CoreConstants.EMPTY);
+		}
+		
+		if (needToUpdate) {
+			element.setAttribute("class", newClassValue);
 		}
 	}
 	
@@ -1000,5 +1031,17 @@ public class XFormsManagerImpl implements XFormsManager {
 	protected NodesetFactory getNodesetFactory(FormDocument formDocument) {
 		
 		return NodesetFactory.getNodesetFactory(formDocument);
+	}
+
+	public boolean isUseHtmlEditor(FormComponent component) {
+		ComponentDataBean xformsComponentDataBean = component.getComponentDataBean();
+		
+		Element element = xformsComponentDataBean.getElement();
+		if (element == null) {
+			return false;
+		}
+		
+		String currentClassValue = element.getAttribute("class");
+		return StringUtil.isEmpty(currentClassValue) ? Boolean.FALSE : currentClassValue.indexOf(HTML_EDITOR_SYLE_CLASS_NAME) != -1;
 	}
 }

@@ -71,4 +71,8 @@ public interface PropertiesComponent {
 	public abstract boolean isCalculate();
 	
 	public abstract void setIsCalculate(boolean isCalculate);
+	
+	public abstract void setUseHtmlEditor(boolean useHtmlEditor);
+	
+	public abstract boolean isUseHtmlEditor();
 }

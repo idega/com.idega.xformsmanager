@@ -110,15 +110,15 @@ public class FormComponentImpl implements FormComponent, Component {
 		
 		properties.setPlainLabel(getXFormsManager().getLocalizedStrings(this));
 		properties.setPlainRequired(getXFormsManager().isRequired(this));
-		properties.setErrorsMessages(getXFormsManager()
-		        .getErrorLabelLocalizedStrings(this));
+		properties.setErrorsMessages(getXFormsManager().getErrorLabelLocalizedStrings(this));
 		properties.setPlainAutofillKey(getXFormsManager().getAutofillKey(this));
 		properties.setPlainHelpText(getXFormsManager().getHelpText(this));
 		properties.setPlainVariable(getXFormsManager().getVariable(this));
 		
-		properties.setPlainCalculate(getXFormsManager()
-		        .getCaculate(this));
+		properties.setPlainCalculate(getXFormsManager() .getCaculate(this));
 		properties.setPlainIsCalculate(getXFormsManager().isCalculate(this));
+		
+		properties.setUseHtmlEditor(getXFormsManager().isUseHtmlEditor(this));
 	}
 	
 	protected void changeBindNames() {

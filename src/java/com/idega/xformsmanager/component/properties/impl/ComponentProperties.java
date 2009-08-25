@@ -21,16 +21,20 @@ import com.idega.xformsmanager.xform.ComponentBind;
 public class ComponentProperties implements PropertiesComponent {
 	
 	private boolean required = false;
-	// private boolean readonly = false;
+
 	private LocalizedStringBean label;
 	private Map<ErrorType, LocalizedStringBean> errorsMessages;
 	private LocalizedStringBean helpText;
-	// private LocalizedStringBean validationText;
+	
 	private String p3ptype;
 	private String autofillKey;
+	
 	private Variable variable;
+	
 	private String calculate;
 	private boolean isCalculate = false;
+	
+	private boolean useHtmlEditor;
 	
 	protected FormComponent component;
 	
@@ -88,6 +92,7 @@ public class ComponentProperties implements PropertiesComponent {
 		this.component = component;
 	}
 	
+	@Override
 	public String toString() {
 		return new StringBuffer().append("\nrequired: ").append(required)
 		        .append("\nlabel: ").append(label).append("\np3ptype: ")
@@ -98,6 +103,8 @@ public class ComponentProperties implements PropertiesComponent {
 		        .append(calculate)
 		        .append("\nisCalculate: ")
 		        .append(isCalculate)
+		        .append("\nuseHtmlEditor: ")
+		        .append(useHtmlEditor)
 		        // .append("\nreadonly: ")
 		        // .append(readonly)
 		        // .append("\nvalidationText: ")
@@ -155,9 +162,7 @@ public class ComponentProperties implements PropertiesComponent {
 	}
 	
 	public void setVariable(String variableStringRepresentation) {
-		setVariable(StringUtil.isEmpty(variableStringRepresentation) ? null
-		        : Variable
-		                .parseDefaultStringRepresentation(variableStringRepresentation));
+		setVariable(StringUtil.isEmpty(variableStringRepresentation) ? null : Variable.parseDefaultStringRepresentation(variableStringRepresentation));
 	}
 	
 	public void setPlainVariable(Variable variable) {
@@ -217,5 +222,14 @@ public class ComponentProperties implements PropertiesComponent {
 	public void setPlainIsCalculate(boolean isCalculate) {
 		
 		this.isCalculate = isCalculate;
+	}
+
+	public boolean isUseHtmlEditor() {
+		return useHtmlEditor;
+	}
+
+	public void setUseHtmlEditor(boolean useHtmlEditor) {
+		this.useHtmlEditor = useHtmlEditor;
+		component.update(ConstUpdateType.HTML_EDITOR);
 	}
 }
