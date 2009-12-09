@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -20,7 +21,7 @@ import com.idega.xformsmanager.component.impl.FormComponentFactory;
  * @version $Revision: 1.4 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
 @Service
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class CacheManager {
 	
 	private Document xformTemplate;
@@ -131,14 +132,9 @@ public class CacheManager {
 		if (iwma == null)
 			throw new NullPointerException("IWMainApplication not set");
 		
-		@SuppressWarnings("unchecked")
-		Map<String, ComponentDataBean> cachedXformsComponents = IWCacheManager2
-		        .getInstance(iwma).getCache("cached_xforms_components");
+		Map<String, ComponentDataBean> cachedXformsComponents = IWCacheManager2.getInstance(iwma).getCache("cached_xforms_components");
 		this.cachedXformsComponents = cachedXformsComponents;
-		@SuppressWarnings("unchecked")
-		Map<String, Element> cachedDefaultComponentLocalizations = IWCacheManager2
-		        .getInstance(iwma).getCache(
-		            "cached_default_components_localizations");
+		Map<String, Element> cachedDefaultComponentLocalizations = IWCacheManager2.getInstance(iwma).getCache("cached_default_components_localizations");
 		this.cachedDefaultComponentLocalizations = cachedDefaultComponentLocalizations;
 	}
 	
