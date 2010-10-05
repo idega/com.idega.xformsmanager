@@ -12,6 +12,7 @@ import org.chiba.xml.dom.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.idega.util.CoreConstants;
 import com.idega.xformsmanager.component.FormComponent;
 import com.idega.xformsmanager.component.properties.impl.ConstUpdateType;
 import com.idega.xformsmanager.util.FormManagerUtil;
@@ -90,15 +91,12 @@ public class LocalizedItemsetBean {
 			
 			for (Iterator<Element> iterator = items_elements.iterator(); iterator.hasNext();) {
 				Element item_element = iterator.next();
-				String label = 
-					DOMUtil.getTextNodeAsString(
-							DOMUtil.getChildElement(item_element, FormManagerUtil.item_label_tag)
-					);
 				
-				String value = 
-					DOMUtil.getTextNodeAsString(
-							DOMUtil.getChildElement(item_element, FormManagerUtil.item_value_tag)
-					);
+				Element itemLabel = DOMUtil.getChildElement(item_element, FormManagerUtil.item_label_tag);
+				String label = itemLabel == null ? CoreConstants.EMPTY : DOMUtil.getTextNodeAsString(itemLabel);
+				
+				Element itemValue = DOMUtil.getChildElement(item_element, FormManagerUtil.item_value_tag);
+				String value = itemValue == null ? CoreConstants.EMPTY : DOMUtil.getTextNodeAsString(itemValue);
 				
 				ItemBean item = new ItemBean();
 				item.setLabel(label);
