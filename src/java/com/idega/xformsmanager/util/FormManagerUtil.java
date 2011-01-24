@@ -145,7 +145,6 @@ public class FormManagerUtil {
 	private static final String simple_type = "xs:simpleType";
 	private static final String complex_type = "xs:complexType";
 	
-	
 	private static final String line_sep = "line.separator";
 	private static final String xml_mediatype = "text/html";
 	private static final String utf_8_encoding = "UTF-8";
@@ -167,7 +166,7 @@ public class FormManagerUtil {
 	private static final XPathUtil submissionElementXPath = new XPathUtil(
 	        ".//xf:submission[@id='submit_data_submission']");
 	private static final XPathUtil formTitleOutputElementXPath = new XPathUtil(
-	        ".//h:title/xf:output");
+	        ".//h:title//xf:output");
 	private static final XPathUtil instanceElementByIdXPath = new XPathUtil(
 	        ".//xf:instance[@id=$instanceId]");
 	private static final XPathUtil formSubmissionInstanceDataElementXPath = new XPathUtil(
@@ -176,8 +175,8 @@ public class FormManagerUtil {
 	        ".//xf:instance[@id='localized_strings']/localized_strings");
 	private static final XPathUtil elementByIdXPath = new XPathUtil(
 	        ".//*[@id=$id]");
-//	private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(
-//	        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
+	// private static final XPathUtil elementsContainingAttributeXPath = new XPathUtil(
+	// ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
 	private static final XPathUtil replaceAttributesByExpressionXPath = new XPathUtil(
 	        ".//attribute::*[contains(., $expression)]");
 	private static final XPathUtil localizaionSetValueElement = new XPathUtil(
@@ -242,8 +241,8 @@ public class FormManagerUtil {
 		if (key != null) {
 			// creating new key
 			
-			ref = new StringBuffer(loc_ref_part1).append(key).append(
-			    loc_ref_part2).toString();
+			ref = new StringBuffer(loc_ref_part1).append(key)
+			        .append(loc_ref_part2).toString();
 			
 			element.setAttribute(attributeName, ref);
 			
@@ -268,8 +267,8 @@ public class FormManagerUtil {
 			for (int i = 0; i < oldLocalizationTags.getLength(); i++) {
 				
 				Element localizationTag = (Element) oldLocalizationTags.item(i);
-				xform.renameNode(localizationTag, localizationTag
-				        .getNamespaceURI(), key);
+				xform.renameNode(localizationTag,
+				    localizationTag.getNamespaceURI(), key);
 			}
 		}
 		
@@ -405,9 +404,10 @@ public class FormManagerUtil {
 	public static LocalizedStringBean getElementLocalizedStrings(
 	        Element element, Document xforms_doc) {
 		
-		// DOMUtil.prettyPrintDOM(xforms_doc);
+		String ref = element.getAttributeNS(idega_namespace, "ref");
 		
-		String ref = element.getAttribute(FormManagerUtil.ref_s_att);
+		if (StringUtil.isEmpty(ref))
+			ref = element.getAttribute(FormManagerUtil.ref_s_att);
 		
 		if (!isLocalizableExpressionCorrect(ref))
 			return new LocalizedStringBean();
@@ -513,16 +513,14 @@ public class FormManagerUtil {
 			
 			if (value == null || value.length() == 0) {
 				
-				Logger
-				        .getLogger(FormManagerUtil.class.getName())
+				Logger.getLogger(FormManagerUtil.class.getName())
 				        .log(Level.WARNING,
 				            "Error message element present in document, but no value specified");
 				err = new LocalizedStringBean();
 				
 			} else if (!isLocalizableExpressionCorrect(value)) {
 				
-				Logger
-				        .getLogger(FormManagerUtil.class.getName())
+				Logger.getLogger(FormManagerUtil.class.getName())
 				        .log(
 				            Level.WARNING,
 				            "Error message element present in document, but no value expression incorrect. Provided="
@@ -560,9 +558,9 @@ public class FormManagerUtil {
 				
 				if (errString.getErrorType() == errorType) {
 					
-					putLocalizedText(value_att, null, null, el, el
-					        .getOwnerDocument(), errString
-					        .getLocalizedStringBean());
+					putLocalizedText(value_att, null, null, el,
+					    el.getOwnerDocument(),
+					    errString.getLocalizedStringBean());
 					return;
 				}
 			}
@@ -606,8 +604,9 @@ public class FormManagerUtil {
 		        + errString.getErrorType();
 		
 		replaceAttributesByExpression(validationBlock, "messageKey", messageKey);
-		putLocalizedText(value_att, null, null, messageElement, messageElement
-		        .getOwnerDocument(), errString.getLocalizedStringBean());
+		putLocalizedText(value_att, null, null, messageElement,
+		    messageElement.getOwnerDocument(),
+		    errString.getLocalizedStringBean());
 	}
 	
 	private static final XPathUtil helpOutputXPath = new XPathUtil(
@@ -654,8 +653,8 @@ public class FormManagerUtil {
 			    componentKey + "-help");
 		}
 		
-		putLocalizedText(ref_s_att, null, null, helpOutput, helpOutput
-		        .getOwnerDocument(), helpMsg);
+		putLocalizedText(ref_s_att, null, null, helpOutput,
+		    helpOutput.getOwnerDocument(), helpMsg);
 	}
 	
 	public static boolean isLocalizationKeyCorrect(String loc_key) {
@@ -965,8 +964,8 @@ public class FormManagerUtil {
 			setErrorLabelLocalizedStrings(emailElement, "dfdf", "asdfdsf",
 			    errstr, d);
 			
-			setHelpTextLocalizedStrings(textElement, "asdfads", errstr
-			        .getLocalizedStringBean(), d);
+			setHelpTextLocalizedStrings(textElement, "asdfads",
+			    errstr.getLocalizedStringBean(), d);
 			
 			DOMUtil.prettyPrintDOM(textElement.getOwnerDocument());
 			
@@ -1183,10 +1182,12 @@ public class FormManagerUtil {
 	}
 	
 	/**
-	 * 
-	 * @param context node to start looking from
-	 * @param elementName optional
-	 * @param attributeName optional
+	 * @param context
+	 *            node to start looking from
+	 * @param elementName
+	 *            optional
+	 * @param attributeName
+	 *            optional
 	 * @return
 	 */
 	public static NodeList getElementsContainingAttribute(Node context,
@@ -1199,7 +1200,7 @@ public class FormManagerUtil {
 			attributeName = CoreConstants.STAR;
 		
 		XPathUtil elementsContainingAttributeXPath = new XPathUtil(
-        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
+		        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName])]");
 		
 		synchronized (elementsContainingAttributeXPath) {
 			
@@ -1214,11 +1215,14 @@ public class FormManagerUtil {
 	}
 	
 	/**
-	 * 
-	 * @param context node to start looking from
-	 * @param elementName optional
-	 * @param attributeName optional
-	 * @param attributeValue optional
+	 * @param context
+	 *            node to start looking from
+	 * @param elementName
+	 *            optional
+	 * @param attributeName
+	 *            optional
+	 * @param attributeValue
+	 *            optional
 	 * @return
 	 */
 	public static NodeList getElementsContainingAttribute(Node context,
@@ -1234,8 +1238,8 @@ public class FormManagerUtil {
 			attributeValue = CoreConstants.STAR;
 		
 		XPathUtil elementsContainingAttributeXPath = new XPathUtil(
-        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName]) " +
-        "and (attributeValue = '*' or attribute::*[. = $attributeValue])]");
+		        ".//*[($elementName = '*' or name(.) = $elementName) and ($attributeName = '*' or attribute::*[name(.) = $attributeName]) "
+		                + "and (attributeValue = '*' or attribute::*[. = $attributeValue])]");
 		
 		String attributeValueVariable = "attributeValue";
 		
@@ -1246,8 +1250,8 @@ public class FormManagerUtil {
 			    elementName);
 			elementsContainingAttributeXPath.setVariable(attributeNameVariable,
 			    attributeName);
-			elementsContainingAttributeXPath.setVariable(attributeValueVariable,
-				attributeValue);
+			elementsContainingAttributeXPath.setVariable(
+			    attributeValueVariable, attributeValue);
 			
 			return elementsContainingAttributeXPath.getNodeset(context);
 		}
@@ -1320,9 +1324,9 @@ public class FormManagerUtil {
 			
 			String err_msg = new StringBuilder(
 			        "\nEither parameter is not provided:").append("\nsrc: ")
-			        .append(String.valueOf(src)).append("\ndest: ").append(
-			            String.valueOf(dest)).append("\ntype_name: ").append(
-			            src_type_name).toString();
+			        .append(String.valueOf(src)).append("\ndest: ")
+			        .append(String.valueOf(dest)).append("\ntype_name: ")
+			        .append(src_type_name).toString();
 			
 			throw new NullPointerException(err_msg);
 		}
@@ -1331,14 +1335,14 @@ public class FormManagerUtil {
 		
 		// check among simple types
 		
-		Element type_to_copy = getSchemaTypeToCopy(root
-		        .getElementsByTagName(simple_type), src_type_name);
+		Element type_to_copy = getSchemaTypeToCopy(
+		    root.getElementsByTagName(simple_type), src_type_name);
 		
 		if (type_to_copy == null) {
 			// check among complex types
 			
-			type_to_copy = getSchemaTypeToCopy(root
-			        .getElementsByTagName(complex_type), src_type_name);
+			type_to_copy = getSchemaTypeToCopy(
+			    root.getElementsByTagName(complex_type), src_type_name);
 		}
 		
 		if (type_to_copy == null)
