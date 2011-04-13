@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
@@ -36,14 +37,16 @@ public class LocalizedStringBean {
 	 * @param text
 	 */
 	public void setString(Locale locale, String text) {
-		
-		if(locale == null)
-			throw new NullPointerException("Locale is not provided");
+		if (locale == null)
+			throw new IllegalArgumentException("Locale is not provided");
 		
 		strings.put(locale, text);
 	}
 	
 	public String getString(Locale locale) {
+		if (!strings.containsKey(locale))
+			Logger.getLogger(getClass().getName()).warning("There are no labels by the locale: " + locale + ". Labels exist for locale(s): " + strings.keySet());
+		
 		return strings.get(locale);
 	}
 	
@@ -54,6 +57,7 @@ public class LocalizedStringBean {
 	public void clear() {
 		strings.clear();
 	}
+	@Override
 	public String toString() {
 		
 		StringBuffer toString = new StringBuffer("LocalizedStringBean:");

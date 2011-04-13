@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.idega.util.StringUtil;
 import com.idega.xformsmanager.business.component.Component;
 import com.idega.xformsmanager.business.component.properties.PropertiesComponent;
 import com.idega.xformsmanager.component.FormComponent;
@@ -122,23 +123,14 @@ public class FormComponentImpl implements FormComponent, Component {
 	}
 	
 	protected void changeBindNames() {
-		
 		ComponentBind componentBind = getComponentDataBean().getComponentBind();
-		
 		if (componentBind.exists()) {
-			
 			Bind bind = componentBind.getBind();
-			
 			if (bind.canRename()) {
-				
 				LocalizedStringBean localizedLabel = getProperties().getLabel();
-				
-				String defaultLocaleLabel = localizedLabel
-				        .getString(getFormDocument().getDefaultLocale());
-				
-				String newBindName = new StringBuffer(defaultLocaleLabel)
-				        .append('_').append(getId()).toString();
-				
+				String defaultLocaleLabel = localizedLabel.getString(getFormDocument().getDefaultLocale());
+				String newBindName = new StringBuffer(StringUtil.isEmpty(defaultLocaleLabel) ? getClass().getSimpleName() : defaultLocaleLabel)
+					.append('_').append(getId()).toString();
 				bind.rename(newBindName);
 			}
 		}
