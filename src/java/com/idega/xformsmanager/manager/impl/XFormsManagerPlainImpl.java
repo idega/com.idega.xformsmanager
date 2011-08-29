@@ -101,7 +101,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
 				return null;
 		}
 		
-		return FormManagerUtil.getElementLocalizedStrings((Element) output,
+		return FormManagerUtil.getElementLocalizedStrings(output,
 		    component.getFormDocument().getXformsDocument());
 	}
 	
