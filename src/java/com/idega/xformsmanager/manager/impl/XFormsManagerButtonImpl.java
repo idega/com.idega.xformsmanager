@@ -1,5 +1,6 @@
 package com.idega.xformsmanager.manager.impl;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -31,11 +32,10 @@ import com.idega.xformsmanager.xform.NodesetFactory;
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
  * @version $Revision: 1.15 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
-@FormComponentType(FormComponentType.button)
 @Service
-@Scope("singleton")
-public class XFormsManagerButtonImpl extends XFormsManagerImpl implements
-        XFormsManagerButton {
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+@FormComponentType(FormComponentType.button)
+public class XFormsManagerButtonImpl extends XFormsManagerImpl implements XFormsManagerButton {
 	
 	private static final String actionTaken = "actionTaken";
 	
