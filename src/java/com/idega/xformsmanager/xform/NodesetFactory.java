@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.idega.chiba.ChibaConstants;
 import com.idega.util.CoreConstants;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
@@ -27,7 +28,7 @@ public class NodesetFactory {
 	private static XPathUtil nodesetElementByMappingXPath;
 	
 	private static final String nodesetPathVariable = "nodesetPath";
-	private static final String mappingVariable = "mapping";
+	private static final String mappingVariable = ChibaConstants.MAPPING;
 	private static final String instanceIdVariable = "instanceId";
 	
 	private static final XPathUtil nodesetElementXPath = new XPathUtil(

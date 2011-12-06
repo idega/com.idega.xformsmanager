@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.idega.chiba.ChibaConstants;
 import com.idega.chiba.web.xml.xforms.util.XFormsUtil;
 import com.idega.chiba.web.xml.xforms.validation.ErrorType;
 import com.idega.util.CoreConstants;
@@ -128,7 +129,7 @@ public class FormManagerUtil {
 	public static final String xforms_namespace_uri = "http://www.w3.org/2002/xforms";
 	public static final String event_namespace_uri = "http://www.w3.org/2001/xml-events";
 	public static final String idega_namespace = "http://idega.com/xforms";
-	public static final String mapping_att = "mapping";
+	public static final String mapping_att = ChibaConstants.MAPPING;
 	public static final String action_att = "action";
 	public static final String required_att = "required";
 	public static final String readonly_att = "readonly";
