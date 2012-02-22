@@ -7,9 +7,11 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.util.IOUtil;
 import com.idega.util.StringHandler;
 import com.idega.util.xml.XmlUtil;
+import com.idega.xformsmanager.util.FormManagerUtil;
 
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
@@ -31,7 +33,7 @@ public class PersistedFormDocument {
 	}
 
 	public void setXformsDocument(Document xformsDocument) {
-		if (!outputReplaced) {
+		if (!outputReplaced && IWMainApplication.getDefaultIWMainApplication().getSettings().getBoolean("xforms_idega_output", Boolean.FALSE)) {
 			String xformInString = null;
 			InputStream xformStream = null;
 			try {
@@ -39,7 +41,7 @@ public class PersistedFormDocument {
 				StringWriter sw = new StringWriter();
 				XmlUtil.prettyPrintDOM(xformsDocument, sw);
 				xformInString = sw.toString();
-				xformInString = StringHandler.replace(xformInString, "xf:output", "idega:output");
+				xformInString = StringHandler.replace(xformInString, "xf:output", FormManagerUtil.output_tag);
 
 				//	Re-building XML document
 				xformStream = StringHandler.getStreamFromString(xformInString);
