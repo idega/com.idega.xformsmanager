@@ -64,7 +64,7 @@ public class FormManagerUtil {
 	public static final String inst_end = "')";
 	public static final String data_mod = "data_model";
 	public static final String loc_tag = "localized_strings";
-	public static final String output_tag = "xf:output";
+	public static final String output_tag = "idega:output";
 	public static final String ref_s_att = "ref";
 	public static final String lang_att = "lang";
 	public static final String CTID = XFormsUtil.CTID;
