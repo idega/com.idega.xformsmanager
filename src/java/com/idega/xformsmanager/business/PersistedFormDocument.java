@@ -42,6 +42,7 @@ public class PersistedFormDocument {
 				XmlUtil.prettyPrintDOM(xformsDocument, sw);
 				xformInString = sw.toString();
 				xformInString = StringHandler.replace(xformInString, "xf:output", FormManagerUtil.output_tag);
+				xformInString = StringHandler.replace(xformInString, "idega:output ref=\".\"", "xf:output ref=\".\"");
 
 				//	Re-building XML document
 				xformStream = StringHandler.getStreamFromString(xformInString);
