@@ -89,7 +89,7 @@ public class XFormsManagerPlainImpl extends XFormsManagerImpl implements
 		Element output = null;
 		if (!element.hasAttribute(FormManagerUtil.ref_s_att)) {
 			XPathUtil outputXPUT = new XPathUtil(".//xf:output");
-			output = (Element) outputXPUT.getNode(output);
+			output = (Element) outputXPUT.getNode(element);
 
 			if (output == null) {
 				outputXPUT = new XPathUtil(".//" + FormManagerUtil.output_tag);
