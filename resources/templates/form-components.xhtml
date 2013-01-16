@@ -791,7 +791,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             </xf:action>
         </xf:trigger>
         
-        <xf:trigger id="fbc_button_save" type="fbc_button_save" bind="bind-submissionButton" class="fbc_button_submit">
+        <xf:trigger id="fbc_button_save" type="fbc_button_save" bind="bind-submissionButton" class="fbc_button_submit xforms_save_button">
             <xf:label model="data_model" ref="instance('localized_strings')/save_button-label[@lang=instance('localized_strings')/current_language]"/>
             <xf:action ev:event="DOMActivate">
                 <xf:setvalue model="submission_model" ref="instance('saveForm-instance')/savePhase">true</xf:setvalue>
