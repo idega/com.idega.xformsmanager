@@ -151,7 +151,7 @@ public class DocumentManagerFactory extends DefaultSpringBean {
 
 	private Document getDocumentFromSlide(String pathToFile) throws Exception {
 		Document doc = null;
-		InputStream stream = getRepositoryService().getInputStream(pathToFile);
+		InputStream stream = getRepositoryService().getInputStreamAsRoot(pathToFile);
 
 		DocumentBuilder docBuilder = XmlUtil.getDocumentBuilder();
 		doc = docBuilder.parse(stream);
