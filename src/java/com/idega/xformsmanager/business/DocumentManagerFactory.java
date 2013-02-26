@@ -89,14 +89,14 @@ public class DocumentManagerFactory extends DefaultSpringBean {
 						String defaultFormTemplateOverridePath = iwma.getSettings().getProperty("FB.default.form.path", "");
 
 						if(componentsOverridePath.length()!=0 && getRepositoryService().getExistence(componentsOverridePath)){
-							componentsXforms = getDocumentFromSlide(componentsOverridePath);
+							componentsXforms = getDocumentFromRepository(componentsOverridePath);
 						}
 						else{
 							componentsXforms = getDocumentFromBundle(iwma, bundle, COMPONENTS_XFORMS_CONTEXT_PATH);
 						}
 
 						if(componentsXSDOverridePath.length()!=0 && getRepositoryService().getExistence(componentsXSDOverridePath)){
-							componentsXforms = getDocumentFromSlide(componentsXSDOverridePath);
+							componentsXforms = getDocumentFromRepository(componentsXSDOverridePath);
 
 						}
 						else {
@@ -104,7 +104,7 @@ public class DocumentManagerFactory extends DefaultSpringBean {
 						}
 
 						if(defaultFormTemplateOverridePath.length()!=0 && getRepositoryService().getExistence(defaultFormTemplateOverridePath)){
-							formXformsTemplate = getDocumentFromSlide(defaultFormTemplateOverridePath);
+							formXformsTemplate = getDocumentFromRepository(defaultFormTemplateOverridePath);
 						}
 						else {
 							formXformsTemplate = getDocumentFromBundle(iwma, bundle, FORM_XFORMS_TEMPLATE_RESOURCES_PATH);
@@ -149,7 +149,7 @@ public class DocumentManagerFactory extends DefaultSpringBean {
 		return doc;
 	}
 
-	private Document getDocumentFromSlide(String pathToFile) throws Exception {
+	private Document getDocumentFromRepository(String pathToFile) throws Exception {
 		Document doc = null;
 		InputStream stream = getRepositoryService().getInputStreamAsRoot(pathToFile);
 
