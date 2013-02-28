@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.idega.chiba.ChibaConstants;
+import com.idega.chiba.web.xml.xforms.connector.context.KeyContextResolver;
 import com.idega.chiba.web.xml.xforms.util.XFormsUtil;
 import com.idega.chiba.web.xml.xforms.validation.ErrorType;
 import com.idega.util.CoreConstants;
@@ -115,7 +116,7 @@ public class FormManagerUtil {
 	public static final String autofill_instance_ending = "_autofill-instance";
 	public static final String autofill_setvalue_ending = "-autofill-setvalue";
 	public static final String value_att = "value";
-	public static final String autofill_key_prefix = "fb-afk-";
+	public static final String autofill_key_prefix = KeyContextResolver.autofill_key_prefix;
 	public static final String refresh_tag = "xf:refresh";
 	public static final String sections_visualization_id = "sections_visualization";
 	public static final String sections_visualization_instance_id = "sections_visualization_instance";
