@@ -404,7 +404,14 @@ public class FormManagerUtil {
 	}
 
 	public static LocalizedStringBean getElementLocalizedStrings(Element element, Document xforms_doc) {
-		String ref = element.getAttributeNS(idega_namespace, "ref");
+		String ref = null;
+		try {
+			ref = element.getAttributeNS(idega_namespace, "ref");
+		} catch (NullPointerException e) {
+			Logger.getLogger(FormManagerUtil.class.getName()).log(Level.WARNING,
+					"Element is null");
+			com.idega.util.xml.XmlUtil.prettyPrintDOM(xforms_doc);
+		}
 
 		if (StringUtil.isEmpty(ref))
 			ref = element.getAttribute(FormManagerUtil.ref_s_att);
