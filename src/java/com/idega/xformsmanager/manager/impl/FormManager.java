@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.chiba.xml.xslt.TransformerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -37,8 +38,8 @@ import com.idega.xformsmanager.util.InitializationException;
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
  * @version $Revision: 1.9 $ Last modified: $Date: 2009/04/28 12:27:48 $ by $Author: civilis $
  */
-@Scope("singleton")
 @Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class FormManager implements DocumentManager {
 
 	public static final String IW_BUNDLE_IDENTIFIER = "com.idega.xformsmanager";
