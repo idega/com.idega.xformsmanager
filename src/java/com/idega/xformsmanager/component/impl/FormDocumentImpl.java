@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
+import com.idega.util.CoreConstants;
 import com.idega.util.xml.XmlUtil;
 import com.idega.xformsmanager.business.PersistedFormDocument;
 import com.idega.xformsmanager.business.PersistenceManager;
@@ -760,5 +761,27 @@ public class FormDocumentImpl extends FormComponentContainerImpl implements
 		Element model = getFormDataModelElement();
 		return model.getOwnerDocument().createElementNS(
 		    FormManagerUtil.idega_namespace, tagExpression);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(super.toString());
+		sb.append("getFormType(): ").append(getFormType()).append(CoreConstants.NEWLINE)
+		.append("getId(): ").append(getId()).append(CoreConstants.NEWLINE)
+		.append("getType(): ").append(getType()).append(CoreConstants.NEWLINE)
+		.append("getDefaultLocale(): ").append(getDefaultLocale()).append(CoreConstants.NEWLINE)
+		.append("getFormId(): ").append(getFormId()).append(CoreConstants.NEWLINE)
+		.append("getFormTitle(): ").append(getFormTitle()).append(CoreConstants.NEWLINE)
+		.append("getFormVersion(): ").append(getFormVersion()).append(CoreConstants.NEWLINE);
+		
+		try {
+			sb.append("getFormSourceCode(): ").append(getFormSourceCode()).append(CoreConstants.NEWLINE);
+		} catch (Exception e) {
+			java.util.logging.Logger.getLogger(getClass().getName())
+					.log(Level.WARNING, "Unable to append: getFormSourceCode() for " + 
+							FormDocumentImpl.class.getName(), e);
+		}		
+		
+		return sb.toString();
 	}
 }
