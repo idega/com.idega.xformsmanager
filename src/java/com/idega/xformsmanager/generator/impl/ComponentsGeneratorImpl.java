@@ -80,4 +80,13 @@ public class ComponentsGeneratorImpl implements ComponentsGenerator {
 	UIGeneratorFactory getUiGeneratorFactory() {
 		return uiGeneratorFactory;
 	}
+
+	@Override
+	public boolean isInstantiated() {
+		if (this.htmlRepresentationGenerator != null) {
+			return Boolean.TRUE;
+		}
+		
+		return Boolean.FALSE;
+	}
 }

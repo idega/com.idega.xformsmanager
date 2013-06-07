@@ -13,6 +13,14 @@ import com.idega.idegaweb.IWMainApplication;
  */
 public interface ComponentsGenerator {
 
+	/**
+	 * 
+	 * @return <code>true</code> when init() method already called, 
+	 * <code>false</code> otherwise;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public boolean isInstantiated();
+	
 	public abstract void init(IWMainApplication iwma,
 			TransformerService transfService);
 
