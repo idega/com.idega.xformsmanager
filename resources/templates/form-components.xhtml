@@ -525,23 +525,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				</div>	
 	        
 	        <xf:label model="data_model" ref="instance('localized_strings')/multiupload-title[@lang=instance('localized_strings')/current_language]"/>
-	        <xf:trigger>
-	            <xf:label model="data_model" ref="instance('localized_strings')/multiupload-insert_trigger-label[@lang=instance('localized_strings')/current_language]"/>
-	            <xf:action>
-	                <xf:insert at="last()" nodeset="instance('data-instance')/multiupload/entry" position="before"/>
-	            </xf:action>
-	        </xf:trigger>
 	        
 	        <xf:repeat appearance="group" bind="multiupload-entries" id="#{componentId}-multiupload_entries">
 	            <xf:group>
-	                <xf:input ref="./description">
-	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-description-label[@lang=instance('localized_strings')/current_language]"/>
-	                    <idega:dispatch ev:event="xforms-value-changed" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
-	                </xf:input>
-	                
-	                <xf:group ref=".[. !='' and ./description ='']" appearance="minimal" class="error">
-	                    <xf:output value="instance('error-instance')/error[@for='#{componentId}']"/>
-	                </xf:group>
 	                
 	                <xf:output ref="@filename">
 	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-filename-label[@lang=instance('localized_strings')/current_language]"/>
@@ -556,6 +542,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	                    </idega:validator>
 	                </xf:upload>
 	                
+	                <xf:input ref="./description">
+	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-description-label[@lang=instance('localized_strings')/current_language]"/>
+	                    <idega:dispatch ev:event="xforms-value-changed" name="idega-validate" target="//*[@id='#{componentId}']//xf:upload" stopOnError="true"/>
+	                </xf:input>
+	                
+	                <xf:group ref=".[. !='' and ./description ='']" appearance="minimal" class="error">
+	                    <xf:output value="instance('error-instance')/error[@for='#{componentId}']"/>
+	                </xf:group>
+	                
 	                <xf:trigger>
 	                    <xf:label model="data_model" ref="instance('localized_strings')/multiupload-remove_trigger-label[@lang=instance('localized_strings')/current_language]"/>
 	                    <xf:action>
@@ -564,6 +559,14 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	                </xf:trigger>
 	            </xf:group> 
 	        </xf:repeat>
+	        
+	         <xf:trigger>
+	            <xf:label model="data_model" ref="instance('localized_strings')/multiupload-insert_trigger-label[@lang=instance('localized_strings')/current_language]"/>
+	            <xf:action>
+	                <xf:insert at="last()" nodeset="instance('data-instance')/multiupload/entry" position="before"/>
+	            </xf:action>
+	        </xf:trigger>
+	        
 	    </xf:group>
     	
     	 <xf:input bind="autofill_name" id="fbc_autofill_name" autofillkey="loginSession.user.name">
