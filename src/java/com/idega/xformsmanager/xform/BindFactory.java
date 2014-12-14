@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
@@ -73,7 +74,7 @@ public class BindFactory {
 		bind.setId(bindId);
 		bind.setBindElement(bindElement);
 		// bind.setFormComponent(formComponent);
-		
+
 		loadChildBinds(bind);
 		
 		return bind;
@@ -85,6 +86,7 @@ public class BindFactory {
 	}
 	
 	private void loadChildBinds(Bind parentBind) {
+		loadParentBind(parentBind);
 		
 		Element parentBindElement = parentBind.getBindElement();
 		
@@ -107,11 +109,36 @@ public class BindFactory {
 					childBinds.add(childBind);
 				}
 			}
-			
+
 			parentBind.setChildBinds(childBinds);
 		}
 	}
-	
+
+	/**
+	 * 
+	 * <p>Initiates parent element of {@link Bind}, 
+	 * if it is not initiated</p>
+	 * @param bind to initiate parent for, not <code>null</code>;
+	 * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
+	 */
+	protected void loadParentBind(Bind bind) {
+		if (bind != null) {
+			if (bind.getParentBind() == null) {
+				Element bindElement = bind.getBindElement();
+				Node parentNode = bindElement.getParentNode();
+				if (parentNode != null && FormManagerUtil.bind_tag.equals(
+						parentNode.getNodeName())) {
+					Bind perentBind = createBind();
+					perentBind.setId(((Element) parentNode).getAttribute(FormManagerUtil.id_att));
+					perentBind.setBindElement((Element) parentNode);
+					perentBind.addChildBind(bind);
+
+					bind.setParentBind(perentBind);
+				}
+			}
+		}
+	}
+
 	private Element getModel(Document xform, String modelId) {
 		
 		Element model;
@@ -142,12 +169,12 @@ public class BindFactory {
 		Bind bind = createBind();
 		bind.setId(bindElement.getAttribute(FormManagerUtil.id_att));
 		bind.setBindElement(bindElement);
-		
+
 		loadChildBinds(bind);
 		
 		return bind;
 	}
-	
+
 	// TODO: use not bindId, but component id. and create bindId here
 	public Bind create(String bindId, String modelId, Nodeset nodeset) {
 		

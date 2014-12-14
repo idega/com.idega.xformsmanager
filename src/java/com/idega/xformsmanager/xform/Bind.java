@@ -1,5 +1,6 @@
 package com.idega.xformsmanager.xform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -419,6 +420,16 @@ public class Bind {
 	
 	protected void setChildBinds(List<Bind> childBinds) {
 		this.childBinds = childBinds;
+	}
+
+	protected void addChildBind(Bind childBind) {
+		if (childBind != null) {
+			if (this.childBinds == null) {
+				this.childBinds = new ArrayList<Bind>();
+			}
+
+			this.childBinds.add(childBind);
+		}
 	}
 	
 	protected Bind getParentBind() {
