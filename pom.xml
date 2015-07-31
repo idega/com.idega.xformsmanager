@@ -32,6 +32,12 @@
     <dependency>
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.core</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<artifactId>xmlParserAPIs</artifactId>
+      		<groupId>xml-apis</groupId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.idega.block.addon</groupId>
